@@ -1,0 +1,32 @@
+.container {
+    background-color: #ecebe9;
+    width: auto;
+    border: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.container:hover {
+    background-color: rgba(234, 233, 229, 0.6);
+}
+
+.image {
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.name {
+    padding: 0 10px;
+    font-size: 20px;
+}
+
+@media (max-width: 476px){
+    .name {
+        font-size: 1rem;
+    }
+}

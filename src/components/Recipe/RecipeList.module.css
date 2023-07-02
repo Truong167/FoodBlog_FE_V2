@@ -1,0 +1,19 @@
+.container {
+    margin-top: 20px;
+    padding-left: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 234px 234px auto auto;
+    column-gap: 2px;
+}
+
+
+@media (max-width: 476px){
+    .content {
+        flex-wrap: wrap;
+    }
+}

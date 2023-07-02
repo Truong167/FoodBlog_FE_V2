@@ -1,15 +1,13 @@
-import { PATH, URL_LOGIN } from "./api-path"
+import { GET_INGREDIENTS_BY_SEASON, PATH } from "./api-path"
 import axios from "axios"
-import { LOCAL_STORAGE_TOKEN_NAME } from "../../utils/constant"
 
-export async function login(body: API_AUTH.LoginParams) {
+export async function fetchIngredient() {
     try {
-        const response = await axios.post(URL_LOGIN, body)
-        if(response.data.success){
-            localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.data)
+        const result = await axios.get(GET_INGREDIENTS_BY_SEASON)
+        if(result.data.success){
+            return result.data.data
         }
-        return response
-    } catch (error : any) {
+    } catch (error: any) {
         if(error?.response?.data) return error.response
         return {success: false, message: error.message}
     }

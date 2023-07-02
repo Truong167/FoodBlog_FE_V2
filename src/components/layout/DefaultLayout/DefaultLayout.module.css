@@ -1,0 +1,39 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    background-color: #f8f6f2;
+    width: 100%;
+    padding-top: 70px;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 30px;
+}
+
+.content {
+    padding: 0 24px;
+    min-height: 644px;
+}
+
+.width {
+    width: 990px;
+}
+
+.width1 {
+    width: 680px;
+}
+
+.width2 {
+    width: 480px;
+}
+
+@media (max-width: 476px){
+    .content {
+        width: 100%;
+    }
+}
