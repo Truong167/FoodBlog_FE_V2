@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const { Meta } = Card;
 
-const RecipeCard: React.FC<Recipe.RecipeResponse> = ({ User, date, recipeId, image, isFavorite, recipeName, numberOfLikes }) => {
+const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, image, isFavorite, recipeName, numberOfLikes }) => {
   const heartIcon = <div className='flex justify-center gap-2 items-center'>
     <p>{numberOfLikes}</p>
     {isFavorite ? <HeartFilled key="like" style={{color: 'red'}}/> : <HeartOutlined key="like" />}

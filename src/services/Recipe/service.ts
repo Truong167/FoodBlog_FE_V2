@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe } from "./api-service";
+import { fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 import { useGetFetchQuery } from "../../hooks/useGetQueryClient";
 
@@ -34,6 +34,14 @@ export const useRecipeById = (recipeId: any) => {
     const { isLoading, data } = useQuery({
         queryKey: ['singleRecipe', recipeId],
         queryFn: () => fetchSingleRecipe(recipeId)
+    })
+    return { isLoading, data }
+}
+
+export const useCommentsById = (recipeId: any) => {
+    const { isLoading, data } = useQuery({
+        queryKey: ['comment', recipeId],
+        queryFn: () => fetchComments(recipeId)
     })
     return { isLoading, data }
 }

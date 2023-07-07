@@ -1,9 +1,10 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Auth from './pages/Auth/Auth'
+import Auth from './pages/auth/Auth'
 import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
-import HomePage from './pages/HomePage';
-import RecipeDetailPage from './pages/RecipeDetailPage';
+import HomePage from './pages/home/HomePage';
+import RecipeDetailPage from './pages/recipe-detail/RecipeDetailPage';
+import AddRecipePage from './pages/create-recipe/AddRecipePage';
 
 function App() {
 	return (
@@ -18,6 +19,10 @@ function App() {
 
 				<Route element={<PrivateRoutes/>}>
 					<Route path="/detail/:id" element={<RecipeDetailPage />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+						<Route path="create-recipe" element={<AddRecipePage />} />
 				</Route>
 			</Routes>
 		</Router>

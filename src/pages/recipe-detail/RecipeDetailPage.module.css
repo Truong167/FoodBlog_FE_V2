@@ -1,0 +1,10 @@
+.comment {
+    margin-top: 12px;
+    height: 150px;
+    overflow-x: hidden;
+}
+
+.comment::-webkit-scrollbar {
+    width: 0 !important;
+    display: none; 
+}

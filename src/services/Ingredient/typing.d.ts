@@ -9,4 +9,14 @@ declare namespace INGREDIENT {
         data?: object,
         status?: number
     }
+
+    type TDetailIngredientItem = {
+        ingredientId: string, 
+        amount: string, 
+        name: string
+    }
+
+    type TDetailIngredientList = {
+        DetailIngredients: IngredientItem[]
+    }
 }

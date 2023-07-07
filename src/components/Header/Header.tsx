@@ -4,6 +4,7 @@ import icon from "../../assets/images/logo.png";
 import icon1 from "../../assets/images/logo1.png";
 import { Link } from 'react-router-dom';
 import SearchInput from '../Search/Search';
+import { PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
 
 const Header = () => {
     return (
@@ -19,6 +20,10 @@ const Header = () => {
                         </Link>
                     </div>
                     <SearchInput/>
+                    <Link to={'/create-recipe'} className='flex justify-center items-center gap-1'>
+                    <PlusOutlined/>
+                    Viết món mới
+                    </Link>
                     <AvatarDropDown/>
                 </div>
             </div>
