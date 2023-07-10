@@ -1,42 +1,68 @@
-import { Input, Upload } from 'antd';
-import React, { Fragment } from 'react';
+import { Button, Input, Upload, message } from 'antd';
+import React, { Fragment, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../ValidateError';
-import Dragger from 'antd/es/upload/Dragger';
-import { CameraOutlined, InboxOutlined } from '@ant-design/icons';
-import upload from '../../../assets/images/upload.png'
+import { RcFile, UploadFile } from 'antd/es/upload';
 
 
-const AntdDragger: React.FC<Recipe.TPropsForm> = ({
-    name,
-    control,
-    type,
-    size,
-    error,
-    placeholder,
-    prefix,
-    className,
-}) => {
-    const isError = error.hasOwnProperty(name) ? `error` : `focus hover`;
+const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, error }) => {
+    const [fileSelected, setFileSelected] = useState(false);
+    const className = error.hasOwnProperty(name) ? `btn-danger-outlined` : `btn-outlined `;
+
+    const beforeUpload = (file: { type: string; name: any }) => {
+        const isImage = file.type.includes('image');
+        if (!isImage) {
+            message.error(`${file.name} is not a image file`);
+        }
+        return isImage || Upload.LIST_IGNORE;
+    };
+
+    const onPreview = async (file: UploadFile) => {
+        let src = file.url as string;
+        if (!src) {
+            src = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file.originFileObj as RcFile);
+                reader.onload = () => resolve(reader.result as string);
+            });
+        }
+        const image = new Image();
+        image.src = src;
+        const imgWindow = window.open(src);
+        imgWindow?.document.write(image.outerHTML);
+    };
+
     return (
         <Fragment>
             <Controller
                 name={name}
                 control={control}
-                rules={{ required: `${type}` }}
-                render={({ field }) => (
-                    <Upload listType='picture-card'>
-                        <div className='flex justify-center'>
-                            <img src={upload} alt='Upload' className='' />
-                        </div>
-                        <p className=''>Bạn đã đăng hình món mình nấu ở đây chưa?</p>
-                        <p>Chia sẻ với mọi người thành phẩm nấu nướng của bạn nào!</p>
-                    </Upload>
-                )}
+                render={({ field }) => {
+                    return (
+                        <Upload
+                            {...field}
+                            action=''
+                            listType="picture-card"
+                            fileList={field.value}
+                            onChange={(info) => {
+                                field.onChange(info.fileList.slice(-1));
+                                setFileSelected(info.fileList.length > 0);
+                            }}
+                            onRemove={() => {
+                                setFileSelected(false);
+                            }}
+                            onPreview={onPreview}
+                            beforeUpload={beforeUpload}
+                        >
+                            {!fileSelected && 'Upload'}
+                        </Upload>
+                    );
+                }}
             />
-            <ValidateError error={error} name={name} />
+            <ValidateError name={name} error={error} />
         </Fragment>
     );
+
 };
 
-export default AntdDragger;
+export default AntdUpload;

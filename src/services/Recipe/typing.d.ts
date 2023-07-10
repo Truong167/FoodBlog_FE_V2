@@ -1,7 +1,7 @@
 
 declare namespace Recipe {
     type TRecipeResponse = {
-        DetailLists: []
+        DetailLists?: []
         User: TUserResponse
         date: string
         image: string
@@ -31,9 +31,9 @@ declare namespace Recipe {
     }
 
     type TStepItem = {
-        stepId: number, 
-        description: string, 
-        image: string, 
+        stepId: number,
+        description: string,
+        image: string,
         stepIndex: number
     }
 
@@ -42,7 +42,7 @@ declare namespace Recipe {
     }
 
     type TCommentItem = {
-        
+
     }
 
     type TPropsForm = {
@@ -60,6 +60,15 @@ declare namespace Recipe {
         label?: string;
         children?: JSX.Element;
         required?: boolean;
-      };
-    
+    };
+
+    type TSelect = {
+        size?: SizeType;
+        control: any;
+        name: string;
+        values: { id: string | number; name: string | number }[];
+        className?: string;
+        defaultValue?: string
+    }
+
 }

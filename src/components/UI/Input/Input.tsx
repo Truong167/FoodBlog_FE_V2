@@ -1,4 +1,5 @@
 import { Input } from 'antd';
+import classNames from 'classnames';
 import React, { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../ValidateError';
@@ -20,7 +21,6 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
       <Controller
         name={name}
         control={control}
-        rules={{ required: `${type}` }}
         render={({ field }) => (
           <Input
             {...field}
@@ -28,7 +28,7 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
             size={size}
             placeholder={placeholder}
             prefix={prefix}
-            className={`${isError} ${className}`}
+            className={classNames(isError, className)}
           />
         )}
       />

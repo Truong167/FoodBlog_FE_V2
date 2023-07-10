@@ -15,6 +15,7 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
     <Card
       // style={{ width: 300 }}
       className='ml-1 mr-1'
+      bodyStyle={{padding: '12px'}}
       cover={
         <Link to={`/detail/${recipeId}`}>
           <img
@@ -27,7 +28,6 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
       actions={[
         heartIcon,
         <EditOutlined key="edit" />,
-        // <EllipsisOutlined key="ellipsis" />,
       ]}
     >
       <Meta

@@ -16,10 +16,18 @@
     margin-top: 8px;
 }
 
-.content {
+.grid {
     display: grid;
     grid-template-columns: 140px 1fr auto auto;
     column-gap: 1.5rem;
+    align-items: center;
+    padding-left: 4rem;
+    padding-right: 4rem;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     padding-left: 4rem;
     padding-right: 4rem;

@@ -4,8 +4,8 @@ import { Form } from "antd"
 
 const FormItem: React.FC<Partial<Recipe.TPropsForm>> = ({
     label,
-  children,
-  className,
+    children,
+    className,
 }) => {
     return (
         <Form.Item label={label} className={className}>

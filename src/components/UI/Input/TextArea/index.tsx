@@ -2,6 +2,7 @@ import { Input } from 'antd';
 import React, { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../../ValidateError';
+import classNames from 'classnames';
 
 
 const { TextArea } = Input;
@@ -27,7 +28,7 @@ const AntdTextArea: React.FC<Recipe.TPropsForm> = ({
             {...field}
             autoSize={autoSize}
             size={size}
-            className={`${isError} ${className}`}
+            className={classNames(isError, className)}
             placeholder={placeholder}
           />
         )}
