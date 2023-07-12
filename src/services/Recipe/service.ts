@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
-import { useGetFetchQuery } from "../../hooks/useGetQueryClient";
 
 
 export const useRecipeByIngredient = () => {

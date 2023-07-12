@@ -2,7 +2,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: url('./assets/images/mobile1.jpg') no-repeat center/cover;
+	background: url('./assets/images/mobile1.jpg') no-repeat 50%/cover;
 	height: 100vh;
 }
 
@@ -13,5 +13,4 @@
 
 .landing-inner {
 	text-align: center;
-  width: 25vw;
 }

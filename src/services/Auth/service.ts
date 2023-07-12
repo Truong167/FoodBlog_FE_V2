@@ -1,12 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../utils/constant";
-import { getCurrentUser, login } from "./api-service";
+import { getCurrentUser, login, register } from "./api-service";
 
 
 export const useLogin = () => {
     const { isLoading, mutate } = useMutation({
         mutationFn: login,
+    });
+
+  return { isLoading, mutate };
+};
+
+export const useRegister = () => {
+    const { isLoading, mutate } = useMutation({
+        mutationFn: register,
     });
 
   return { isLoading, mutate };
@@ -30,7 +38,7 @@ export const useAuth = () => {
 export const useUser = () => {
     const { isLoading, data } = useQuery({
         queryKey: ['currentUser'],
-        queryFn: () => getCurrentUser(),
+        queryFn: getCurrentUser,
     })
     return { isLoading, data }
 }

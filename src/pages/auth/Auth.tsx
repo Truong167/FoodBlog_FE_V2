@@ -1,10 +1,10 @@
 
 import { Navigate, useLocation } from "react-router-dom"
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterFrom";
+import LoginForm from "./components/LoginForm/LoginForm";
+import RegisterForm from "./components/RegisterForm/RegisterFrom";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
-import { useAuth, useUser } from "../../services/Auth/service";
+import { useAuth } from "../../services/Auth/service";
 
 
 const Auth = ({ authRoute } : {authRoute: string}) => {
@@ -16,12 +16,14 @@ const Auth = ({ authRoute } : {authRoute: string}) => {
   let type = authRoute === 'login' ? "Đăng nhập" : 'Đăng ký'
   let body
   console.log(isAuthenticated)
-	if (isLoading)
+	if (isLoading) {
 		body = (
 			<div className='d-flex justify-content-center mt-2'>
 				<Spin indicator={antIcon} />;
 			</div>
 		)
+      console.log('kakkakak')
+  }
 	else if (isAuthenticated) {
     return <Navigate to={from} replace/>
   } 

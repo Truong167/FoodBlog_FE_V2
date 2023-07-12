@@ -105,6 +105,40 @@ module.exports = {
         'blue-10': '#001D4D',
         // Other
         'green-5': '#1AC454',
+      },
+      margin: {
+        3.75: '15px',
+      },
+      width: {
+        75: '300px',
+      },
+
+      fontSize: {
+        sm: ['14px', '20px'],
+        base: ['16px', '24px'],
+        error: ['12px', '20px'],
+        // Display
+        heading1: ['40px', { lineHeight: '48px', fontWeight: '600' }],
+        heading2: ['34px', { lineHeight: '40px', fontWeight: '600' }],
+        heading3: ['28px', { lineHeight: '36px', fontWeight: '600' }],
+        heading4: ['24px', { lineHeight: '32px', fontWeight: '600' }],
+        heading5: ['20px', { lineHeight: '28px', fontWeight: '600' }],
+        // Text
+        'body-1-semibold': ['16px', { lineHeight: '24px', fontWeight: '600' }],
+        'body-1-medium': ['16px', { lineHeight: '24px', fontWeight: '500' }],
+        'body-1-regular': ['16px', { lineHeight: '24px', fontWeight: '400' }],
+  
+        'body-2-semibold': ['14px', { lineHeight: '22px', fontWeight: '600' }],
+        'body-2-medium': ['14px', { lineHeight: '22px', fontWeight: '500' }],
+        'body-2-regular': ['14px', { lineHeight: '22px', fontWeight: '400' }],
+  
+        'body-3-semibold': ['12px', { lineHeight: '20px', fontWeight: '600' }],
+        'body-3-medium': ['12px', { lineHeight: '20px', fontWeight: '500' }],
+        'body-3-regular': ['12px', { lineHeight: '20px', fontWeight: '400' }],
+  
+        borderRasius: {
+          default: '4px',
+        },
       }
     },
   },

@@ -17,8 +17,16 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
 }
 
+h5 {
+  font-size: 18px;
+}
+
 h4 {
   font-size: 20px;
+}
+
+h2 {
+  font-size: 26px;
 }
 
 h3 {
@@ -460,6 +468,10 @@ code {
 }
 
 /* override */
-
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: #ff9933;
+  border-inline-end-width: 1px;
+  z-index: 1;
+}
 }
 

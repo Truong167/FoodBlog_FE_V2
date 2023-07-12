@@ -1,8 +1,8 @@
-import { PATH, URL_LOGIN } from "./api-path"
+import { GET_CURRENT_USER, URL_LOGIN, URL_REGISTER } from "./api-path"
 import axios from "axios"
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../utils/constant"
 
-export async function login(body: API_AUTH.LoginParams) {
+export async function login(body: AUTH.TLoginParams) {
     try {
         const response = await axios.post(URL_LOGIN, body)
         if(response.data.success){
@@ -15,9 +15,21 @@ export async function login(body: API_AUTH.LoginParams) {
     }
 }
 
+export async function register(body: AUTH.TRegisterParams) {
+    try {
+        const response = await axios.post(URL_REGISTER, body)
+        if(response.data.success){
+            return response
+        }
+    } catch (error : any) {
+        if(error?.response?.data) return error.response
+        return {success: false, message: error.message}
+    }
+}
+
 export async function getCurrentUser() {
     try {
-        const response = await axios.get(PATH)
+        const response = await axios.get(GET_CURRENT_USER)
         if(response.data.success){
             return response.data.data
         }

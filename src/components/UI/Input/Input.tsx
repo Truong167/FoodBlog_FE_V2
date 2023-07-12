@@ -15,6 +15,7 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
   prefix,
   className,
 }) => {
+  console.log(error)
   const isError = error.hasOwnProperty(name) ? `error` : `focus hover`;
   return (
     <Fragment>
