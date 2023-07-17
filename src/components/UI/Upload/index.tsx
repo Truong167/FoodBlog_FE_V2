@@ -1,4 +1,4 @@
-import { Button, Input, Upload, message } from 'antd';
+import { Button, Input, Upload, message, notification } from 'antd';
 import React, { Fragment, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../ValidateError';
@@ -12,10 +12,17 @@ const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, error }) => {
     const beforeUpload = (file: { type: string; name: any }) => {
         const isImage = file.type.includes('image');
         if (!isImage) {
-            message.error(`${file.name} is not a image file`);
+            notification.error({
+                message: `${file.name} is not a image file`
+            });
         }
         return isImage || Upload.LIST_IGNORE;
     };
+
+    const customRequest = (options: any) => {
+        const {onSuccess, file} = options
+        onSuccess(file)
+    }
 
     const onPreview = async (file: UploadFile) => {
         let src = file.url as string;
@@ -32,6 +39,7 @@ const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, error }) => {
         imgWindow?.document.write(image.outerHTML);
     };
 
+
     return (
         <Fragment>
             <Controller
@@ -40,16 +48,15 @@ const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, error }) => {
                 render={({ field }) => {
                     return (
                         <Upload
+                            customRequest={customRequest}
+                            className={className}
                             {...field}
-                            action=''
+                            maxCount={1}
                             listType="picture-card"
                             fileList={field.value}
                             onChange={(info) => {
-                                field.onChange(info.fileList.slice(-1));
+                                field.onChange(info.fileList);
                                 setFileSelected(info.fileList.length > 0);
-                            }}
-                            onRemove={() => {
-                                setFileSelected(false);
                             }}
                             onPreview={onPreview}
                             beforeUpload={beforeUpload}

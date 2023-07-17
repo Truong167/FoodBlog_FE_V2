@@ -8,9 +8,11 @@ export const useIngredients = () => {
         queryKey: ['ingredientBySeason'],
         queryFn: fetchIngredient,
         onSuccess: (data) => {
-            console.log(data)
             queryClient.setQueryData(['ingredientName'], data[0].name)
-        }
+        },
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        staleTime: Infinity
     })
     return { isLoading, data }
 };
@@ -19,9 +21,10 @@ export const useIngredientName = () => {
     const { isLoading, data } = useQuery({
         queryKey: ['ingredientName'],
         queryFn: (name) => {
-            console.log(name)
             return name
         },
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
     return { isLoading, data }
 }

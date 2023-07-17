@@ -8,7 +8,9 @@ export const useRecipeByIngredient = () => {
     console.log(name)
     const { isLoading, data } = useQuery({
         queryKey: ['recipeByIngredient', name],
-        queryFn: () => fetchRecipeByIngredient(name)
+        queryFn: () => fetchRecipeByIngredient(name),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
     return { isLoading, data }
 }

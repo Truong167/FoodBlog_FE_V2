@@ -1,24 +1,21 @@
-import { useGetFetchQuery } from "../../../../hooks/useGetQueryClient"
-import { useSetQuery } from "../../../../hooks/useSetQueryClient"
-import { useIngredientName, useIngredients } from "../../../../services/Ingredient/service"
-import { useRecipeByFollow, useRecipeByIngredient } from "../../../../services/Recipe/service"
-import IngredientList from "../../../Ingredient/IngredientList"
-import RecipeCard from "../../../Recipe/RecipeItem/RecipeCard"
+import { Fragment } from "react"
+import { useRecipeByFollow } from "../../../../services/Recipe/service"
 import RecipeList from "../../../Recipe/RecipeList"
 import Section from "../../../Section/Section"
+import { Skeleton } from "antd"
 
 
 const RecipeFollow = () => {
-    const {isLoading, data: recipes} = useRecipeByFollow()
-    if(isLoading){
-        return <div>Loading</div>
-    }
+    const { isLoading, data: recipes } = useRecipeByFollow()
     return (
         <Section>
-            <div>
-                <h4>Công thức mới từ người mà bạn theo dõi</h4>
-                <RecipeList recipes={recipes}/>
-            </div>
+            {isLoading ? <Skeleton active /> :
+                <Fragment>
+                    <h4>Công thức mới từ người mà bạn theo dõi</h4>
+                    <RecipeList recipes={recipes} />
+                </Fragment>
+
+            }
         </Section>
     )
 }
