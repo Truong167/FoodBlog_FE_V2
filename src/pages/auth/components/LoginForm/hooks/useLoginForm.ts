@@ -16,7 +16,6 @@ export const useLoginForm = () => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
     } = useForm<AUTH.TLoginParams>({
         resolver: yupResolver(loginValidattionSchema),
         defaultValues: {
@@ -30,7 +29,6 @@ export const useLoginForm = () => {
     const onSubmit: SubmitHandler<AUTH.TLoginParams> = async (values: AUTH.TLoginParams) => {
         mutate(values, {
             onSuccess: (data: AUTH.TLoginResult) => {
-                console.log(data)
                 if (data?.status === 200) {
                     notification.success({
                         message: 'Đăng nhập thành công'
@@ -51,11 +49,13 @@ export const useLoginForm = () => {
                 }
             },
 
-            onError: (errors) => {
-                console.log(errors)
+            onError: (errors: any) => {
+                notification.error({
+                    message: errors
+                })
             },
         });
     };
 
-    return { control, errors, handleSubmit, onSubmit, isLoading }
+    return { control, handleSubmit, onSubmit, isLoading }
 }

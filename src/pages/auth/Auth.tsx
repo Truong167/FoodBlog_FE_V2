@@ -12,17 +12,14 @@ const Auth = ({ authRoute } : {authRoute: string}) => {
   const { isLoading, data: isAuthenticated } = useAuth()
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  console.log(from)
   let type = authRoute === 'login' ? "Đăng nhập" : 'Đăng ký'
   let body
-  console.log(isAuthenticated)
 	if (isLoading) {
 		body = (
 			<div className='d-flex justify-content-center mt-2'>
 				<Spin indicator={antIcon} />;
 			</div>
 		)
-      console.log('kakkakak')
   }
 	else if (isAuthenticated) {
     return <Navigate to={from} replace/>
@@ -39,9 +36,9 @@ const Auth = ({ authRoute } : {authRoute: string}) => {
 
   return (
       <div className='landing'>
-        <div className='landing-inner'>
-          <h2 style={{color: "white"}}>{type}</h2>
-          <h5 style={{color: "white", marginBottom: '12px'}}>Để khám phá nhiều công thức mới</h5>
+        <div>
+          <h2 className='landing-inner' style={{color: "white"}}>{type}</h2>
+          <h5 className='landing-inner' style={{color: "white", marginBottom: '12px'}}>Để khám phá nhiều công thức mới</h5>
           {body}
         </div>
       </div>

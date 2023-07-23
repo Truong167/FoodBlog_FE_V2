@@ -7,11 +7,10 @@ import { formatTime } from "../../../../utils/format-time"
 const Ingredient: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ amount, cookingTime, preparationTime, DetailIngredients }) => {
     let output: JSX.Element[] = []
     DetailIngredients && DetailIngredients.map(item => {
-            output.push(<p key={item.ingredientId} className="mb-3"><b>{item.amount}</b> {item.name}</p>)
+            output.push(<p key={item.ingredientId} className="mb-3"><b>{item.amount + ' ' + item.unit}</b> {item.name}</p>)
             output.push(<p key={item.name} className='w-full border-dotted border-stone-200 h-px border mb-3'></p>)
     })
     output.pop()
-    console.log(output)
     return (
         <Section>
             <Fragment>

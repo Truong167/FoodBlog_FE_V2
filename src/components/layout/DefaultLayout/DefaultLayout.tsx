@@ -8,12 +8,14 @@ interface Props {
     className?: string;
     type?: string
     text?: string
+    form?: any
+    isLoading?: boolean
 }
 
-function DefaultLayout({ children, className, type, text }: Props) {
+function DefaultLayout({ children, className, type, text, form, isLoading }: Props) {
     return (
         <div className={classes.wrapper}>
-            <Header type={type} text={text}/>
+            <Header type={type} text={text} form={form} isLoading={isLoading}/>
             <div className={classes.container}>
                 <div className={`${classes.content} ${classes[`${className}`]}`}>{children}</div>
             </div>

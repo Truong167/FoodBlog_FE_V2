@@ -11,7 +11,7 @@ module.exports = {
         '16': 'repeat(16, minmax(0, 1fr))',
 
         // Complex site-specific column configuration
-        '3-custom': '1fr 1fr 20px',
+        '4-custom': '1fr 100px 1fr 20px',
         '3-custom1': '20px 1fr 20px',
 
       },
@@ -39,7 +39,7 @@ module.exports = {
         'primary-10': '#002B27',
         // Neutral colors
         'neutral-1': '#FFFFFF',
-        'neutral-2': '#F5F6FA',
+        'neutral-2': '#606060',
         'neutral-3': '#EBECF0',
         'neutral-4': '#D4D5D9',
         'neutral-5': '#BBBCBF',

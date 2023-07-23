@@ -12,6 +12,24 @@ declare namespace Recipe {
         status: string
     }
 
+    type TImage = {
+        id: string;
+        url: string;
+      };
+    
+    type TRecipeParams = {
+        video: any
+        image: any
+        DetailIngredients: INGREDIENT.TDetailIngredientItem[]
+        Steps: TStepItem[]
+        amount: number
+        cookingTime: number
+        description: string
+        preparationTime: number
+        recipeName: string
+        status: string
+    }
+
     type TRecipeDetailResponse = TRecipeResponse & {
         DetailIngredients: INGREDIENT.TDetailIngredientItem[]
         Steps: TStepItem[]
@@ -33,7 +51,7 @@ declare namespace Recipe {
     type TStepItem = {
         stepId: number,
         description: string,
-        image: string,
+        image?: any,
         stepIndex: number
     }
 
@@ -60,6 +78,7 @@ declare namespace Recipe {
         label?: string;
         children?: JSX.Element;
         required?: boolean;
+        listType?: UploadListType
     };
 
     type TSelect = {
@@ -69,6 +88,7 @@ declare namespace Recipe {
         values: { id: string | number; name: string | number }[];
         className?: string;
         defaultValue?: string
+        showSearch?: boolean
     }
 
 }

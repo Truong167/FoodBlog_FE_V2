@@ -1,9 +1,9 @@
-import { GET_INGREDIENTS_BY_SEASON, PATH } from "./api-path"
+import API_ENDPOINT from "./api-path"
 import axios from "axios"
 
 export async function fetchIngredient() {
     try {
-        const result = await axios.get(GET_INGREDIENTS_BY_SEASON)
+        const result = await axios.get(API_ENDPOINT.GET_INGREDIENTS_BY_SEASON)
         if(result.data.success){
             return result.data.data
         }
@@ -13,9 +13,9 @@ export async function fetchIngredient() {
     }
 }
 
-export async function getCurrentUser() {
+export async function getAllIngredient() {
     try {
-        const response = await axios.get(PATH)
+        const response = await axios.get(API_ENDPOINT.GET_ALL_INGREDIENT)
         if(response.data.success){
             return response.data.data
         }

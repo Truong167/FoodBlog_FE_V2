@@ -12,29 +12,27 @@ const AntdTextArea: React.FC<Recipe.TPropsForm> = ({
   name,
   autoSize,
   size,
-  error,
   className,
   placeholder
 }) => {
-  const isError = error.hasOwnProperty(name) ? `error` : `focus hover`;
 
   return (
-    <Fragment>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field, fieldState: {error} }) => (
+        <Fragment>
           <TextArea
             {...field}
             autoSize={autoSize}
             size={size}
-            className={classNames(isError, className)}
+            className={classNames(error ? `error` : `focus hover`, className)}
             placeholder={placeholder}
           />
-        )}
-      />
-      <ValidateError error={error} name={name} />
-    </Fragment>
+          <ValidateError error={error} />
+        </Fragment>
+      )}
+    />
   );
 };
 

@@ -5,6 +5,8 @@ import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 import HomePage from './pages/home/HomePage';
 import RecipeDetailPage from './pages/recipe-detail/RecipeDetailPage';
 import AddRecipePage from './pages/create-recipe/AddRecipePage';
+import EditProfilePage from './pages/edit-profile';
+import EditRecipePage from './pages/edit-recipe';
 
 function App() {
 	return (
@@ -17,12 +19,20 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 				</Route>
 
-				<Route element={<PrivateRoutes/>}>
+				<Route element={<PrivateRoutes />}>
 					<Route path="/detail/:id" element={<RecipeDetailPage />} />
 				</Route>
 
 				<Route element={<PrivateRoutes />}>
-						<Route path="create-recipe" element={<AddRecipePage />} />
+					<Route path="create-recipe" element={<AddRecipePage />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+					<Route path="edit-recipe/:id" element={<EditRecipePage />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+					<Route path="edit-profile" element={<EditProfilePage />} />
 				</Route>
 			</Routes>
 		</Router>

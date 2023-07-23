@@ -6,7 +6,7 @@ import { useLoginForm } from './hooks/useLoginForm';
 
 
 const LoginForm: React.FC = () => {
-  const {handleSubmit, onSubmit, control, errors, isLoading} = useLoginForm()
+  const {handleSubmit, onSubmit, control, isLoading} = useLoginForm()
 
   return (
     <div>
@@ -19,7 +19,6 @@ const LoginForm: React.FC = () => {
           <InputText
             name='accountName'
             control={control}
-            error={errors}
             placeholder='Tên tài khoản'
             size='large'
           />
@@ -28,19 +27,18 @@ const LoginForm: React.FC = () => {
           <InputPassword
             name='password'
             control={control}
-            error={errors}
             placeholder='Mật khẩu'
             size='large'
           />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item className='landing-inner'>
           <Button type='primary' htmlType="submit" className='bg-primary-1' loading={isLoading}>
             Đăng nhập
           </Button>
         </Form.Item>
       </Form>
-      <p style={{ color: "white" }}>
+      <p style={{ color: "white" }} className='landing-inner'>
         Bạn chưa có tài khoản?
         <Link to='/register' className='ml-3 text-primary-1'>
           Đăng ký

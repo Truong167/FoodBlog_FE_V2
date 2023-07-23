@@ -1,16 +1,13 @@
 import React, { Fragment } from 'react';
 
-interface IValidateError {
+type TValidateError = {
   error: any;
-  name: string;
 }
 
-const ValidateError: React.FC<IValidateError> = ({ error, name }) => {
+const ValidateError: React.FC<TValidateError> = ({ error }) => {
 
   return (
-    <Fragment>
-      {error.hasOwnProperty(name) && <p className="text-red-600">{error[name]?.message}</p>}
-    </Fragment>
+      <p className="text-red-600">{error?.message}</p>
   );
 };
 

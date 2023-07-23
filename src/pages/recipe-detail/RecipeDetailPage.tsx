@@ -13,6 +13,7 @@ import { CommentOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons"
 import no_avatar from '../../assets/images/no_avatar.png'
 import { formatDate } from "../../utils/format-time"
 import styles from './RecipeDetailPage.module.css'
+import ReactPlayer from "react-player"
 
 
 const RecipeDetailPage = () => {
@@ -28,9 +29,12 @@ const RecipeDetailPage = () => {
   const isDescription = data.description && data.description.length > 100
   return (
     <DefaultLayout className="width1">
-      <img src={`${imageUrl + data.image}`} className='w-full rounded-lg object-cover mt-3' alt={data.recipeName} />
+      <ReactPlayer url={`${data.video.url}`} playing={true} controls={true} width='100%' height='100%' />
       <Section>
-        <h3>{data.recipeName}</h3>
+        <Fragment>
+          <h3>{data.recipeName}</h3>
+          <img src={`${data.image.url}`} className='w-full rounded-lg object-cover mt-3' alt={data.recipeName} />
+        </Fragment>
       </Section>
       <Section>
         <Fragment>
@@ -77,8 +81,8 @@ const RecipeDetailPage = () => {
                   <Meta
                     className="flex gap-4 mb-4"
                     avatar={<Avatar className="h-12 w-12" src={`${item.User.avatar
-                        ? imageUrl + item.User.avatar
-                        : no_avatar
+                      ? imageUrl + item.User.avatar
+                      : no_avatar
                       }`} />}
                     title={<h6>{item.User.fullName + " " + formatDate(item.date)}</h6>}
                     description={item.comment}

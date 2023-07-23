@@ -1,11 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe } from "./api-service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
+type TUpdateRecipeParams = {
+    params: { recipeId: string; body: Partial<Recipe.TRecipeDetailResponse> };
+  };
+  
 
 export const useRecipeByIngredient = () => {
     const {data: name} = useIngredientName()
-    console.log(name)
     const { isLoading, data } = useQuery({
         queryKey: ['recipeByIngredient', name],
         queryFn: () => fetchRecipeByIngredient(name),
@@ -45,4 +48,14 @@ export const useCommentsById = (recipeId: any) => {
         queryFn: () => fetchComments(recipeId)
     })
     return { isLoading, data }
+}
+
+export const useAddRecipe = () => {
+    return useMutation((body: Recipe.TRecipeParams) => addRecipe(body))
+}
+
+export const useUpdateRecipe = () => {
+    return useMutation(({ params: { recipeId, body } }: TUpdateRecipeParams) => updateRecipe(recipeId, body)
+  );
+
 }

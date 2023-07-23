@@ -10,31 +10,29 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
   control,
   type,
   size,
-  error,
   placeholder,
   prefix,
   className,
 }) => {
-  console.log(error)
-  const isError = error.hasOwnProperty(name) ? `error` : `focus hover`;
   return (
-    <Fragment>
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
+    <Controller
+    name={name}
+    control={control}
+    render={({ field, fieldState: {error} }) => (
+          <Fragment>
+
           <Input
             {...field}
             type={type}
             size={size}
             placeholder={placeholder}
             prefix={prefix}
-            className={classNames(isError, className)}
+            className={classNames(error ? `error` : `focus hover`, className)}
           />
+      <ValidateError error={error} />
+    </Fragment>
         )}
       />
-      <ValidateError error={error} name={name} />
-    </Fragment>
   );
 };
 

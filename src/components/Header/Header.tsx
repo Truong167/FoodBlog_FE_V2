@@ -2,13 +2,13 @@ import AvatarDropDown from '../AvatarDropDown/AvatarDropDown'
 import styles from './Header.module.css'
 import icon from "../../assets/images/logo.png";
 import icon1 from "../../assets/images/logo1.png";
-import { Link } from 'react-router-dom';
+import { Form, Link } from 'react-router-dom';
 import SearchInput from '../Search/Search';
 import { PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { Fragment } from 'react';
 
-const Header = ({ type = 'normal', text }: { text?: string, type?: string }) => {
+const Header = ({ type = 'normal', text, isLoading, form }: { text?: string, type?: string, isLoading?: boolean, form?: any }) => {
     const className = type === 'normal' ? 'grid' : 'flex'
     const isEdit = type === 'normal' ? false : true
     return (
@@ -24,7 +24,7 @@ const Header = ({ type = 'normal', text }: { text?: string, type?: string }) => 
                         </Link>
                     </div>
                     {isEdit ?
-                        <Button className='bg-primary-1 text-white btn-filled'>{text}</Button>
+                        <Button loading={isLoading} onClick={() => form.submit()} className='bg-primary-1 text-white btn-filled'>{text}</Button>
                         :
                         (
                             <Fragment>

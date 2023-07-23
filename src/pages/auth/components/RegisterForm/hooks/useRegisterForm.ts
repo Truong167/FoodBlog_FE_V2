@@ -17,7 +17,6 @@ export const useRegisterForm = () => {
     const {
         control,
         handleSubmit,
-        formState: { errors },
     } = useForm<AUTH.TRegisterParams>({
         resolver: yupResolver(registerValidattionSchema),
         defaultValues: {
@@ -34,7 +33,6 @@ export const useRegisterForm = () => {
     const onSubmit: SubmitHandler<AUTH.TRegisterParams> = async (values: AUTH.TRegisterParams) => {
         mutate(values, {
             onSuccess: (data: AUTH.TLoginResult) => {
-                console.log(data)
                 if (data?.status === 201) {
                     notification.success({
                         message: 'Đăng kí thành công'
@@ -61,10 +59,12 @@ export const useRegisterForm = () => {
                 }
             },
 
-            onError: (errors) => {
-                console.log(errors)
+            onError: (errors: any) => {
+                notification.error({
+                    message: errors
+                })
             },
         })
     };
-    return {control, errors, handleSubmit, onSubmit, isLoading}
+    return {control, handleSubmit, onSubmit, isLoading}
 }

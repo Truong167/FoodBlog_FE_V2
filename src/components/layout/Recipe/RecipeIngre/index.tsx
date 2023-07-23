@@ -1,4 +1,4 @@
-import { Skeleton } from "antd"
+import { Result, Skeleton } from "antd"
 import { useGetFetchQuery } from "../../../../hooks/useGetQueryClient"
 import { useSetQuery } from "../../../../hooks/useSetQueryClient"
 import { useIngredientName, useIngredients } from "../../../../services/Ingredient/service"

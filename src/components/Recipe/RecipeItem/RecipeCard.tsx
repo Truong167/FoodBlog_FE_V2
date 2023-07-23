@@ -13,7 +13,6 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
   </div>
   return (
     <Card
-      // style={{ width: 300 }}
       className='ml-1 mr-1'
       bodyStyle={{padding: '12px'}}
       cover={

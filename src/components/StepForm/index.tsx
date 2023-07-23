@@ -1,16 +1,15 @@
 import { Fragment } from "react"
-import Section from "../../../../components/Section/Section"
+import Section from "../Section/Section"
 import { useFieldArray } from "react-hook-form"
-import FormItem from "../../../../components/UI/FormItem"
-import InputText from "../../../../components/UI/Input/Input"
-import AntdUpload from "../../../../components/UI/Upload"
+import FormItem from "../UI/FormItem"
+import AntdUpload from "../UI/Upload"
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons"
-import AntdTextArea from "../../../../components/UI/Input/TextArea"
+import AntdTextArea from "../UI/Input/TextArea"
 
-const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control, error }) => {
+const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'steps'
+        name: 'Steps'
     })
     return (
         <Section>
@@ -23,24 +22,23 @@ const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control, error }) => {
                             <div>
                                 <FormItem>
                                     <AntdTextArea
+                                        size='large'
                                         autoSize={true}
                                         control={control}
-                                        error={error}
                                         placeholder="Trộn bột và nước đến khi đặc lại"
-                                        name={`steps.${index}.description`}
+                                        name={`Steps.${index}.description`}
                                     />
                                 </FormItem>
-                                <FormItem >
+                                <FormItem>
                                     <AntdUpload
+                                        listType='picture-card'
                                         control={control}
-                                        error={error}
-                                        name={`steps.${index}.image`}
+                                        name={`Steps.${index}.image`}
                                     />
                                 </FormItem>
                             </div>
                             <div>
-                            <EllipsisOutlined className="text-2xl  cursor-pointer"/>    
-
+                                <EllipsisOutlined className="text-2xl  cursor-pointer" />
                             </div>
                         </div>
                     )

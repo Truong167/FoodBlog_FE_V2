@@ -9,7 +9,7 @@ import { useRegisterForm } from './hooks/useRegisterForm';
 
 
 const RegisterForm = () => {
-  const { control, errors, handleSubmit, onSubmit, isLoading } = useRegisterForm()
+  const { control, handleSubmit, onSubmit, isLoading } = useRegisterForm()
 
   return (
     <div>
@@ -20,7 +20,6 @@ const RegisterForm = () => {
         <Form.Item label={<span style={{ color: 'white' }}>Họ và tên</span>} className="mb-3">
           <InputText
             name='fullName'
-            error={errors}
             size='large'
             control={control}
             placeholder='Họ và tên'
@@ -29,7 +28,6 @@ const RegisterForm = () => {
         <Form.Item label={<span style={{ color: 'white' }}>Email</span>} className="mb-3">
           <InputText
             name='email'
-            error={errors}
             size='large'
             control={control}
             placeholder='Email'
@@ -39,7 +37,6 @@ const RegisterForm = () => {
         <Form.Item label={<span style={{ color: 'white' }}>Tên tài khoản</span>} className="mb-3">
           <InputText
             name='accountName'
-            error={errors}
             size='large'
             control={control}
             placeholder='Tên tài khoản'
@@ -49,7 +46,6 @@ const RegisterForm = () => {
         <Form.Item label={<span style={{ color: 'white' }}>Mật khẩu</span>} className="mb-3">
           <InputPassword
             name='password'
-            error={errors}
             size='large'
             control={control}
             placeholder='Mật khẩu'
@@ -59,20 +55,19 @@ const RegisterForm = () => {
         <Form.Item label={<span style={{ color: 'white' }}>Xác nhận mật khẩu</span>}>
           <InputPassword
             name='password2'
-            error={errors}
             size='large'
             control={control}
             placeholder='Xác nhận mật khẩu'
           />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item className='landing-inner'>
           <Button type='primary' className='text-white bg-primary-1' htmlType="submit" loading={isLoading}>
             Đăng ký
           </Button>
         </Form.Item>
       </Form>
-      <p style={{ color: "white" }}>
+      <p style={{ color: "white" }} className='landing-inner'>
         Bạn đã có tài khoản?
         <Link to='/login' className='ml-3 text-primary-1 underline-offset-4'>
           Đăng nhập

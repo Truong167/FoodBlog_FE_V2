@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchIngredient } from "./api-service";
+import { fetchIngredient, getAllIngredient } from "./api-service";
 
 
 export const useIngredients = () => {
@@ -27,6 +27,13 @@ export const useIngredientName = () => {
         refetchOnMount: false
     })
     return { isLoading, data }
+}
+
+export const useGetALlIngredient = () => {
+    return useQuery({
+        queryKey: ['ingredients'],
+        queryFn: getAllIngredient
+    })
 }
 
 

@@ -1,73 +1,72 @@
-import { Button, Input, Upload, message, notification } from 'antd';
+import { Upload, notification } from 'antd';
 import React, { Fragment, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../ValidateError';
-import { RcFile, UploadFile } from 'antd/es/upload';
+import { useDelete, useUpload } from '../../../services/Media/service';
 
 
-const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, error }) => {
-    const [fileSelected, setFileSelected] = useState(false);
-    const className = error.hasOwnProperty(name) ? `btn-danger-outlined` : `btn-outlined `;
-
+const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, listType, className }) => {
+    const checkIsHaveFile = control._defaultValues[name] ? true : false
+    const [isHaveFile, setIsHaveFile] = useState(checkIsHaveFile);
+    const { mutate } = useUpload()
+    const { mutate: deleteFile } = useDelete()
     const beforeUpload = (file: { type: string; name: any }) => {
         const isImage = file.type.includes('image');
         if (!isImage) {
             notification.error({
-                message: `${file.name} is not a image file`
+                message: `${file.name} không phải là hình`
             });
         }
         return isImage || Upload.LIST_IGNORE;
     };
 
     const customRequest = (options: any) => {
-        const {onSuccess, file} = options
-        onSuccess(file)
+        const { onSuccess, file } = options
+        const fmData = new FormData();
+        fmData.append('file', file);
+
+        mutate(fmData, {
+            onSuccess: (response) => {
+                onSuccess(response.data.data)
+            }
+        })
     }
 
-    const onPreview = async (file: UploadFile) => {
-        let src = file.url as string;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj as RcFile);
-                reader.onload = () => resolve(reader.result as string);
-            });
+    const onRemove = (info: any) => {
+        console.log(info)
+        if(info.response){
+            deleteFile(info.response)
         }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
-
+    }
 
     return (
-        <Fragment>
-            <Controller
-                name={name}
-                control={control}
-                render={({ field }) => {
-                    return (
+        <Controller
+            name={name}
+            control={control}
+            render={({ field, fieldState: { error } }) => {
+                return (
+                    <Fragment>
                         <Upload
                             customRequest={customRequest}
                             className={className}
                             {...field}
                             maxCount={1}
-                            listType="picture-card"
+                            listType={listType}
                             fileList={field.value}
                             onChange={(info) => {
                                 field.onChange(info.fileList);
-                                setFileSelected(info.fileList.length > 0);
+                                setIsHaveFile(info.fileList.length > 0);
                             }}
-                            onPreview={onPreview}
                             beforeUpload={beforeUpload}
+                            onRemove={onRemove}
                         >
-                            {!fileSelected && 'Upload'}
+                            {!isHaveFile && 'Tải hình'}
                         </Upload>
-                    );
-                }}
-            />
-            <ValidateError name={name} error={error} />
-        </Fragment>
+                        <ValidateError error={error} />
+                    </Fragment>
+                );
+            }}
+        />
     );
 
 };

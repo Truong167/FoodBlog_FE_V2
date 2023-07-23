@@ -2,33 +2,43 @@ import React from 'react';
 import { Dropdown, MenuProps, Skeleton } from 'antd';
 import { imageUrl } from '../../utils/constant';
 import { useUser } from '../../services/Auth/service';
+import { Link } from 'react-router-dom';
+import { useAvatarDropDown } from './hooks/useAvatarDropDown';
 
 
 const AvatarDropDown: React.FC = () => {
-  const { isLoading, data } = useUser()
+  const {isLoading, data, logout} = useAvatarDropDown()
   const items: MenuProps['items'] = [
     {
       key: '1',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          1st menu item
-        </a>
+        <Link to={'/'}>
+          Xem trang cá nhân
+        </Link>
       ),
     },
     {
       key: '2',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-          2nd menu item
-        </a>
+        <Link to={'/edit-profile'}>
+          Chỉnh sửa thông tin
+        </Link>
       ),
     },
     {
       key: '3',
       label: (
-        <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-          3rd menu item
-        </a>
+        <Link to={'/'}>
+          Đổi mật khẩu
+        </Link>
+      ),
+    },
+    {
+      key: '4',
+      label: (
+        <span onClick={logout}>
+          Đăng xuất
+        </span>
       ),
     },
   ];
