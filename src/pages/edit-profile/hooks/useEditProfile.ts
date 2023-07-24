@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { imageUrl } from "../../../utils/constant";
+import { imageUrl } from "../../../contants/constant";
 
 
 export const useEditProfile = (data: any) => {

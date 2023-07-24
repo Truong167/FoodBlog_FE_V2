@@ -1,6 +1,6 @@
 import { GET_CURRENT_USER, URL_LOGIN, URL_REGISTER } from "./api-path"
 import axios from "axios"
-import { LOCAL_STORAGE_TOKEN_NAME } from "../../utils/constant"
+import { LOCAL_STORAGE_TOKEN_NAME } from "../../contants/constant"
 
 export async function login(body: AUTH.TLoginParams) {
     try {

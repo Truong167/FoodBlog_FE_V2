@@ -1,16 +1,21 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAddRecipe } from "../../../services/Recipe/service";
 import { notification } from "antd";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { validateRecipe } from "../../../utils/validateRecipe";
 
 export const useSubmit = () => {
-    const { control, handleSubmit } = useForm<Recipe.TRecipeParams>({
+    const { control, handleSubmit, formState: {errors} } = useForm<any>({
+        resolver: yupResolver(validateRecipe),
+        shouldFocusError: false,
         defaultValues: {
             status: 'CK',
             DetailIngredients: [{ ingredientId: 'trungga', amount: '', unit: 'quả' }],
-            Steps: [{ description: '', image: [] }]
-        }
+            Steps: [{ description: '', image: [] }],
+        },
     })
 
+    console.log(errors)
     const { mutate, isLoading } = useAddRecipe()
 
     const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {

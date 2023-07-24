@@ -24,7 +24,7 @@ declare namespace Recipe {
         Steps: TStepItem[]
         amount: number
         cookingTime: number
-        description: string
+        description?: string
         preparationTime: number
         recipeName: string
         status: string

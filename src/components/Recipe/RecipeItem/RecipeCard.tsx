@@ -1,7 +1,7 @@
 import React from 'react';
 import { EditOutlined, HeartOutlined, HeartFilled, SettingOutlined } from '@ant-design/icons';
 import { Avatar, Card } from 'antd';
-import { imageUrl } from '../../../utils/constant';
+import { imageUrl } from '../../../contants/constant';
 import { Link } from 'react-router-dom';
 
 const { Meta } = Card;

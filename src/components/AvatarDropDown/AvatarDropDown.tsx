@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown, MenuProps, Skeleton } from 'antd';
-import { imageUrl } from '../../utils/constant';
+import { imageUrl } from '../../contants/constant';
 import { useUser } from '../../services/Auth/service';
 import { Link } from 'react-router-dom';
 import { useAvatarDropDown } from './hooks/useAvatarDropDown';

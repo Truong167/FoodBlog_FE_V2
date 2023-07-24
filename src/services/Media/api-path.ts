@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { apiUrl } from "../../utils/constant";
+import { apiUrl } from "../../contants/constant";
 const PATH = `${apiUrl}/media`
 const DELETE_MEDIA_FILE = `${PATH}/delete`
 

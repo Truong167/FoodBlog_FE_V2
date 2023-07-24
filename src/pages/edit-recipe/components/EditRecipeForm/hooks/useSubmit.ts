@@ -1,12 +1,16 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAddRecipe, useUpdateRecipe } from "../../../../../services/Recipe/service";
 import { Steps, notification } from "antd";
-import { imageUrl } from "../../../../../utils/constant";
+import { imageUrl } from "../../../../../contants/constant";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validateRecipe } from "../../../../../utils/validateRecipe";
 
 export const useSubmit = (data: Partial<Recipe.TRecipeDetailResponse>, recipeId: string) => {
     console.log(data)
     const { mutate, isLoading } = useUpdateRecipe()
-    const { control, handleSubmit, formState: { dirtyFields } } = useForm<Recipe.TRecipeParams>({
+    const { control, handleSubmit, formState: { dirtyFields } } = useForm<any>({
+        resolver: yupResolver(validateRecipe),
+        shouldFocusError: false,
         defaultValues: {
             ...data,
             image: data.image ? [data.image] : null,

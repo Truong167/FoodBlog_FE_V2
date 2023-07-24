@@ -4,7 +4,7 @@ import { object, string } from "yup";
 import { useLogin } from "../../../../../services/Auth/service";
 import { useQueryClient } from "@tanstack/react-query";
 import { notification } from "antd";
-import { LOCAL_STORAGE_TOKEN_NAME } from "../../../../../utils/constant";
+import { LOCAL_STORAGE_TOKEN_NAME } from "../../../../../contants/constant";
 import axios from "axios";
 
 export const useLoginForm = () => {

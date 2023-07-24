@@ -1,4 +1,4 @@
-import { apiUrl } from "../../utils/constant";
+import { apiUrl } from "../../contants/constant";
 const COMMENT_PATH = `${apiUrl}/comment`
 const PATH = `${apiUrl}/recipe`
 const FETCH_RECIPE_BY_INGREDIENT = `${PATH}/getRecipeByIngredient`

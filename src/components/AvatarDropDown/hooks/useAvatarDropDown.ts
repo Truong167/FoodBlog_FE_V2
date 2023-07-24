@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query"
 import { useUser } from "../../../services/Auth/service"
-import { LOCAL_STORAGE_TOKEN_NAME } from "../../../utils/constant"
+import { LOCAL_STORAGE_TOKEN_NAME } from "../../../contants/constant"
 
 
 export const useAvatarDropDown = () => {

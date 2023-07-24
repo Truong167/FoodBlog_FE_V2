@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import Section from "../../../../components/Section/Section"
-import { imageUrl } from "../../../../utils/constant"
+import { imageUrl } from "../../../../contants/constant"
 
 
 const CommentForm: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps }) => {

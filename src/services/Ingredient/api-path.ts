@@ -1,4 +1,4 @@
-import { apiUrl } from "../../utils/constant";
+import { apiUrl } from "../../contants/constant";
 export const PATH = `${apiUrl}/ingredient`
 const GET_INGREDIENTS_BY_SEASON = `${PATH}/getIngredientBySeason`
 const GET_ALL_INGREDIENT = `${PATH}/getAllIngredient`

@@ -46,7 +46,7 @@ const RecipeForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
                         <InputText
                             control={control}
                             name="amount"
-                            placeholder='2 phần ăn'
+                            placeholder='2'
                             size='large'
                         />
                     </FormItem>
@@ -56,7 +56,7 @@ const RecipeForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
                     <FormItem>
                         <InputText
                             control={control}
-                            placeholder='10 phút'
+                            placeholder='10'
                             name="preparationTime"
                             size='large'
                         />
@@ -67,7 +67,7 @@ const RecipeForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
                     <FormItem>
                         <InputText
                             control={control}
-                            placeholder='10 phút'
+                            placeholder='10'
                             name="cookingTime"
                             size='large'
                         />

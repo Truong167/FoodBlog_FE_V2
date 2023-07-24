@@ -9,10 +9,9 @@ import { useDelete, useUpload } from '../../../../services/Media/service';
 
 const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType, className }) => {
     const checkIsHaveFile = control._defaultValues[name] ? true : false;
-    console.log(control._defaultValues[name][0])
     const [isHaveFile, setIsHaveFile] = useState(checkIsHaveFile);
-    const [videoSrc, setVideoSrc] = useState(control._defaultValues[name][0].url);
-    const { mutate, isLoading } = useUpload()
+    const [videoSrc, setVideoSrc] = useState(checkIsHaveFile ? control._defaultValues[name][0].url : '');
+    const { mutate } = useUpload()
     const { mutate: deleteFile } = useDelete()
     const beforeUpload = (file: { type: string; name: any }) => {
         const isVideo = file.type.includes('video/mp4');
