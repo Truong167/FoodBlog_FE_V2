@@ -25,7 +25,12 @@
 }
 
 @layer components {
-  
+  .antd-card:hover {
+    .ant-card .ant-card-actions>li >span >.anticon:hover {
+      color: white
+    }
+  }
+
   .ant-drawer {
     .ant-drawer-content-wrapper {
       @apply w-[468px] absolute z-[1000] bg-neutral-1;

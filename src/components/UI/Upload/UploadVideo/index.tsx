@@ -36,12 +36,14 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
 
     const handleOnRemove = (value: any) => {
         const fileName = value[0].response
-        deleteFile(fileName, {
-            onSuccess: () => {
-                setVideoSrc('')
-                setIsHaveFile(false)
-            }
-        })
+        if(fileName) {
+            deleteFile(fileName, {
+                onSuccess: () => {
+                    setVideoSrc('')
+                    setIsHaveFile(false)
+                }
+            })
+        }
     }
 
     return (

@@ -43,9 +43,11 @@ const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
                         </div>
                     )
                 })}
-                <div className="flex justify-center gap-2 items-center cursor-pointer" onClick={() => append({ name: '', image: [] })}>
-                    <PlusOutlined />
-                    <span>Bước làm</span>
+                <div className="flex justify-center">
+                    <div className="flex justify-center gap-2 items-center cursor-pointer" onClick={() => append({ name: '', image: [] })}>
+                        <PlusOutlined />
+                        <span>Bước làm</span>
+                    </div>
                 </div>
             </Fragment>
         </Section>

@@ -1,5 +1,9 @@
 
 declare namespace Recipe {
+    type TComment = {
+        comment?: string
+    }
+
     type TRecipeResponse = {
         DetailLists?: []
         User: TUserResponse
@@ -10,6 +14,7 @@ declare namespace Recipe {
         recipeId: number
         recipeName: string
         status: string
+        isMyRecipe: boolean
     }
 
     type TImage = {
@@ -79,6 +84,8 @@ declare namespace Recipe {
         children?: JSX.Element;
         required?: boolean;
         listType?: UploadListType
+        suffix?: JSX.Element
+        autoComplete?: string
     };
 
     type TSelect = {

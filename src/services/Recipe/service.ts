@@ -1,53 +1,78 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, updateRecipe } from "./api-service";
+import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, likeRecipe, searchRecipe, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
 type TUpdateRecipeParams = {
     params: { recipeId: string; body: Partial<Recipe.TRecipeDetailResponse> };
-  };
+};
+
+type TCreateComment = {
+    params: { recipeId: string; body: Recipe.TComment };
+};
   
+
+export const useCommentsById = (recipeId: any) => {
+    const { isLoading, data } = useQuery({
+        queryKey: ['comment', recipeId],
+        queryFn: () => fetchComments(recipeId),
+        refetchOnWindowFocus: false
+    })
+    return { isLoading, data }
+}
+
+export const useCreateComment = () => {
+    return useMutation(({params: {recipeId, body}}: TCreateComment) => createComment(recipeId, body))
+}
+
+export const useSearchRecipe = (q: string) => {
+    return useQuery({
+        queryKey: ['searchRecipe', q],
+        queryFn: () => searchRecipe(q),
+    })
+}
+
+export const useDeleteRecipe = () => {
+    return useMutation((recipeId: number) => deleteRecipe(recipeId))
+}
+
+export const useLikeRecipe = () => {
+    return useMutation((recipeId: number) => likeRecipe(recipeId))
+}
+
+export const useDislikeRecipe = () => {
+    return useMutation((recipeId: number) => dislikeRecipe(recipeId))
+}
 
 export const useRecipeByIngredient = () => {
     const {data: name} = useIngredientName()
-    const { isLoading, data } = useQuery({
+    return useQuery({
         queryKey: ['recipeByIngredient', name],
         queryFn: () => fetchRecipeByIngredient(name),
         refetchOnWindowFocus: false,
         refetchOnMount: false
     })
-    return { isLoading, data }
 }
 
 export const useRecipeByFollow = () => {
-    const { isLoading, data } = useQuery({
+    const { isLoading, data, refetch } = useQuery({
         queryKey: ['recipeFollow'],
         queryFn: () => fetchRecipeFromFollower()
     })
-    return { isLoading, data }
+    return { isLoading, data, refetch }
 }
 
 export const useRecipePopular = () => {
-    const { isLoading, data } = useQuery({
+    return useQuery({
         queryKey: ['recipePopular'],
         queryFn: () => fetchRecipePopular()
     })
-    return { isLoading, data }
 }
 
 export const useRecipeById = (recipeId: any) => {
-    const { isLoading, data } = useQuery({
+    return useQuery({
         queryKey: ['singleRecipe', recipeId],
         queryFn: () => fetchSingleRecipe(recipeId)
     })
-    return { isLoading, data }
-}
-
-export const useCommentsById = (recipeId: any) => {
-    const { isLoading, data } = useQuery({
-        queryKey: ['comment', recipeId],
-        queryFn: () => fetchComments(recipeId)
-    })
-    return { isLoading, data }
 }
 
 export const useAddRecipe = () => {

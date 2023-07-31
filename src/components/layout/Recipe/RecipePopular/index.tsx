@@ -7,6 +7,7 @@ import { Fragment } from "react"
 
 const RecipePopular = () => {
     const { isLoading, data: recipes } = useRecipePopular()
+    console.log(recipes)
     return (
         <Section>
             {isLoading ?

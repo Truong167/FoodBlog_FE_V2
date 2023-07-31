@@ -3,7 +3,7 @@ import Section from "../../../../components/Section/Section"
 import { imageUrl } from "../../../../contants/constant"
 
 
-const CommentForm: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps }) => {
+const StepExplain: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps }) => {
     return (
         <Section>
             <Fragment>
@@ -24,4 +24,4 @@ const CommentForm: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps })
     )
 }
 
-export default CommentForm
+export default StepExplain

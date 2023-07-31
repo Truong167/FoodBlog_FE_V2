@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../contants/constant";
 import { getCurrentUser, login, register } from "./api-service";

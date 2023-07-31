@@ -9,11 +9,16 @@ import { Avatar } from "antd"
 import { Fragment, useState } from "react"
 import Ingredient from "./component/Ingredient/Ingredient"
 import Step from "./component/Step/Step"
-import { CommentOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons"
+import { CommentOutlined, EllipsisOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons"
 import no_avatar from '../../assets/images/no_avatar.png'
 import { formatDate } from "../../utils/format-time"
 import styles from './RecipeDetailPage.module.css'
 import ReactPlayer from "react-player"
+import { useForm } from "react-hook-form"
+import FormItem from "../../components/UI/FormItem"
+import InputText from "../../components/UI/Input/Input"
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react"
+import CommentForm from "./component/CommentForm"
 
 
 const RecipeDetailPage = () => {
@@ -73,27 +78,30 @@ const RecipeDetailPage = () => {
             <CommentOutlined className="text-2xl" />
             <h3>Tất cả bình luận</h3>
           </div>
-          <h6>Tất cả tương tác</h6>
+          <h6>Tất cả tương tác ({comments && comments.commentCount})</h6>
           <div className={styles.comment}>
             {comments && comments.comment.length > 0 ? (
               comments.comment.map((item: any) => {
                 return (
-                  <Meta
-                    className="flex gap-4 mb-4"
-                    avatar={<Avatar className="h-12 w-12" src={`${item.User.avatar
-                      ? imageUrl + item.User.avatar
-                      : no_avatar
-                      }`} />}
-                    title={<h6>{item.User.fullName + " " + formatDate(item.date)}</h6>}
-                    description={item.comment}
-                  />
+                  <div className="flex" key={item.id}>
+                    <Meta
+                      className="flex gap-4 mb-4 w-full"
+                      avatar={<Avatar className="h-12 w-12" src={`${item.User.avatar
+                        ? imageUrl + item.User.avatar
+                        : no_avatar
+                        }`} />}
+                      title={<h6>{item.User.fullName + " " + formatDate(item.date)}</h6>}
+                      description={item.comment}
+                    />
+                      {item.isMyComment && <EllipsisOutlined className="text-2xl  cursor-pointer" />}
+                  </div>
                 );
               })
             ) : (
               <h3>Chưa có bình luận nào</h3>
             )}
-
           </div>
+          <CommentForm recipeId={id || ''}/>
         </Fragment>
       </Section>
     </DefaultLayout>

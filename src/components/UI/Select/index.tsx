@@ -14,7 +14,7 @@ const AntdSelect: React.FC<Recipe.TSelect> = ({ control, name, values, size, cla
         render={({ field }) => (
           <Select {...field} size={size} className={classCustom} defaultValue={defaultValue} showSearch={showSearch}>
             {values.map((item: { id: string | number; name: string | number }) => (
-              <Option key={item.id} values={item.id}>
+              <Option key={item.id} values={item.name}>
                 {item.name}
               </Option>
             ))}

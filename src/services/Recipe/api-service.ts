@@ -1,11 +1,42 @@
 import API_ENDPOINT from "./api-path"
 import axios from "axios"
 
+
+
+export async function fetchComments(id: number) {
+    try {
+        const result = await axios.get(`${API_ENDPOINT.FETCH_COMMENTS_BY_RECIPE_ID}/${id}`)
+        if (result.data.success) {
+            return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function createComment(recipeId: string, body: Recipe.TComment) {
+    try {
+        const result = await axios.post(`${API_ENDPOINT.CREATE_COMMENT}/${recipeId}`, body)
+        console.log(result)
+        if (result.data.success) {
+            return result
+        }
+    } catch (error: any) {
+        console.log(error)
+        if (error?.response?.data) return error.response
+        return { success: false, message: error.message }
+    }
+}
+
+
+
 export async function fetchRecipeByIngredient(name: any) {
     try {
         if (name) {
             const result = await axios.get(`${API_ENDPOINT.FETCH_RECIPE_BY_INGREDIENT}/${name}`)
             if (result.data.success) {
+                console.log(result)
                 return result.data.data
             }
         }
@@ -39,9 +70,13 @@ export async function fetchRecipePopular() {
     }
 }
 
-export async function fetchSingleRecipe(id: number) {
+export async function searchRecipe(q: string) {
     try {
-        const result = await axios.get(`${API_ENDPOINT.FETCH_RECIPE_BY_ID}/${id}`)
+        const result = await axios.get(API_ENDPOINT.SEARCH_RECIPE_NAME, {
+            params: {
+                q
+            }
+        })
         if (result.data.success) {
             return result.data.data
         }
@@ -51,11 +86,51 @@ export async function fetchSingleRecipe(id: number) {
     }
 }
 
-export async function fetchComments(id: number) {
+export async function fetchSingleRecipe(id: number) {
     try {
-        const result = await axios.get(`${API_ENDPOINT.FETCH_COMMENTS_BY_RECIPE_ID}/${id}`)
+        const result = await axios.get(`${API_ENDPOINT.FETCH_RECIPE_BY_ID}/${id}`)
         if (result.data.success) {
+            console.log(result.data.data)
             return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function deleteRecipe(recipeId: number) {
+    try {
+        const result = await axios.delete(`${API_ENDPOINT.DELETE_RECIPE}/${recipeId}`)
+        if (result.data.success) {
+            console.log(result)
+            return result
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function dislikeRecipe(recipeId: number) {
+    try {
+        const result = await axios.delete(`${API_ENDPOINT.DISLIKE_RECIPE}/${recipeId}`)
+        if (result.data.success) {
+            console.log(result)
+            return result
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function likeRecipe(recipeId: number) {
+    try {
+        const result = await axios.post(`${API_ENDPOINT.LIKE_RECIPE}/${recipeId}`)
+        if (result.data.success) {
+            console.log(result)
+            return result
         }
     } catch (error: any) {
         if (error?.response?.data) return error.response.data.data

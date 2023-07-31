@@ -15,7 +15,7 @@ const Header = ({ type = 'normal', text, isLoading, form }: { text?: string, typ
         <header className={styles.header}>
             <div className={styles.container}>
                 <div
-                    className={styles[`${className}`]}
+                    className={styles.flex}
                 >
                     <div className={styles.left}>
                         <Link to="/" style={{ display: 'flex' }}>
@@ -27,14 +27,14 @@ const Header = ({ type = 'normal', text, isLoading, form }: { text?: string, typ
                         <Button loading={isLoading} onClick={() => form.submit()} className='bg-primary-1 text-white btn-filled'>{text}</Button>
                         :
                         (
-                            <Fragment>
-                                <SearchInput />
+                            <div className='flex justify-center items-center gap-7'>
+                                {/* <SearchInput /> */}
                                 <Link to={'/create-recipe'} className='flex justify-center items-center gap-1 hover:text-primary-1 ease-in-out'>
                                     <PlusOutlined />
                                     Viết món mới
                                 </Link>
                                 <AvatarDropDown />
-                            </Fragment>
+                            </div>
                         )
                     }
                 </div>

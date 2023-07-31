@@ -13,26 +13,29 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
   placeholder,
   prefix,
   className,
+  suffix,
+  autoComplete
 }) => {
   return (
     <Controller
-    name={name}
-    control={control}
-    render={({ field, fieldState: {error} }) => (
-          <Fragment>
-
+      name={name}
+      control={control}
+      render={({ field, fieldState: { error } }) => (
+        <Fragment>
           <Input
+            autoComplete={autoComplete}
             {...field}
             type={type}
             size={size}
             placeholder={placeholder}
             prefix={prefix}
+            suffix={suffix}
             className={classNames(error ? `error` : `focus hover`, className)}
           />
-      <ValidateError error={error} />
-    </Fragment>
-        )}
-      />
+          <ValidateError error={error} />
+        </Fragment>
+      )}
+    />
   );
 };
 

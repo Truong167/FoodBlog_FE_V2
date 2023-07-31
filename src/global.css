@@ -52,6 +52,16 @@ code {
 
 
 @layer components {
+
+  .antd-modal {
+    
+  }
+  
+
+  .antd-card {
+    color: black !important;
+    
+  }
   .ant-drawer {
     
     .ant-drawer-content-wrapper {
@@ -228,6 +238,7 @@ code {
     flex-direction: column;
     gap: 10px;
   }
+
 /*
   //////////////////////////////////
   STANDARD BUTTON
@@ -270,7 +281,7 @@ code {
     @apply text-neutral-5 bg-white;
   }
   .btn-large {
-    @apply h-12 px-4 py-3 rounded text-body-1-medium;
+    @apply h-12 px-4 py-3 rounded text-body-1-medium w-full;
   }
   .btn-medium {
     @apply h-10 px-4 py-2.5 rounded text-body-2-medium;
@@ -516,5 +527,39 @@ code {
   border-inline-end-width: 1px;
   z-index: 1;
 }
+}
+
+.ant-modal .ant-modal-content {
+  text-align: center;
+}
+
+p.normal-modal {
+  padding-top: 16px;
+}
+
+.ant-modal .ant-modal-title {
+  @apply text-heading4;
+}
+
+.ant-modal .ant-modal-body {
+  p {
+    @apply text-body-1-regular;
+  }
+}
+
+.ant-modal .ant-modal-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: center;
+
+  button {
+    width: 100%;
+    font-size: 20px;
+  }
+}
+
+.ant-input-affix-wrapper.input-modal.focus.medium {
+  width: 100%;
 }
 
