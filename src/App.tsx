@@ -7,6 +7,8 @@ import RecipeDetailPage from './pages/recipe-detail/RecipeDetailPage';
 import AddRecipePage from './pages/create-recipe/AddRecipePage';
 import EditProfilePage from './pages/edit-profile';
 import EditRecipePage from './pages/edit-recipe';
+import SearchResult from './pages/search-result';
+import DetailUser from './pages/detail-user';
 
 function App() {
 	return (
@@ -33,6 +35,14 @@ function App() {
 
 				<Route element={<PrivateRoutes />}>
 					<Route path="edit-profile" element={<EditProfilePage />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+					<Route path="search/:recipeName" element={<SearchResult />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+					<Route path="user/:userId" element={<DetailUser />} />
 				</Route>
 			</Routes>
 		</Router>

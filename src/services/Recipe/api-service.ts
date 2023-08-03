@@ -70,9 +70,49 @@ export async function fetchRecipePopular() {
     }
 }
 
+export async function getRecipeByUserId(userId: string) {
+    try {
+        const result = await axios.get(`${API_ENDPOINT.GET_RECIPE_BY_USERID}/${userId}`)
+        if (result.data.success) {
+            return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function getRecipeFavorite() {
+    try {
+        const result = await axios.get(API_ENDPOINT.GET_RECIPE_FAVORITE)
+        if (result.data.success) {
+            return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
 export async function searchRecipe(q: string) {
     try {
         const result = await axios.get(API_ENDPOINT.SEARCH_RECIPE_NAME, {
+            params: {
+                q
+            }
+        })
+        if (result.data.success) {
+            return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
+export async function searchResultRecipe(q: string) {
+    try {
+        const result = await axios.get(API_ENDPOINT.SEARCH_RESULT_RECIPE_NAME, {
             params: {
                 q
             }

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, likeRecipe, searchRecipe, updateRecipe } from "./api-service";
+import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
 type TUpdateRecipeParams = {
@@ -28,6 +28,27 @@ export const useSearchRecipe = (q: string) => {
     return useQuery({
         queryKey: ['searchRecipe', q],
         queryFn: () => searchRecipe(q),
+    })
+}
+
+export const useGetRecipeByUserId = (userId: string) => {
+    return useQuery({
+        queryKey: ['recipeByUserId', userId],
+        queryFn: () => getRecipeByUserId(userId),
+    })
+}
+
+export const useGetRecipeFavorite = () => {
+    return useQuery({
+        queryKey: ['recipeFavorite'],
+        queryFn: getRecipeFavorite,
+    })
+}
+
+export const useSearchResultRecipe = (q: string) => {
+    return useQuery({
+        queryKey: ['searchResultRecipe'],
+        queryFn: () => searchResultRecipe(q),
     })
 }
 

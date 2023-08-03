@@ -7,7 +7,9 @@ export const useSearch = () => {
     const {data, isLoading} = useSearchRecipe(value)
   const { run: handleChangeSearch } = useDebounceFn(
     (event: ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.value)
+      const validateData = event.target.value.replace(/\s+/g,' ').trim();
+      console.log(validateData)
+        setValue(validateData)
     },
     { wait: 500 },
   );

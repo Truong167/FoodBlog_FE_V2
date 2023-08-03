@@ -39,6 +39,7 @@ export const useUser = () => {
     const { isLoading, data } = useQuery({
         queryKey: ['currentUser'],
         queryFn: getCurrentUser,
+        refetchOnWindowFocus: false
     })
     return { isLoading, data }
 }

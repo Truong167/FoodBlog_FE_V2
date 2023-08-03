@@ -49,12 +49,13 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
   return (
     <Fragment>
       <Card
-        className='ml-1 mr-1'
+        hoverable
+        className='ml-1 mr-1 mb-1'
         bodyStyle={{ padding: '12px' }}
         cover={
           <Link to={`/detail/${recipeId}`}>
             <img
-              className='h-40 w-80 object-cover'
+              className='h-40 w-full object-cover'
               alt="example"
               src={`${imageUrl}/${image}`}
             />
@@ -66,8 +67,8 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
         ]}
       >
         <Meta
-          avatar={<Avatar src={`${imageUrl}/${User.avatar}`} />}
-          title={User.fullName}
+          avatar={<Link to={`/user/${User.userId}`}><Avatar src={`${imageUrl}/${User.avatar}`} /></Link>}
+          title={<Link className='hover:text-black' to={`/user/${User.userId}`}>{User.fullName}</Link>}
           description={recipeName}
         />
       </Card>

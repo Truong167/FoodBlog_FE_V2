@@ -19,6 +19,12 @@ const DISLIKE_RECIPE = `${FAVORITE_PATH}/delete`
 
 const SEARCH_RECIPE_NAME = `${PATH}/search`
 
+const SEARCH_RESULT_RECIPE_NAME = `${PATH}/searchRecipe`
+
+const GET_RECIPE_BY_USERID = `${PATH}/getRecipeByUserId`
+
+const GET_RECIPE_FAVORITE = `${PATH}/getRecipeFavorite`
+
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -33,7 +39,10 @@ export default {
     DELETE_RECIPE,
     LIKE_RECIPE,
     DISLIKE_RECIPE,
-    SEARCH_RECIPE_NAME
+    SEARCH_RECIPE_NAME,
+    SEARCH_RESULT_RECIPE_NAME,
+    GET_RECIPE_BY_USERID,
+    GET_RECIPE_FAVORITE
 }
 
 

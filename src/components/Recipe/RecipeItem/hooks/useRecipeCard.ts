@@ -39,6 +39,9 @@ export const useDelete = (recipeId: number, setIsDeleteModalOpen: React.Dispatch
                 queryClient.invalidateQueries(['recipeByIngredient', ingredientName])
                 queryClient.invalidateQueries(['recipePopular'])
                 queryClient.invalidateQueries(['recipeFollow'])
+                queryClient.invalidateQueries(['searchResultRecipe'])
+                queryClient.invalidateQueries(['recipeByUserId'])
+                queryClient.invalidateQueries(['recipeFavorite'])
             }
         })
     }
@@ -46,9 +49,13 @@ export const useDelete = (recipeId: number, setIsDeleteModalOpen: React.Dispatch
     const handleDislikeRecipe = () => {
         dislikeRecipe(recipeId, {
             onSuccess: () => {
+                queryClient.invalidateQueries(['recipeFavorite'])
+                queryClient.invalidateQueries(['searchResultRecipe'])
                 queryClient.invalidateQueries(['recipeByIngredient', ingredientName])
                 queryClient.invalidateQueries(['recipePopular'])
                 queryClient.invalidateQueries(['recipeFollow'])
+                queryClient.invalidateQueries(['recipeByUserId'])
+
             }
         })
     }

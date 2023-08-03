@@ -23,6 +23,7 @@ export const useIngredientName = () => {
         queryFn: (name) => {
             return name
         },
+        staleTime: Infinity,
         refetchOnWindowFocus: false,
         refetchOnMount: false
     })

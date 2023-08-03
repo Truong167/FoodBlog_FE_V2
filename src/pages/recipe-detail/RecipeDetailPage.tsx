@@ -14,10 +14,6 @@ import no_avatar from '../../assets/images/no_avatar.png'
 import { formatDate } from "../../utils/format-time"
 import styles from './RecipeDetailPage.module.css'
 import ReactPlayer from "react-player"
-import { useForm } from "react-hook-form"
-import FormItem from "../../components/UI/FormItem"
-import InputText from "../../components/UI/Input/Input"
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react"
 import CommentForm from "./component/CommentForm"
 
 
@@ -78,7 +74,7 @@ const RecipeDetailPage = () => {
             <CommentOutlined className="text-2xl" />
             <h3>Tất cả bình luận</h3>
           </div>
-          <h6>Tất cả tương tác ({comments && comments.commentCount})</h6>
+          <h6>Tất cả tương tác {comments && `(${comments.commentCount})`}</h6>
           <div className={styles.comment}>
             {comments && comments.comment.length > 0 ? (
               comments.comment.map((item: any) => {
