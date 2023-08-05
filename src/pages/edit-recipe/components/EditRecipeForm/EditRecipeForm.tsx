@@ -7,7 +7,6 @@ import ImageForm from '../../../../components/ImageForm'
 import { useSubmit } from './hooks/useSubmit'
 
 const EditRecipeForm = ({data, recipeId}: {data: any, recipeId: string}) => {
-  console.log(recipeId)
   const {control, handleSubmit, onSubmit, isLoading} = useSubmit(data, recipeId)
   const [form] = Form.useForm();
 

@@ -5,10 +5,11 @@ import { imageUrl } from '../../../contants/constant';
 import { Link } from 'react-router-dom';
 import { useDelete } from './hooks/useRecipeCard';
 import ModalDelete from './components/ModalDelete';
+import ModalPrivacy from './components/ModalPrivacy';
 
 const { Meta } = Card;
 
-const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, image, isFavorite, recipeName, numberOfLikes, isMyRecipe }) => {
+const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, status, date, recipeId, image, isFavorite, recipeName, numberOfLikes, isMyRecipe }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState<boolean>(false)
  const {handleConfirm, isLoading, handleLikeRecipe, handleDislikeRecipe} = useDelete(recipeId, setIsDeleteModalOpen)
@@ -32,9 +33,9 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
     {
       key: '3',
       label: (
-        <Link to={'/edit-profile'}>
+        <p onClick={() => setIsPrivacyModalOpen(true)}>
           Chỉnh sửa quyền riêng tư
-        </Link>
+        </p>
       ),
     },
   ];
@@ -77,6 +78,12 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, date, recipeId, im
           isDeleteModalOpen={isDeleteModalOpen}
           setIsDeleteModalOpen={setIsDeleteModalOpen}
           handleConfirm={handleConfirm}
+        />
+        <ModalPrivacy
+          recipeId={recipeId}
+          status={status}
+          isPrivacyModalOpen={isPrivacyModalOpen}
+          setIsPrivacyModalOpen={setIsPrivacyModalOpen}
         />
     </Fragment>
 

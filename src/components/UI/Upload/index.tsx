@@ -33,7 +33,6 @@ const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, listType, clas
     }
 
     const onRemove = (info: any) => {
-        console.log(info)
         if(info.response){
             deleteFile(info.response)
         }

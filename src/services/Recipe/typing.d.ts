@@ -4,6 +4,10 @@ declare namespace Recipe {
         comment?: string
     }
 
+    type TStatus = {
+        status?: string
+    }
+
     type TRecipeResponse = {
         DetailLists?: []
         User: TUserResponse

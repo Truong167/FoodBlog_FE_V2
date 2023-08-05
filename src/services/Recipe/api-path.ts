@@ -25,6 +25,8 @@ const GET_RECIPE_BY_USERID = `${PATH}/getRecipeByUserId`
 
 const GET_RECIPE_FAVORITE = `${PATH}/getRecipeFavorite`
 
+const UPDATE_PRIVACY_RECIPE = `${PATH}/updatePrivacyRecipe`
+
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -42,7 +44,8 @@ export default {
     SEARCH_RECIPE_NAME,
     SEARCH_RESULT_RECIPE_NAME,
     GET_RECIPE_BY_USERID,
-    GET_RECIPE_FAVORITE
+    GET_RECIPE_FAVORITE,
+    UPDATE_PRIVACY_RECIPE
 }
 
 

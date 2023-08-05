@@ -583,3 +583,28 @@ p.normal-modal {
   border-bottom: 2px solid #f0f0f0;
 }
 
+.ant-radio-wrapper {
+  flex-flow: row-reverse;
+}
+
+.ant-radio-wrapper span.ant-radio+* {
+  width: 100%;
+}
+
+.ant-radio-wrapper {
+  width: 100%;
+}
+
+.ant-radio-wrapper .ant-radio-checked::after {
+  border: 1px solid #ff9933;
+}
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  border-color: #ff9933;
+  background-color: #ff9933;
+}
+
+.ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: #ff9933;
+}
+

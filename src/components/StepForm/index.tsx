@@ -5,12 +5,31 @@ import FormItem from "../UI/FormItem"
 import AntdUpload from "../UI/Upload"
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons"
 import AntdTextArea from "../UI/Input/TextArea"
+import { Dropdown, Menu, MenuProps } from "antd"
 
 const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, remove, insert } = useFieldArray({
         control,
         name: 'Steps'
     })
+    const handleClick = (e: any, index: number) => {
+        if(e.key === 'insert'){
+            insert(index + 1, { name: '', image: [] })
+        } else {
+            remove(index)
+        }
+      }
+      
+    const items: MenuProps['items'] = [
+        {
+            key: 'insert',
+            label: <p>Chèn bước</p>
+        },
+        {
+            key: 'remove',
+            label: <p>Xóa bước</p>
+        },
+    ];
     return (
         <Section>
             <Fragment>
@@ -38,7 +57,13 @@ const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
                                 </FormItem>
                             </div>
                             <div>
-                                <EllipsisOutlined className="text-2xl  cursor-pointer" />
+                                <Dropdown 
+                                    menu={{ 
+                                        items,
+                                        onClick: (e) => handleClick(e, index)
+                                    }}>
+                                    <EllipsisOutlined className="text-2xl  cursor-pointer" />
+                                </Dropdown>
                             </div>
                         </div>
                     )

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updateRecipe } from "./api-service";
+import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updatePrivacy, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
 type TUpdateRecipeParams = {
@@ -9,6 +9,10 @@ type TUpdateRecipeParams = {
 type TCreateComment = {
     params: { recipeId: string; body: Recipe.TComment };
 };
+
+type TUpdatePrivacy = {
+    params: {recipeId: number; body: Recipe.TStatus}
+}
   
 
 export const useCommentsById = (recipeId: any) => {
@@ -103,5 +107,9 @@ export const useAddRecipe = () => {
 export const useUpdateRecipe = () => {
     return useMutation(({ params: { recipeId, body } }: TUpdateRecipeParams) => updateRecipe(recipeId, body)
   );
+}
 
+export const useUpdatePrivacy = () => {
+    return useMutation(({ params: { recipeId, body } }: TUpdatePrivacy) => updatePrivacy(recipeId, body)
+  );
 }

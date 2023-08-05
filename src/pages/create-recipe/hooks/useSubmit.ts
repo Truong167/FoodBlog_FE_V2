@@ -15,11 +15,9 @@ export const useSubmit = () => {
         },
     })
 
-    console.log(errors)
     const { mutate, isLoading } = useAddRecipe()
 
     const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {
-        console.log(values)
         const Steps = values.Steps.map((item, index) => {
             item.image = item.image.length > 0 ? item.image[0].response : null
             item.stepIndex = index + 1;
@@ -38,7 +36,6 @@ export const useSubmit = () => {
         }
         mutate(validateData, {
             onSuccess: (data) => {
-                console.log(data)
                 if(data.status === 200) {
                     notification.success({
                         message: 'Thêm công thức thành công'

@@ -18,17 +18,26 @@ export async function fetchComments(id: number) {
 export async function createComment(recipeId: string, body: Recipe.TComment) {
     try {
         const result = await axios.post(`${API_ENDPOINT.CREATE_COMMENT}/${recipeId}`, body)
-        console.log(result)
         if (result.data.success) {
             return result
         }
     } catch (error: any) {
-        console.log(error)
         if (error?.response?.data) return error.response
         return { success: false, message: error.message }
     }
 }
 
+export async function updatePrivacy(recipeId: number, body: Recipe.TStatus) {
+    try {
+        const result = await axios.put(`${API_ENDPOINT.UPDATE_PRIVACY_RECIPE}/${recipeId}`, body)
+        if (result.data.success) {
+            return result
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response
+        return { success: false, message: error.message }
+    }
+}
 
 
 export async function fetchRecipeByIngredient(name: any) {
@@ -36,7 +45,7 @@ export async function fetchRecipeByIngredient(name: any) {
         if (name) {
             const result = await axios.get(`${API_ENDPOINT.FETCH_RECIPE_BY_INGREDIENT}/${name}`)
             if (result.data.success) {
-                console.log(result)
+    
                 return result.data.data
             }
         }
@@ -130,7 +139,6 @@ export async function fetchSingleRecipe(id: number) {
     try {
         const result = await axios.get(`${API_ENDPOINT.FETCH_RECIPE_BY_ID}/${id}`)
         if (result.data.success) {
-            console.log(result.data.data)
             return result.data.data
         }
     } catch (error: any) {
@@ -143,7 +151,7 @@ export async function deleteRecipe(recipeId: number) {
     try {
         const result = await axios.delete(`${API_ENDPOINT.DELETE_RECIPE}/${recipeId}`)
         if (result.data.success) {
-            console.log(result)
+
             return result
         }
     } catch (error: any) {
@@ -156,7 +164,7 @@ export async function dislikeRecipe(recipeId: number) {
     try {
         const result = await axios.delete(`${API_ENDPOINT.DISLIKE_RECIPE}/${recipeId}`)
         if (result.data.success) {
-            console.log(result)
+
             return result
         }
     } catch (error: any) {
@@ -169,7 +177,7 @@ export async function likeRecipe(recipeId: number) {
     try {
         const result = await axios.post(`${API_ENDPOINT.LIKE_RECIPE}/${recipeId}`)
         if (result.data.success) {
-            console.log(result)
+
             return result
         }
     } catch (error: any) {
@@ -191,10 +199,8 @@ export async function addRecipe(body: Recipe.TRecipeParams) {
 }
 
 export async function updateRecipe(recipeId: string, body: Partial<Recipe.TRecipeDetailResponse>) {
-    console.log(recipeId)
     try {
         const result = await axios.put(`${API_ENDPOINT.UPDATE_RECIPE + recipeId}`, body)
-        console.log(result)
         if(result.data.success){
           return result.data
         }

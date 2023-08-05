@@ -6,7 +6,6 @@ import { imageUrl } from "../../../../contants/constant"
 const DetailInfo = ({ userId }: { userId: string }) => {
     const { data, isLoading } = useGetUserById(userId || '')
     const check = false
-    console.log(data)
     return (
         <div className="mb-5">
             {isLoading ?

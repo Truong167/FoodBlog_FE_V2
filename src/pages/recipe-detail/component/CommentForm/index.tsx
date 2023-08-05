@@ -5,6 +5,8 @@ import EmojiPicker from "emoji-picker-react"
 import useSubmitComment from "./hooks/useSubmit"
 import { Form, Popover } from "antd"
 import { Fragment } from "react"
+import { useUser } from "../../../../services/Auth/service"
+import { imageUrl } from "../../../../contants/constant"
 
 type TCommentFormProps = {
     recipeId: string;
@@ -12,11 +14,16 @@ type TCommentFormProps = {
 
 const CommentForm: React.FC<TCommentFormProps> = ({ recipeId }) => {
     const { control, onEmojiClick, handleSubmit, onSubmit } = useSubmitComment(recipeId)
+    const { data } = useUser()
+    console.log(data)
     const [form] = Form.useForm()
     return (
         <Form form={form} onFinish={handleSubmit(onSubmit)}>
             <FormItem>
-                <div>
+                <div className="flex items-center gap-1">
+                    <div className="h-[40px] w-[40px]">
+                        <img src={`${imageUrl}/${data.avatar}`} className="h-full w-full object-cover rounded-full" />
+                    </div>
                     <InputText
                         placeholder="Bình luận của bạn"
                         autoComplete="off"
@@ -25,8 +32,8 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId }) => {
                         size='large'
                         suffix={
                             <Fragment>
-                                <Popover trigger="click" content={<EmojiPicker onEmojiClick={onEmojiClick} />} title="Title">
-                                    <HeartOutlined className="text-xl cursor-pointer"/>
+                                <Popover zIndex={1} trigger="click" content={<EmojiPicker onEmojiClick={onEmojiClick} />} title="Title">
+                                    <HeartOutlined className="text-xl cursor-pointer" />
                                 </Popover>
                                 <SendOutlined className="ml-2 text-xl cursor-pointer" onClick={() => form.submit()} />
                             </Fragment>

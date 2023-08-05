@@ -3,7 +3,6 @@ import { imageUrl } from "../../../contants/constant";
 
 
 export const useEditProfile = (data: any) => {
-    console.log(data)
     const { control, handleSubmit } = useForm({
         defaultValues: {
             ...data,

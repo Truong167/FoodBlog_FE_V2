@@ -27,7 +27,6 @@ export const useDelete = (recipeId: number, setIsDeleteModalOpen: React.Dispatch
                 setIsDeleteModalOpen(false)
             },
             onError: (error) => {
-                console.log(error)
                 setIsDeleteModalOpen(false)
             }
         })
@@ -35,7 +34,7 @@ export const useDelete = (recipeId: number, setIsDeleteModalOpen: React.Dispatch
     
     const handleLikeRecipe = () => {
         likeRecipe(recipeId, {
-            onSuccess: () => {
+            onSuccess: (data) => {
                 queryClient.invalidateQueries(['recipeByIngredient', ingredientName])
                 queryClient.invalidateQueries(['recipePopular'])
                 queryClient.invalidateQueries(['recipeFollow'])

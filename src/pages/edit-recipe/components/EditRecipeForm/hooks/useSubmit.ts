@@ -6,7 +6,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { validateRecipe } from "../../../../../utils/validateRecipe";
 
 export const useSubmit = (data: Partial<Recipe.TRecipeDetailResponse>, recipeId: string) => {
-    console.log(data)
     const { mutate, isLoading } = useUpdateRecipe()
     const { control, handleSubmit, formState: { dirtyFields } } = useForm<any>({
         resolver: yupResolver(validateRecipe),
@@ -27,14 +26,11 @@ export const useSubmit = (data: Partial<Recipe.TRecipeDetailResponse>, recipeId:
 
 
     const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {
-        console.log(values, recipeId)
-        console.log(dirtyFields)
         const validateDate = {
             ...values,
             video: values.video[0].hasOwnProperty('response') ? values.video[0].response : values.video[0].id,
             image: values.image[0].hasOwnProperty('response') ? values.image[0].response : values.image[0].id,
             Steps: values.Steps.map((item, index) => {
-                console.log(item)
                 return {
                     ...item,
                     stepIndex: index + 1,
@@ -48,7 +44,6 @@ export const useSubmit = (data: Partial<Recipe.TRecipeDetailResponse>, recipeId:
                 }
             })
         }
-        console.log(validateDate)
         mutate({
             params: {
                 recipeId: recipeId,
@@ -56,7 +51,7 @@ export const useSubmit = (data: Partial<Recipe.TRecipeDetailResponse>, recipeId:
             }
         }, {
             onSuccess: (data) => {
-                console.log(data)
+                
             }
         })
     };

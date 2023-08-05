@@ -8,7 +8,6 @@ import { useAvatarDropDown } from './hooks/useAvatarDropDown';
 
 const AvatarDropDown: React.FC = () => {
   const {isLoading, data, logout} = useAvatarDropDown()
-  console.log(data)
   const items: MenuProps['items'] = [
     {
       key: '1',

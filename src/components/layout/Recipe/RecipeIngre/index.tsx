@@ -16,7 +16,7 @@ const RecipeIngre = () => {
     const { isLoading: recipeLoading, data: recipes } = useRecipeByIngredient()
     return (
         <Section>
-            {isLoading && recipeLoading 
+            {(isLoading && recipeLoading && ingreName) 
                 ? 
                 <Skeleton active /> 
                 :

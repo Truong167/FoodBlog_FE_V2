@@ -16,7 +16,7 @@ const RecipeList = ({ recipes }: { recipes: any }) => {
   })
   return (
     <div className={classes.container}>
-      {recipes && recipes.length > 0 ? (recipes.length > 4 ?
+      {recipes && Array.isArray(recipes) && recipes.length > 0 ? (recipes.length > 4 ?
         <Slider {...settings}>
           {recipes.map((item: any) => (
             <RecipeCard {...item} key={item.recipeId} />

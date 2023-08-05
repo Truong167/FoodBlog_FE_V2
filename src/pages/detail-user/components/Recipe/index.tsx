@@ -5,8 +5,6 @@ import { Fragment } from "react"
 import RecipeCard from "../../../../components/Recipe/RecipeItem/RecipeCard"
 
 const Recipe = ({ data, isLoading }: { data: Recipe.TRecipeResponse[], isLoading: boolean }) => {
-    // const { data, isLoading } = useGetRecipeByUserId(userId)
-    console.log(data)
     return (
         <Section>
             {isLoading ? (
@@ -18,7 +16,7 @@ const Recipe = ({ data, isLoading }: { data: Recipe.TRecipeResponse[], isLoading
                     ))}
                 </div>
                 :
-                <Empty description={`Không có kết quả với từ khóa`} />
+                <Empty description={`Không có công thức`} />
             }
         </Section>
     )

@@ -23,7 +23,6 @@ const RecipeDetailPage = () => {
   const { isLoading, data } = useRecipeById(id)
   const { data: comments } = useCommentsById(id)
 
-  console.log(comments)
   if (isLoading) {
     return <Loading />
   }
