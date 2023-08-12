@@ -17,4 +17,15 @@ declare namespace AUTH {
         password: string
         password2: string
     }
+
+    type TUser = {
+        address?: string
+        avatar?: any
+        dateOfBirth?: string
+        email: string
+        fullName: string
+        introduce?: string
+        userId: number
+        dateUpdatedRecipe: string
+    }
 }

@@ -8,6 +8,7 @@ import { useAvatarDropDown } from './hooks/useAvatarDropDown';
 
 const AvatarDropDown: React.FC = () => {
   const {isLoading, data, logout} = useAvatarDropDown()
+  console.log(data)
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -44,12 +45,12 @@ const AvatarDropDown: React.FC = () => {
   ];
 
   if(isLoading) {
-    return <Skeleton.Button  />
+    return <Skeleton.Button/>
   }
   return (
     <Dropdown overlayStyle={{position: 'fixed'}} menu={{items}} className='cursor-pointer'>
       <div className='flex justify-center items-center gap-2'>
-        <img className='w-8 h-8 object-cover rounded-full' src={`${imageUrl}/${data.avatar}`} alt='truong' />
+        <img className='w-8 h-8 object-cover rounded-full' src={`${data.avatar}`} alt='truong' />
         <span>{data.fullName}</span>
       </div>
     </Dropdown>

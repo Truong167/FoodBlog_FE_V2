@@ -58,7 +58,7 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, status, date, reci
             <img
               className='h-40 w-full object-cover'
               alt="example"
-              src={`${imageUrl}/${image}`}
+              src={`${image}`}
             />
           </Link>
         }
@@ -68,7 +68,7 @@ const RecipeCard: React.FC<Recipe.TRecipeResponse> = ({ User, status, date, reci
         ]}
       >
         <Meta
-          avatar={<Link to={`/user/${User.userId}`}><Avatar src={`${imageUrl}/${User.avatar}`} /></Link>}
+          avatar={<Link to={`/user/${User.userId}`}><Avatar src={`${User.avatar}`} /></Link>}
           title={<Link className='hover:text-black' to={`/user/${User.userId}`}>{User.fullName}</Link>}
           description={recipeName}
         />

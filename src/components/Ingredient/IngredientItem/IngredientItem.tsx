@@ -16,7 +16,7 @@ const IngredientItem: React.FC<Props> = ({name, image, isActive}) => {
   }
   return (
     <div className={classes.container} style={isActive === name ? {backgroundColor: '#ffebd6'} : {}} onClick={handleOnClick}>
-      <img src={imageUrl + image} alt={name} className={classes.image}/>
+      <img src={image} alt={name} className={classes.image}/>
       <span className={classes.name}>{name}</span>
     </div>
   )

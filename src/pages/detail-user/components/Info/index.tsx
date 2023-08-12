@@ -1,7 +1,5 @@
-import { Button, Image, Skeleton } from "antd"
+import { Button, Skeleton } from "antd"
 import { useGetUserById } from "../../../../services/User/service"
-import { useParams } from "react-router-dom"
-import { imageUrl } from "../../../../contants/constant"
 
 const DetailInfo = ({ userId }: { userId: string }) => {
     const { data, isLoading } = useGetUserById(userId || '')
@@ -13,7 +11,8 @@ const DetailInfo = ({ userId }: { userId: string }) => {
                 :
                 <div className="flex justify-center mt-5 gap-10">
                     <img
-                        src={`${imageUrl}/${data.avatar}`}
+                        src={data.avatar}
+                        alt={userId}
                         className="object-cover rounded-full w-[150px] h-[150px]"
                     />
                     <div className="grid grid-rows-4">

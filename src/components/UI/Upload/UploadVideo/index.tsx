@@ -11,8 +11,8 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
     const checkIsHaveFile = control._defaultValues[name] ? true : false;
     const [isHaveFile, setIsHaveFile] = useState(checkIsHaveFile);
     const [videoSrc, setVideoSrc] = useState(checkIsHaveFile ? control._defaultValues[name][0].url : '');
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const { mutate } = useUpload()
-    const { mutate: deleteFile } = useDelete()
     const beforeUpload = (file: { type: string; name: any }) => {
         const isVideo = file.type.includes('video/mp4');
         if (!isVideo) {
@@ -23,27 +23,30 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
         return isVideo || Upload.LIST_IGNORE;
     };
     const customRequest = (options: any) => {
+        setIsLoading(true)
         const { onSuccess, file } = options
         const fmData = new FormData();
         fmData.append('file', file);
+        console.log('lallal')
         mutate(fmData, {
             onSuccess: (response) => {
-                onSuccess(response.data.data)
-                setIsHaveFile(true)
+                if(response.data.success){
+                    onSuccess(response.data.data)
+                    setIsHaveFile(true)
+                } else {
+                    notification.error({
+                        message: 'Có lỗi khi tải video'
+                    })
+                }
+                setIsLoading(false)
+                console.log(response)
             }
         })
     }
 
-    const handleOnRemove = (value: any) => {
-        const fileName = value[0].response
-        if(fileName) {
-            deleteFile(fileName, {
-                onSuccess: () => {
-                    setVideoSrc('')
-                    setIsHaveFile(false)
-                }
-            })
-        }
+    const handleOnRemove = () => {
+        setVideoSrc('')
+        setIsHaveFile(false)
     }
 
     return (
@@ -51,13 +54,14 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
             name={name}
             control={control}
             render={({ field, fieldState: { error } }) => {
+                console.log(field.value)
                 return (
                     <Fragment>
                         {isHaveFile ?
                             <div className='h-full w-full'>
-                                <ReactPlayer width='100%' height='100%' url={videoSrc} controls={true} />
+                                <ReactPlayer width='100%' height='100%' url={videoSrc} controls={true} volume={0.5}/>
                                 <Button className='btn-outlined mt-3' onClick={() => {
-                                    handleOnRemove(field.value)
+                                    handleOnRemove()
                                     field.onChange([])
                                 }}>Xóa video</Button>
                             </div>
@@ -76,7 +80,7 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
                                 }}
                                 beforeUpload={beforeUpload}
                             >
-                                {!isHaveFile && <Button className='btn-outlined'>Tải video</Button>}
+                                {!isHaveFile && <Button loading={isLoading} className='btn-outlined'>Tải video</Button>}
                             </Upload>
                         }
                         <ValidateError error={error} />

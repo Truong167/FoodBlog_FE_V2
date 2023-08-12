@@ -1,6 +1,5 @@
 import { Fragment } from "react"
 import Section from "../../../../components/Section/Section"
-import { imageUrl } from "../../../../contants/constant"
 
 
 const Step: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps }) => {
@@ -14,7 +13,7 @@ const Step: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ Steps }) => {
                             <span><b>Bước {item.stepIndex}</b></span>
                             <p>{item.description}</p>
                             {item.image &&
-                                <img src={`${item.image.url}`} alt={`${item.stepId}`} className="w-44 h-44 object-cover mt-1 rounded" />
+                                <img src={`${item.image}`} alt={`${item.stepId}`} className="w-44 h-44 object-cover mt-1 rounded" />
                             }
                         </div>
                     )

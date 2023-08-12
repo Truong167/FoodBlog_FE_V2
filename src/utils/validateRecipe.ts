@@ -1,5 +1,4 @@
 import { number, object, string, array, mixed } from "yup";
-import { REGEX_NUMBER } from "../contants/regex";
 
 const validateIngredient = {
     amount: number()
@@ -9,11 +8,23 @@ const validateIngredient = {
 }
 
 const validateStep = {
-    description: string().required('Vui lòng nhập mô tả')
+    description: string()
+    .required('Vui lòng nhập mô tả')
+    .transform(value => {
+        return value.replace(/\s+/g, " ")
+    })
 }
 
 export const validateRecipe = object({
-    recipeName: string().required('Vui lòng nhập tên công thức'),
+    recipeName: string()
+    .required('Vui lòng nhập tên công thức')
+    .transform(value => {
+        return value.replace(/\s+/g, " ")
+    }),
+    description: string()
+    .transform(value => {
+        return value.replace(/\s+/g, " ")
+    }),
     amount: number()
     .required('Vui lòng nhập khẩu phần ăn')
     .min(1, 'Số khẩu phần ăn tối thiểu là 1')
@@ -27,13 +38,6 @@ export const validateRecipe = object({
     .required('Vui lòng nhập thời gian nấu nướng')
     .min(5, 'Thời gian nấu ăn tối thiểu là 5 phút')
     .typeError('Số khẩu phần ăn chỉ nhận số'),
-    video: mixed()
-    .test('file', 'Vui lòng chọn video', (value: any) => {
-        if(value && value.length > 0) {
-            return true
-        }
-        return false
-    }),
     image: mixed()
     .test('file', 'Vui lòng chọn hình', (value: any) => {
         if(value && value.length > 0) {

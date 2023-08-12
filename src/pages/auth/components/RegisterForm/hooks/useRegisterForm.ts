@@ -17,6 +17,7 @@ export const useRegisterForm = () => {
     const {
         control,
         handleSubmit,
+        setError
     } = useForm<AUTH.TRegisterParams>({
         resolver: yupResolver(registerValidattionSchema),
         defaultValues: {
@@ -42,10 +43,12 @@ export const useRegisterForm = () => {
                     notification.error({
                         message: 'Email đã tồn tại'
                     })
+                    setError('email', {message: 'Email đã tồn tại'})
                 } else if(data.status === 423) {
                     notification.error({
                         message: 'Tài khoản đã tồn tại'
                     })
+                    setError('accountName', {message: 'Tài khoản đã tồn tại'})
                 }
                 else if(data.status === 419) {
                     notification.error({

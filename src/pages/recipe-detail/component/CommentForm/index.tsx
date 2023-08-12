@@ -22,7 +22,7 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId }) => {
             <FormItem>
                 <div className="flex items-center gap-1">
                     <div className="h-[40px] w-[40px]">
-                        <img src={`${imageUrl}/${data.avatar}`} className="h-full w-full object-cover rounded-full" />
+                        {data && <img src={`${data.avatar}`} className="h-full w-full object-cover rounded-full" alt={data.avatar}/>}
                     </div>
                     <InputText
                         placeholder="Bình luận của bạn"

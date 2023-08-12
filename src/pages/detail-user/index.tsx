@@ -1,17 +1,33 @@
-import { useParams, useSearchParams } from "react-router-dom";
-import Section from "../../components/Section/Section";
+import { useParams } from "react-router-dom";
 import DefaultLayout from "../../components/layout/DefaultLayout/DefaultLayout";
 import DetailInfo from "./components/Info";
 import { Tabs, TabsProps } from "antd";
 import Recipe from "./components/Recipe";
 import BookMarkList from "./components/BookMarkList";
-import { useGetRecipeByUserId, useGetRecipeFavorite } from "../../services/Recipe/service";
+import {useGetMyRecipe, useGetRecipeByUserId, useGetRecipeFavorite } from "../../services/Recipe/service";
+import { useQueryClient } from "@tanstack/react-query";
 
 const DetailUser = () => {
   const { userId } = useParams();
-  const { data, isLoading } = useGetRecipeByUserId(userId || '')
+  const queryClient = useQueryClient()
+  const currentUser: AUTH.TUser | undefined = queryClient.getQueryData(['currentUser'])
+  const { data, isLoading } = useGetMyRecipe()
+  const {data: recipeByUserId, isLoading: recipeByUserIdLoading} = useGetRecipeByUserId(userId || '')
   const { data: recipes, isLoading: recipeFavoriteLoading } = useGetRecipeFavorite()
-  const items: TabsProps['items'] = [
+  const isMyProfile = currentUser?.userId === parseInt(userId || '') ? true : false
+  const itemDiffProfile: TabsProps['items'] = [
+    {
+      key: '1',
+      label: `Công thức`,
+      children: <Recipe data={recipeByUserId} isLoading={recipeByUserIdLoading}/>,
+    },
+    {
+      key: '2',
+      label: `Được gắn thẻ`,
+      children: 'Waitting to development',
+    },
+  ]
+  const itemMyProfile: TabsProps['items'] = [
     {
       key: '1',
       label: `Công thức`,
@@ -32,7 +48,7 @@ const DetailUser = () => {
   return (
     <DefaultLayout className="width">
       <DetailInfo userId={userId || ''}/>
-      <Tabs defaultActiveKey="1" items={items} centered size="large"/>
+      <Tabs defaultActiveKey="1" items={isMyProfile ? itemMyProfile : itemDiffProfile} centered size="large"/>
     </DefaultLayout>
   );
 };

@@ -17,23 +17,26 @@ const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
-        <Fragment>
-          <DatePicker
-            {...field}
-            value={field.value ? dayjs(field.value) : null}
-            format={format}
-            className={classNames(error ? `error` : `focus hover`, className)}
-            size={size}
-            onChange={(date, dateString) => {
-              field.onChange(date ? date.valueOf() : null);
-            }}
-          />
-          <ValidateError error={error} />
-        </Fragment>
-      )}
+      render={({ field, fieldState: { error } }) => {
+        console.log(field)
+        return (
+          <Fragment>
+            <DatePicker
+              {...field}
+              value={field.value ? dayjs(field.value) : null}
+              format={format}
+              className={classNames(error ? `error` : `focus hover`, className)}
+              size={size}
+              onChange={(date, dateString) => {
+                field.onChange(date ? date.valueOf() : null);
+              }}
+            />
+            <ValidateError error={error} />
+          </Fragment>
+        )}
+      }
     />
-  );
+  )
 };
 
 export default AntdDatePicker;

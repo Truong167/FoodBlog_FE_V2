@@ -11,7 +11,7 @@ declare namespace INGREDIENT {
     }
 
     type TDetailIngredientItem = {
-        ingredientId?: string, 
+        ingredientId: string, 
         amount: string, 
         name: string,
         unit?: string

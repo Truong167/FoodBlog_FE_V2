@@ -8,7 +8,9 @@ export const useIngredients = () => {
         queryKey: ['ingredientBySeason'],
         queryFn: fetchIngredient,
         onSuccess: (data) => {
-            queryClient.setQueryData(['ingredientName'], data[0].name)
+            if(data){
+                queryClient.setQueryData(['ingredientName'], data[0].name)
+            }
         },
         refetchOnWindowFocus: false,
         refetchOnMount: false,

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updatePrivacy, updateRecipe } from "./api-service";
+import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getMyRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updatePrivacy, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
 type TUpdateRecipeParams = {
@@ -32,6 +32,13 @@ export const useSearchRecipe = (q: string) => {
     return useQuery({
         queryKey: ['searchRecipe', q],
         queryFn: () => searchRecipe(q),
+    })
+}
+
+export const useGetMyRecipe = () => {
+    return useQuery({
+        queryKey: ['myRecipe'],
+        queryFn: getMyRecipe,
     })
 }
 
@@ -81,7 +88,9 @@ export const useRecipeByIngredient = () => {
 export const useRecipeByFollow = () => {
     const { isLoading, data, refetch } = useQuery({
         queryKey: ['recipeFollow'],
-        queryFn: () => fetchRecipeFromFollower()
+        queryFn: () => fetchRecipeFromFollower(),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
     return { isLoading, data, refetch }
 }
@@ -89,14 +98,18 @@ export const useRecipeByFollow = () => {
 export const useRecipePopular = () => {
     return useQuery({
         queryKey: ['recipePopular'],
-        queryFn: () => fetchRecipePopular()
+        queryFn: () => fetchRecipePopular(),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 }
 
 export const useRecipeById = (recipeId: any) => {
     return useQuery({
         queryKey: ['singleRecipe', recipeId],
-        queryFn: () => fetchSingleRecipe(recipeId)
+        queryFn: () => fetchSingleRecipe(recipeId),
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 }
 

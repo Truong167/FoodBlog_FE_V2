@@ -1,7 +1,5 @@
 import { Empty, Skeleton } from "antd"
 import Section from "../../../../components/Section/Section"
-import { useGetRecipeByUserId } from "../../../../services/Recipe/service"
-import { Fragment } from "react"
 import RecipeCard from "../../../../components/Recipe/RecipeItem/RecipeCard"
 
 const Recipe = ({ data, isLoading }: { data: Recipe.TRecipeResponse[], isLoading: boolean }) => {

@@ -29,18 +29,18 @@ const RecipeDetailPage = () => {
   const isDescription = data.description && data.description.length > 100
   return (
     <DefaultLayout className="width1">
-      <ReactPlayer url={`${data.video.url}`} playing={true} controls={true} width='100%' height='100%' />
+      {data.video && <ReactPlayer url={`${data.video}`} playing={true} controls={true} width='100%' height='100%' volume={0.1}/>}
       <Section>
         <Fragment>
           <h3>{data.recipeName}</h3>
-          <img src={`${data.image.url}`} className='w-full rounded-lg object-cover mt-3' alt={data.recipeName} />
+          <img src={`${data.image}`} className='w-full rounded-lg object-cover mt-3' alt={data.recipeName} />
         </Fragment>
       </Section>
       <Section>
         <Fragment>
           <Meta
             className="flex gap-4 mb-4"
-            avatar={<Avatar className="h-12 w-12" src={`${imageUrl + data.User.avatar}`} />}
+            avatar={<Avatar className="h-12 w-12" src={data.User.avatar} />}
             title={data.User.fullName}
             description={`Hiện đang sống tại ${data.User.address}`}
           />
@@ -82,7 +82,7 @@ const RecipeDetailPage = () => {
                     <Meta
                       className="flex gap-4 mb-4 w-full"
                       avatar={<Avatar className="h-12 w-12" src={`${item.User.avatar
-                        ? imageUrl + item.User.avatar
+                        ? item.User.avatar
                         : no_avatar
                         }`} />}
                       title={<h6>{item.User.fullName + " " + formatDate(item.date)}</h6>}

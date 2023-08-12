@@ -11,25 +11,21 @@ import { DATE_NORMAL } from '../../../contants/date-format'
 import AntdTextArea from '../../../components/UI/Input/TextArea'
 import { useEditProfile } from '../hooks/useEditProfile'
 
-const EditProfileForm = (user: any) => {
-    const {handleSubmit, onSubmit, control} = useEditProfile(user.user)
-
+const EditProfileForm = ({ user }: { user: AUTH.TUser }) => {
+    const { handleSubmit, onSubmit, control, isLoading } = useEditProfile(user)
+    const [form] = Form.useForm()
 
     return (
-        <DefaultLayout className="width1" type='edit' text='Cập nhật'>
+        <DefaultLayout className="width1" type='edit' text='Cập nhật' form={form} isLoading={isLoading}>
             <Section>
-                <Form layout='vertical' onFinish={handleSubmit(onSubmit)}>
-                    <div className='flex justify-center h-40'>
-                        <FormItem>
-                            <AntdUpload
-                                className='h-80 w-80'
-                                control={control}
-
-                                name='avatar'
-                                listType='picture-circle'
-                            />
-                        </FormItem>
-                    </div>
+                <Form form={form} layout='vertical' onFinish={handleSubmit(onSubmit)}>
+                    <FormItem className='flex justify-center mt-3 h-[150px]'>
+                        <AntdUpload
+                            control={control}
+                            name='avatar'
+                            listType='picture-circle'
+                        />
+                    </FormItem>
                     <FormItem label='Họ và tên'>
                         <InputText
                             name='fullName'
@@ -38,7 +34,7 @@ const EditProfileForm = (user: any) => {
                     </FormItem>
                     <FormItem label='Giới thiệu bản thân'>
                         <InputText
-                            name='fullName'
+                            name='introduce'
                             control={control}
                         />
                     </FormItem>
@@ -46,20 +42,20 @@ const EditProfileForm = (user: any) => {
                         <AntdDatePicker
                             className='w-full'
                             format={DATE_NORMAL}
-                            name='fullName'
+                            name='dateOfBirth'
                             control={control}
                         />
                     </FormItem>
                     <FormItem label='Email'>
                         <InputText
-                            name='fullName'
+                            name='email'
                             control={control}
                         />
                     </FormItem>
                     <FormItem label='Địa chỉ'>
                         <AntdTextArea
                             autoSize={true}
-                            name='fullName'
+                            name='address'
                             control={control}
                         />
                     </FormItem>

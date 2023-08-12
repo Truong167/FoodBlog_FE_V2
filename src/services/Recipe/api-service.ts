@@ -79,6 +79,18 @@ export async function fetchRecipePopular() {
     }
 }
 
+export async function getMyRecipe() {
+    try {
+        const result = await axios.get(`${API_ENDPOINT.GET_MY_RECIPE}`)
+        if (result.data.success) {
+            return result.data.data
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response.data.data
+        return { success: false, message: error.message }
+    }
+}
+
 export async function getRecipeByUserId(userId: string) {
     try {
         const result = await axios.get(`${API_ENDPOINT.GET_RECIPE_BY_USERID}/${userId}`)
@@ -202,7 +214,7 @@ export async function updateRecipe(recipeId: string, body: Partial<Recipe.TRecip
     try {
         const result = await axios.put(`${API_ENDPOINT.UPDATE_RECIPE + recipeId}`, body)
         if(result.data.success){
-          return result.data
+          return result
         }
       } catch (error: any) {
         if(error.response.data) return error.response

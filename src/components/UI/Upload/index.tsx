@@ -6,8 +6,6 @@ import { useDelete, useUpload } from '../../../services/Media/service';
 
 
 const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, listType, className }) => {
-    const checkIsHaveFile = control._defaultValues[name] ? true : false
-    const [isHaveFile, setIsHaveFile] = useState(checkIsHaveFile);
     const { mutate } = useUpload()
     const { mutate: deleteFile } = useDelete()
     const beforeUpload = (file: { type: string; name: any }) => {
@@ -54,12 +52,11 @@ const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, listType, clas
                             fileList={field.value}
                             onChange={(info) => {
                                 field.onChange(info.fileList);
-                                setIsHaveFile(info.fileList.length > 0);
                             }}
                             beforeUpload={beforeUpload}
                             onRemove={onRemove}
                         >
-                            {!isHaveFile && 'Tải hình'}
+                            {(!field.value || (Array.isArray(field.value) && field.value.length === 0)) && 'Tải hình'}
                         </Upload>
                         <ValidateError error={error} />
                     </Fragment>

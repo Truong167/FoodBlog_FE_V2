@@ -3,6 +3,7 @@ import { useAddRecipe } from "../../../services/Recipe/service";
 import { notification } from "antd";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { validateRecipe } from "../../../utils/validateRecipe";
+import { sumObjects } from "../../../utils/sumObject";
 
 export const useSubmit = () => {
     const { control, handleSubmit, formState: {errors} } = useForm<any>({
@@ -13,6 +14,7 @@ export const useSubmit = () => {
             DetailIngredients: [{ ingredientId: 'trungga', amount: '', unit: 'quả' }],
             Steps: [{ description: '', image: [] }],
         },
+        mode: 'all'
     })
 
     const { mutate, isLoading } = useAddRecipe()
@@ -23,7 +25,8 @@ export const useSubmit = () => {
             item.stepIndex = index + 1;
             return item
         })
-        const DetailIngredients = values.DetailIngredients.map(item => {
+        const DetailIngredients = sumObjects(values.DetailIngredients) 
+        DetailIngredients.map(item => {
             item.amount = item.amount + ' ' + item.unit
             return item
         })
@@ -31,7 +34,7 @@ export const useSubmit = () => {
             ...values,
             Steps: Steps,
             image: values.image[0].response,
-            video: values.video[0].response,
+            video: values.video ? values.video[0].response : null,
             DetailIngredients
         }
         mutate(validateData, {

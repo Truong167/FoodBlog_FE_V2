@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../contants/constant";
-import { getCurrentUser, login, register } from "./api-service";
+import { getCurrentUser, login, register, updateUser } from "./api-service";
 
 
 export const useLogin = () => {
@@ -42,4 +42,8 @@ export const useUser = () => {
         refetchOnWindowFocus: false
     })
     return { isLoading, data }
+}
+
+export const useUpdateUser = () => {
+    return useMutation((body: AUTH.TUser) => updateUser(body))
 }
