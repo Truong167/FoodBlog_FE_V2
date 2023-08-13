@@ -1,13 +1,11 @@
-import { Result, Skeleton } from "antd"
+import { Skeleton } from "antd"
 import { useGetFetchQuery } from "../../../../hooks/useGetQueryClient"
-import { useSetQuery } from "../../../../hooks/useSetQueryClient"
-import { useIngredientName, useIngredients } from "../../../../services/Ingredient/service"
+import { useIngredients } from "../../../../services/Ingredient/service"
 import { useRecipeByIngredient } from "../../../../services/Recipe/service"
-import IngredientList from "../../../Ingredient/IngredientList"
-import RecipeCard from "../../../Recipe/RecipeItem/RecipeCard"
-import RecipeList from "../../../Recipe/RecipeList"
-import Section from "../../../Section/Section"
 import { Fragment } from "react"
+import Section from "../../../../components/Section/Section"
+import IngredientList from "../../../../components/Ingredient/IngredientList"
+import RecipeList from "../../../../components/Recipe/RecipeList"
 
 
 const RecipeIngre = () => {

@@ -1,8 +1,8 @@
 import { Skeleton } from "antd"
 import { useRecipePopular } from "../../../../services/Recipe/service"
-import RecipeList from "../../../Recipe/RecipeList"
-import Section from "../../../Section/Section"
 import { Fragment } from "react"
+import Section from "../../../../components/Section/Section"
+import RecipeList from "../../../../components/Recipe/RecipeList"
 
 
 const RecipePopular = () => {

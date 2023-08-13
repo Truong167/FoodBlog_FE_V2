@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getUserById } from "./api-service";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { follow, getUserById, unfollow } from "./api-service";
 
 
 export const useGetUserById = (userId: string) => {
@@ -8,4 +8,12 @@ export const useGetUserById = (userId: string) => {
         queryFn: () => getUserById(userId),
         refetchOnWindowFocus: false
     })
+}
+
+export const useFollow = () => {
+    return useMutation((userId: string) => follow(userId))
+}
+
+export const useUnfollow = () => {
+    return useMutation((userId: string) => unfollow(userId))
 }

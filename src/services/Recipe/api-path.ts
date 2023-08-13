@@ -5,6 +5,9 @@ const FAVORITE_PATH = `${apiUrl}/favorite`
 
 const FETCH_COMMENTS_BY_RECIPE_ID = `${COMMENT_PATH}/getCommentOfRecipe`
 const CREATE_COMMENT = `${COMMENT_PATH}/createComment`
+const UPDATE_COMMENT = `${COMMENT_PATH}/updateComment`
+const DELETE_COMMENT = `${COMMENT_PATH}/deleteComment`
+
 
 const FETCH_RECIPE_BY_INGREDIENT = `${PATH}/getRecipeByIngredient`
 const FETCH_RECIPE_FROM_FOLLOWERS = `${PATH}/getRecipeFromFollowers`
@@ -47,7 +50,9 @@ export default {
     GET_MY_RECIPE,
     GET_RECIPE_BY_USERID,
     GET_RECIPE_FAVORITE,
-    UPDATE_PRIVACY_RECIPE
+    UPDATE_PRIVACY_RECIPE,
+    UPDATE_COMMENT,
+    DELETE_COMMENT
 }
 
 

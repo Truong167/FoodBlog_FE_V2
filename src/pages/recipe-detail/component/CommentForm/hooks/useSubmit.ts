@@ -1,17 +1,45 @@
 import { EmojiClickData } from "emoji-picker-react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useCreateComment } from "../../../../../services/Recipe/service";
+import {
+  useCreateComment,
+  useDeleteComment,
+  useUpdateComment,
+} from "../../../../../services/Recipe/service";
 import { notification } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 
-const useSubmitComment = (recipeId: string) => {
+const useSubmitComment = (
+  recipeId: string,
+  commentId: string,
+  type: string,
+  setIsDeleteModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setType: React.Dispatch<React.SetStateAction<string>>
+) => {
   const queryClient = useQueryClient();
   const { control, watch, setValue, handleSubmit, resetField } =
     useForm<Recipe.TComment>();
+  console.log(!!commentId);
   const { mutate } = useCreateComment();
+  const { mutate: deleteComment, isLoading: deleteCommentLoading } =
+    useDeleteComment();
+  const { mutate: updateComment} = useUpdateComment();
   const watchComment = watch("comment");
   const onEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
     setValue("comment", watchComment + emojiData.emoji);
+  };
+
+  const handleConfirm = () => {
+    deleteComment(commentId, {
+      onSuccess: (data) => {
+        if (data.status === 200) {
+          queryClient.invalidateQueries(["comment", recipeId]);
+          notification.success({
+            message: "Xóa bình luận thành công",
+          });
+        }
+        setIsDeleteModalOpen(false);
+      },
+    });
   };
 
   const onSubmit: SubmitHandler<Recipe.TComment> = (values) => {
@@ -19,29 +47,53 @@ const useSubmitComment = (recipeId: string) => {
       return;
     }
     const validateData = values.comment?.replace(/\s+/g, " ").trim();
-
-    mutate(
-      {
-        params: {
-          recipeId,
-          body: {
-            comment: validateData
+    if (type === "update") {
+      updateComment(
+        {
+          params: {
+            commentId,
+            body: {
+              comment: validateData,
+            },
           },
         },
-      },
-      {
-        onSuccess: (data) => {
-          if (data.status === 200) {
-            resetField("comment");
-            queryClient.invalidateQueries(["comment", recipeId]);
-            notification.success({
-              message: "Thêm bình luận thành công",
-            });
-          }
+        {
+          onSuccess: (data) => {
+            if (data.status === 200) {
+              resetField("comment");
+              queryClient.invalidateQueries(["comment", recipeId]);
+              notification.success({
+                message: "Sửa bình luận thành công",
+              });
+            }
+            setType('')
+          },
+        }
+      );
+    } else {
+      mutate(
+        {
+          params: {
+            recipeId,
+            body: {
+              comment: validateData,
+            },
+          },
         },
-        onError: (error) => {},
-      }
-    );
+        {
+          onSuccess: (data) => {
+            if (data.status === 200) {
+              resetField("comment");
+              queryClient.invalidateQueries(["comment", recipeId]);
+              notification.success({
+                message: "Thêm bình luận thành công",
+              });
+            }
+          },
+          onError: (error) => {},
+        }
+      );
+    }
   };
 
   return {
@@ -49,6 +101,10 @@ const useSubmitComment = (recipeId: string) => {
     onEmojiClick,
     handleSubmit,
     onSubmit,
+    setValue,
+    watch,
+    handleConfirm,
+    deleteCommentLoading,
   };
 };
 

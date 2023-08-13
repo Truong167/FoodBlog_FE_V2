@@ -1,8 +1,8 @@
 import { Fragment } from "react"
 import { useRecipeByFollow } from "../../../../services/Recipe/service"
-import RecipeList from "../../../Recipe/RecipeList"
-import Section from "../../../Section/Section"
 import { Skeleton } from "antd"
+import Section from "../../../../components/Section/Section"
+import RecipeList from "../../../../components/Recipe/RecipeList"
 
 
 const RecipeFollow = () => {

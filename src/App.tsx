@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Auth from './pages/auth/Auth'
-import PrivateRoutes from './components/PrivateRoutes/PrivateRoutes';
 import HomePage from './pages/home/HomePage';
 import RecipeDetailPage from './pages/recipe-detail/RecipeDetailPage';
 import AddRecipePage from './pages/create-recipe/AddRecipePage';
@@ -9,6 +8,7 @@ import EditProfilePage from './pages/edit-profile';
 import EditRecipePage from './pages/edit-recipe';
 import SearchResult from './pages/search-result';
 import DetailUser from './pages/detail-user';
+import PrivateRoutes from './components/layout/PrivateRoutes/PrivateRoutes';
 
 function App() {
 	return (

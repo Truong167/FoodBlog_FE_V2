@@ -253,10 +253,10 @@
     @apply bg-neutral-1 text-neutral-5 border-neutral-3;
   }
   .btn-text {
-    @apply text-primary-5 border-none border-0 drop-shadow-none;
+    @apply text-primary-1 border-none border-0 drop-shadow-none;
   }
   .ant-btn.btn-text:hover {
-    @apply text-primary-6;
+    @apply text-primary-1;
   }
   .ant-btn.btn-text:disabled {
     @apply text-neutral-5 bg-white;

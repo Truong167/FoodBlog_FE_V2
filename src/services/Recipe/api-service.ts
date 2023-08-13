@@ -27,6 +27,32 @@ export async function createComment(recipeId: string, body: Recipe.TComment) {
     }
 }
 
+export async function updateComment(commentId: string, body: Recipe.TComment) {
+    try {
+        const result = await axios.put(`${API_ENDPOINT.UPDATE_COMMENT}/${commentId}`, body)
+        if (result.data.success) {
+            return result
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response
+        return { success: false, message: error.message }
+    }
+}
+
+export async function deleteComment(commentId: string) {
+    try {
+        const result = await axios.delete(`${API_ENDPOINT.DELETE_COMMENT}/${commentId}`)
+        if (result.data.success) {
+            return result
+        }
+    } catch (error: any) {
+        if (error?.response?.data) return error.response
+        return { success: false, message: error.message }
+    }
+}
+
+
+
 export async function updatePrivacy(recipeId: number, body: Recipe.TStatus) {
     try {
         const result = await axios.put(`${API_ENDPOINT.UPDATE_PRIVACY_RECIPE}/${recipeId}`, body)
@@ -38,6 +64,8 @@ export async function updatePrivacy(recipeId: number, body: Recipe.TStatus) {
         return { success: false, message: error.message }
     }
 }
+
+
 
 
 export async function fetchRecipeByIngredient(name: any) {

@@ -5,7 +5,7 @@ import FormItem from "../UI/FormItem"
 import AntdUpload from "../UI/Upload"
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons"
 import AntdTextArea from "../UI/Input/TextArea"
-import { Dropdown, Menu, MenuProps } from "antd"
+import { Dropdown, MenuProps } from "antd"
 
 const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
     const { fields, append, remove, insert } = useFieldArray({
@@ -18,7 +18,7 @@ const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
         } else {
             remove(index)
         }
-      }
+    }
       
     const items: MenuProps['items'] = [
         {

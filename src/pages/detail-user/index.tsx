@@ -47,7 +47,7 @@ const DetailUser = () => {
 
   return (
     <DefaultLayout className="width">
-      <DetailInfo userId={userId || ''}/>
+      <DetailInfo userId={userId || ''} isMyProfile={isMyProfile}/>
       <Tabs defaultActiveKey="1" items={isMyProfile ? itemMyProfile : itemDiffProfile} centered size="large"/>
     </DefaultLayout>
   );

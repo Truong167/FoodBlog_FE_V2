@@ -1,9 +1,10 @@
 import { Button, Skeleton } from "antd"
 import { useGetUserById } from "../../../../services/User/service"
+import useInfo from "./hooks/useInfo"
 
-const DetailInfo = ({ userId }: { userId: string }) => {
+const DetailInfo = ({ userId, isMyProfile }: { userId: string, isMyProfile: boolean }) => {
     const { data, isLoading } = useGetUserById(userId || '')
-    const check = false
+    const {handleFollow, handleUnFollow, followLoading, unfollowLoading} = useInfo(userId)
     return (
         <div className="mb-5">
             {isLoading ?
@@ -18,9 +19,9 @@ const DetailInfo = ({ userId }: { userId: string }) => {
                     <div className="grid grid-rows-4">
                         <div className="flex gap-3 items-center">
                             <h4>{data?.fullName}</h4>
-                            {check && (data?.isFollow ?
-                                <Button size="middle" className="btn-filled">Đang theo dõi</Button> :
-                                <Button size="middle" className="btn-outlined">Theo dõi</Button>
+                            {!isMyProfile && (data?.isFollow ?
+                                <Button onClick={handleUnFollow} loading={unfollowLoading} size="middle" className="btn-filled">Đang theo dõi</Button> :
+                                <Button onClick={handleFollow} loading={followLoading} size="middle" className="btn-outlined">Theo dõi</Button>
                             )}
                         </div>
                         <div className="grid grid-cols-3">

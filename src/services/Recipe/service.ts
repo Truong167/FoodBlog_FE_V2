@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addRecipe, createComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getMyRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updatePrivacy, updateRecipe } from "./api-service";
+import { addRecipe, createComment, deleteComment, deleteRecipe, dislikeRecipe, fetchComments, fetchRecipeByIngredient, fetchRecipeFromFollower, fetchRecipePopular, fetchSingleRecipe, getMyRecipe, getRecipeByUserId, getRecipeFavorite, likeRecipe, searchRecipe, searchResultRecipe, updateComment, updatePrivacy, updateRecipe } from "./api-service";
 import { useIngredientName } from "../Ingredient/service";
 
 type TUpdateRecipeParams = {
@@ -8,6 +8,10 @@ type TUpdateRecipeParams = {
 
 type TCreateComment = {
     params: { recipeId: string; body: Recipe.TComment };
+};
+
+type TUpdateComment = {
+    params: { commentId: string; body: Recipe.TComment };
 };
 
 type TUpdatePrivacy = {
@@ -26,6 +30,14 @@ export const useCommentsById = (recipeId: any) => {
 
 export const useCreateComment = () => {
     return useMutation(({params: {recipeId, body}}: TCreateComment) => createComment(recipeId, body))
+}
+
+export const useUpdateComment = () => {
+    return useMutation(({params: {commentId, body}}: TUpdateComment) => updateComment(commentId, body))
+}
+
+export const useDeleteComment = () => {
+    return useMutation((commentId: string) => deleteComment(commentId))
 }
 
 export const useSearchRecipe = (q: string) => {

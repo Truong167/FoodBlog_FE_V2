@@ -629,11 +629,21 @@ p.normal-modal {
   height: 150px;
 }
 
-.ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload.ant-upload-select {
+.ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload.ant-upload-select {
   width: 150px;
   height: 150px;
 }
 
-.ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload-list.ant-upload-list-picture-circle .ant-upload-list-item-thumbnail img {
+.ant-upload-wrapper.ant-upload-picture-circle-wrapper
+  .ant-upload-list.ant-upload-list-picture-circle
+  .ant-upload-list-item-thumbnail
+  img {
   object-fit: cover;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0 !important;
+  display: none; 
+}
+
