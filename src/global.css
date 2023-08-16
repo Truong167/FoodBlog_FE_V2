@@ -647,3 +647,30 @@ p.normal-modal {
   display: none; 
 }
 
+.ant-checkbox-checked .ant-checkbox-inner {
+  border-color: #ff9933;
+  background-color: #ff9933;
+}
+
+.ant-checkbox-checked:not(.ant-checkbox-disabled):hover .ant-checkbox-inner {
+  background-color: #ff9933;
+  border-color: #ff9933;
+}
+
+.ant-checkbox:not(.ant-checkbox-disabled):hover .ant-checkbox-inner {
+  border-color: #ff9933;
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+  background-color: #ff9933;
+  border-color: #ff9933;
+}
+
+.ant-checkbox-checked:after {
+  border: 2px solid #ff9933;
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-checked:not(.ant-checkbox-disabled):after {
+  border-color: #ff9933;
+}
+

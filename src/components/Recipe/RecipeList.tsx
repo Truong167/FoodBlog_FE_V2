@@ -12,7 +12,7 @@ const RecipeList = ({ recipes }: { recipes: any }) => {
     infinite: true,
     speed: 500,
     slidesToShow: 4,
-    slidesToScroll: 2
+    slidesToScroll: 2,
   })
   return (
     <div className={classes.container}>

@@ -21,7 +21,7 @@ export const useSubmit = () => {
 
     const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {
         const Steps = values.Steps.map((item, index) => {
-            item.image = item.image.length > 0 ? item.image[0].response : null
+            item.image = item.image && Array.isArray(item.image) && item.image.length > 0 ? item.image[0].response : null
             item.stepIndex = index + 1;
             return item
         })
@@ -34,11 +34,12 @@ export const useSubmit = () => {
             ...values,
             Steps: Steps,
             image: values.image[0].response,
-            video: values.video ? values.video[0].response : null,
+            video: values.video && Array.isArray(values.video) && values.video.length > 0 ? values.video[0].response : null,
             DetailIngredients
         }
         mutate(validateData, {
             onSuccess: (data) => {
+                console.log(data)
                 if(data.status === 200) {
                     notification.success({
                         message: 'Thêm công thức thành công'

@@ -1,9 +1,9 @@
-import { CommentOutlined, EllipsisOutlined, HeartOutlined, SendOutlined } from "@ant-design/icons"
+import { CommentOutlined, EllipsisOutlined, HeartOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons"
 import FormItem from "../../../../components/UI/FormItem"
 import InputText from "../../../../components/UI/Input/Input"
 import EmojiPicker from "emoji-picker-react"
 import useSubmitComment from "./hooks/useSubmit"
-import { Avatar, Button, Dropdown, Form, MenuProps, Popover } from "antd"
+import { Avatar, Dropdown, Form, MenuProps, Popover } from "antd"
 import { Fragment, useState } from "react"
 import { useUser } from "../../../../services/Auth/service"
 import no_avatar from '../../../../assets/images/no_avatar.png'
@@ -22,14 +22,16 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
     const [commentId, setCommentId] = useState<string>('')
     const [type, setType] = useState<string>('create')
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
-    const { control, onEmojiClick, handleSubmit, onSubmit, setValue, handleConfirm, deleteCommentLoading } = useSubmitComment(recipeId, commentId, type, setIsDeleteModalOpen, setType)
+    const { control, onEmojiClick, handleSubmit, onSubmit, setValue, handleConfirm, deleteCommentLoading, setFocus } = useSubmitComment(recipeId, commentId, type, setIsDeleteModalOpen, setType)
     const { data } = useUser()
+    console.log(data)
     const handleActionComment = (e: any, commentId: number, comment: string) => {
         setCommentId(commentId.toString())
         console.log(e, comment)
         if (e.key === 'edit') {
             setType('update')
             setValue('comment', comment)
+            setFocus('comment')
         }
     }
     const items: MenuProps['items'] = [
@@ -60,7 +62,7 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
                 {comments && comments.comment.length > 0 ? (
                     comments.comment.map((item: any) => {
                         return (
-                            <div className="flex" key={item.id}>
+                            <div className="flex" key={item.commentId}>
                                 <Meta
                                     className="flex gap-4 mb-4 w-full"
                                     avatar={<Avatar className="h-12 w-12" src={`${item.User.avatar
@@ -90,7 +92,7 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
                 <FormItem>
                     <div className="flex items-center gap-1">
                         <div className="h-[40px] w-[40px]">
-                            {data && <img src={`${data.avatar}`} className="h-full w-full object-cover rounded-full" alt={data.avatar} />}
+                            {(data && data?.avatar) && <img src={data?.avatar ? data.avatar : no_avatar} className="h-full w-full object-cover rounded-full" alt={data.avatar} />}
                         </div>
                         <InputText
                             placeholder="Bình luận của bạn"
@@ -101,7 +103,7 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
                             suffix={
                                 <Fragment>
                                     <Popover zIndex={1} trigger="click" content={<EmojiPicker onEmojiClick={onEmojiClick} />} title="Title">
-                                        <HeartOutlined className="text-xl cursor-pointer" />
+                                        <SmileOutlined className="text-xl cursor-pointer" />
                                     </Popover>
                                     <SendOutlined className="ml-2 text-xl cursor-pointer" onClick={() => form.submit()} />
                                 </Fragment>

@@ -35,7 +35,9 @@ export const useIngredientName = () => {
 export const useGetALlIngredient = () => {
     return useQuery({
         queryKey: ['ingredients'],
-        queryFn: getAllIngredient
+        queryFn: getAllIngredient,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false
     })
 }
 

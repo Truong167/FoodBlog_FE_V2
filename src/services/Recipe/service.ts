@@ -93,7 +93,6 @@ export const useRecipeByIngredient = () => {
         queryKey: ['recipeByIngredient', name],
         queryFn: () => fetchRecipeByIngredient(name),
         refetchOnWindowFocus: false,
-        refetchOnMount: false
     })
 }
 
@@ -102,7 +101,6 @@ export const useRecipeByFollow = () => {
         queryKey: ['recipeFollow'],
         queryFn: () => fetchRecipeFromFollower(),
         refetchOnWindowFocus: false,
-        refetchOnMount: false
     })
     return { isLoading, data, refetch }
 }
@@ -112,7 +110,6 @@ export const useRecipePopular = () => {
         queryKey: ['recipePopular'],
         queryFn: () => fetchRecipePopular(),
         refetchOnWindowFocus: false,
-        refetchOnMount: false
     })
 }
 
@@ -121,7 +118,6 @@ export const useRecipeById = (recipeId: any) => {
         queryKey: ['singleRecipe', recipeId],
         queryFn: () => fetchSingleRecipe(recipeId),
         refetchOnWindowFocus: false,
-        refetchOnMount: false
     })
 }
 

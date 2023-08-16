@@ -16,7 +16,7 @@ const useSubmitComment = (
   setType: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const queryClient = useQueryClient();
-  const { control, watch, setValue, handleSubmit, resetField } =
+  const { control, watch, setValue, handleSubmit, resetField, setFocus } =
     useForm<Recipe.TComment>();
   console.log(!!commentId);
   const { mutate } = useCreateComment();
@@ -105,6 +105,7 @@ const useSubmitComment = (
     watch,
     handleConfirm,
     deleteCommentLoading,
+    setFocus
   };
 };
 

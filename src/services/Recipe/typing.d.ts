@@ -90,6 +90,8 @@ declare namespace Recipe {
         listType?: UploadListType
         suffix?: JSX.Element
         autoComplete?: string
+        defaultChecked?: boolean
+        value?: string
     };
 
     type TSelect = {

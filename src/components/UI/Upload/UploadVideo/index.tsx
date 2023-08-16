@@ -13,14 +13,21 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
     const [videoSrc, setVideoSrc] = useState(checkIsHaveFile ? control._defaultValues[name][0].url : '');
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { mutate } = useUpload()
-    const beforeUpload = (file: { type: string; name: any }) => {
+    const beforeUpload = (file: { type: string; name: any; size: number }) => {
         const isVideo = file.type.includes('video/mp4');
         if (!isVideo) {
             notification.error({
                 message: `${file.name} không phải là video`
             });
         }
-        return isVideo || Upload.LIST_IGNORE;
+        const isLimitFileSize = file.size / 1024 / 1024 < 100;
+        if (!isLimitFileSize) {
+            notification.error({
+                message: `Vui lòng gửi file nhỏ hơn 100MB`
+            });
+        }
+
+        return (isVideo && isLimitFileSize) || Upload.LIST_IGNORE;
     };
     const customRequest = (options: any) => {
         setIsLoading(true)
@@ -30,7 +37,7 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
         console.log('lallal')
         mutate(fmData, {
             onSuccess: (response) => {
-                if(response.data.success){
+                if (response.data.success) {
                     onSuccess(response.data.data)
                     setIsHaveFile(true)
                 } else {
@@ -59,7 +66,7 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
                     <Fragment>
                         {isHaveFile ?
                             <div className='h-full w-full'>
-                                <ReactPlayer width='100%' height='100%' url={videoSrc} controls={true} volume={0.5}/>
+                                <ReactPlayer width='100%' height='100%' url={videoSrc} controls={true} volume={0.5} />
                                 <Button className='btn-outlined mt-3' onClick={() => {
                                     handleOnRemove()
                                     field.onChange([])

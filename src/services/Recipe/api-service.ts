@@ -230,7 +230,7 @@ export async function addRecipe(body: Recipe.TRecipeParams) {
     try {
         const result = await axios.post(API_ENDPOINT.ADD_RECIPE, body)
         if(result.data.success){
-          return result.data
+          return result
         }
       } catch (error: any) {
         if(error.response.data) return error.response

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown, MenuProps, Skeleton } from 'antd';
-import { imageUrl } from '../../contants/constant';
-import { useUser } from '../../services/Auth/service';
+import no_avatar from '../../assets/images/no_avatar.png'
 import { Link } from 'react-router-dom';
 import { useAvatarDropDown } from './hooks/useAvatarDropDown';
 
@@ -50,7 +49,7 @@ const AvatarDropDown: React.FC = () => {
   return (
     <Dropdown overlayStyle={{position: 'fixed'}} menu={{items}} className='cursor-pointer'>
       <div className='flex justify-center items-center gap-2'>
-        <img className='w-8 h-8 object-cover rounded-full' src={`${data.avatar}`} alt='truong' />
+        <img className='w-8 h-8 object-cover rounded-full' src={data.avatar ? data.avatar : no_avatar} alt='truong' />
         <span>{data.fullName}</span>
       </div>
     </Dropdown>

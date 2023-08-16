@@ -6,6 +6,7 @@ import Recipe from "./components/Recipe";
 import BookMarkList from "./components/BookMarkList";
 import {useGetMyRecipe, useGetRecipeByUserId, useGetRecipeFavorite } from "../../services/Recipe/service";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRecipeList } from "../../services/RecipeList/service";
 
 const DetailUser = () => {
   const { userId } = useParams();
@@ -14,6 +15,7 @@ const DetailUser = () => {
   const { data, isLoading } = useGetMyRecipe()
   const {data: recipeByUserId, isLoading: recipeByUserIdLoading} = useGetRecipeByUserId(userId || '')
   const { data: recipes, isLoading: recipeFavoriteLoading } = useGetRecipeFavorite()
+  const {data: recipeList, isLoading: recipeListLoading} = useRecipeList()
   const isMyProfile = currentUser?.userId === parseInt(userId || '') ? true : false
   const itemDiffProfile: TabsProps['items'] = [
     {
@@ -36,7 +38,7 @@ const DetailUser = () => {
     {
       key: '2',
       label: `Đã lưu`,
-      children: <BookMarkList userId={userId || ''}/>,
+      children: <BookMarkList recipeList={recipeList} recipeListLoading={recipeListLoading}/>,
     },
     {
       key: '3',

@@ -23,6 +23,9 @@ export const validateRecipe = object({
     }),
     description: string()
     .transform(value => {
+        if(!value){
+            return
+        }
         return value.replace(/\s+/g, " ")
     }),
     amount: number()

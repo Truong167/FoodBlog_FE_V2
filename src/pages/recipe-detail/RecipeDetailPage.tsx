@@ -12,13 +12,16 @@ import { HeartFilled, HeartOutlined } from "@ant-design/icons"
 import ReactPlayer from "react-player"
 import CommentForm from "./component/CommentForm"
 import useRecipeDetail from "./hooks/useRecipeDetail"
-
+import { useUser } from "../../services/Auth/service"
+import no_avatar from '../../assets/images/no_avatar.png'
 
 const RecipeDetailPage = () => {
   const [showMore, setShowMore] = useState(false)
   const { id } = useParams()
   const { isLoading, data } = useRecipeById(id)
   const { data: comments } = useCommentsById(id)
+  const {data: currentUser} = useUser()
+  console.log(currentUser)
   const { handleFollow, handleUnFollow, followLoading, unfollowLoading, handleLike, handleUnLike } =
     useRecipeDetail((data && data?.User && data.User?.userId) ? data.User.userId : '', id || '')
   if (isLoading) {
@@ -39,14 +42,15 @@ const RecipeDetailPage = () => {
         <Fragment>
           <Meta
             className="flex gap-4 mb-4"
-            avatar={<Avatar className="h-12 w-12" src={data.User.avatar} />}
+            avatar={<Avatar className="h-12 w-12" src={data.User.avatar ? data.User.avatar : no_avatar} />}
             title={
               <div className="flex gap-4 items-center">
                 <Link to={`/user/${data.User.userId}`}>{data.User.fullName}</Link>
-                {
+                {currentUser?.userId !== data.User.userId && (
                   data.User.isFollow ?
                     <Button onClick={handleUnFollow} loading={unfollowLoading} size="middle" className="btn-filled">Đang theo dõi</Button> :
                     <Button onClick={handleFollow} loading={followLoading} size="middle" className="btn-outlined">Theo dõi</Button>
+                )
                 }
               </div>}
             description={`Hiện đang sống tại ${data.User.address}`}

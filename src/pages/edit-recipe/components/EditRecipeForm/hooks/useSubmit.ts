@@ -42,9 +42,9 @@ export const useSubmit = (
     const DetailIngredients = sumObjects(values.DetailIngredients)
     const validateDate = {
       ...values,
-      video: values.video[0].hasOwnProperty("response")
+      video: values.video && Array.isArray(values.video) && values.video.length > 0 ? values.video[0].hasOwnProperty("response")
         ? values.video[0].response
-        : values.video[0].url,
+        : values.video[0].url : null,
       image: values.image[0].hasOwnProperty("response")
         ? values.image[0].response
         : values.image[0].url,

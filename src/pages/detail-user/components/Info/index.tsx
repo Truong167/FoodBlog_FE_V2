@@ -1,6 +1,7 @@
 import { Button, Skeleton } from "antd"
 import { useGetUserById } from "../../../../services/User/service"
 import useInfo from "./hooks/useInfo"
+import no_avatar from '../../../../assets/images/no_avatar.png'
 
 const DetailInfo = ({ userId, isMyProfile }: { userId: string, isMyProfile: boolean }) => {
     const { data, isLoading } = useGetUserById(userId || '')
@@ -12,7 +13,7 @@ const DetailInfo = ({ userId, isMyProfile }: { userId: string, isMyProfile: bool
                 :
                 <div className="flex justify-center mt-5 gap-10">
                     <img
-                        src={data.avatar}
+                        src={data.avatar ? data.avatar : no_avatar}
                         alt={userId}
                         className="object-cover rounded-full w-[150px] h-[150px]"
                     />
@@ -29,7 +30,7 @@ const DetailInfo = ({ userId, isMyProfile }: { userId: string, isMyProfile: bool
                             <span><b>{data?.countFollowed}</b> người theo dõi</span>
                             <span><b>{data?.countFollowing}</b> người đang theo dõi</span>
                         </div>
-                        <div>Hiện đang sinh sống tại {data?.address}</div>
+                        {data?.address && <div>Hiện đang sinh sống tại {data?.address}</div>}
                         <div>
                             <p>{data?.introduce && data?.introduce}</p>
                         </div>
