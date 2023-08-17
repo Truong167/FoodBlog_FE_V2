@@ -10,4 +10,8 @@ declare namespace Recipe_List {
         name: string
         image: string
     }
+
+    type TCreateRecipeList = {
+        name?: string
+    }
 }

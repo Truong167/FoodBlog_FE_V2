@@ -5,6 +5,8 @@ import no_avatar from '../../../../assets/images/no_avatar.png'
 import { useRecipe } from "../../../../services/RecipeList/service"
 import { Link } from "react-router-dom"
 import { DeleteOutlined, GlobalOutlined, HeartFilled, HeartOutlined, LockOutlined } from "@ant-design/icons"
+import useDetailBookMark from "./hooks/useDetailBookMark"
+import ModalDelete from "../../../../components/ModalDelete"
 
 
 type TDetailBookMark = {
@@ -18,6 +20,7 @@ const { Meta } = Card
 
 const DetailBookMark: React.FC<TDetailBookMark> = ({ recipeListId }) => {
     const { data, isLoading } = useRecipe(recipeListId)
+    const {handleConfirmDelete, isLoading: deleteLoading, setRecipeId, setIsOpenModal, isOpenModal} = useDetailBookMark(recipeListId)
     console.log(data)
     return (
         <Fragment>
@@ -27,12 +30,10 @@ const DetailBookMark: React.FC<TDetailBookMark> = ({ recipeListId }) => {
                 <Fragment>
                     <div className="grid grid-cols-4 gap-y-4 gap-x-1">
                         {data.map((item: Recipe.TRecipeDetailResponse) => {
-                            const heartIcon = <div className='antd-card flex justify-center gap-2 items-center'>
-                                <p>{item.numberOfLikes}</p>
-                                {item.isFavorite ? <HeartFilled key="like" className='text-lg' style={{ color: 'red' }}  /> : <HeartOutlined className='text-lg' key="like" />}
-                            </div>
-                                const deleteIcon = <DeleteOutlined className='text-lg antd-card' />
-
+                                const deleteIcon = <DeleteOutlined className='text-lg antd-card' onClick={() => {
+                                    setRecipeId(item.recipeId)
+                                    setIsOpenModal(true)
+                                }}/>
                             return (
 
                                 <Card
@@ -65,6 +66,12 @@ const DetailBookMark: React.FC<TDetailBookMark> = ({ recipeListId }) => {
                 </Fragment> :
                 <Empty description={`Không có công thức`} />
             }
+            <ModalDelete
+        isLoading={deleteLoading}
+        isDeleteModalOpen={isOpenModal}
+        setIsDeleteModalOpen={setIsOpenModal}
+        handleConfirm={handleConfirmDelete}
+      />
         </Fragment>
     )
 }

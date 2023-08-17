@@ -4,7 +4,7 @@ import { Avatar, Card, Dropdown, MenuProps } from 'antd';
 import no_avatar from '../../../assets/images/no_avatar.png'
 import { Link } from 'react-router-dom';
 import { useDelete } from './hooks/useRecipeCard';
-import ModalDelete from './components/ModalDelete';
+import ModalDelete from '../../ModalDelete';
 import ModalPrivacy from './components/ModalPrivacy';
 import ModalRecipeList from './components/ModalRecipeList';
 

@@ -41,6 +41,31 @@ export async function getRecipe(recipeListId: number) {
 export async function createRecipeToBookMark(recipeId: number, body: Recipe_List.TCreateRecipeToBookMarkParams) {
     try {
         const response = await axios.post(`${API_ENDPOINTS.ADD_RECIPE_TO_BOOKMARK}/${recipeId}`, {recipeListDetail: body})
+        if(response.data.success){
+            return response
+        }
+    } catch (error: any) {
+        if(error?.response?.data) return error.response
+        return {success: false, message: error.message}
+    }
+}
+
+export async function createRecipeList(body: Recipe_List.TCreateRecipeList) {
+    try {
+        const response = await axios.post(`${API_ENDPOINTS.CREATE_RECIPE_LIST}`, body)
+        console.log(response)
+        if(response.data.success){
+            return response
+        }
+    } catch (error: any) {
+        if(error?.response?.data) return error.response
+        return {success: false, message: error.message}
+    }
+}
+
+export async function deleteRecipeInRecipeList(recipeListId: number, recipeId: number) {
+    try {
+        const response = await axios.delete(`${API_ENDPOINTS.DELETE_RECIPE_IN_RECIPE_LIST}/${recipeListId}/${recipeId}`)
         console.log(response)
         if(response.data.success){
             return response

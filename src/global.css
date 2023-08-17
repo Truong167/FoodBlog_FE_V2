@@ -674,3 +674,7 @@ p.normal-modal {
   border-color: #ff9933;
 }
 
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover .ant-checkbox-inner {
+  border-color: #ff9933;
+}
+

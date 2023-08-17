@@ -1,12 +1,46 @@
-import { Collapse, Empty, Skeleton } from "antd"
+import { Button, Collapse, Empty, Form, Skeleton } from "antd"
 import DetailBookMark from "../DetailBookMark"
+import InputText from "../../../../components/UI/Input/Input"
+import useBookmarkList from "./hooks/useBookmarkList"
+import FormItem from "../../../../components/UI/FormItem"
 
 const { Panel } = Collapse
 
 const BookMarkList = ({ recipeList, recipeListLoading }: { recipeList: any, recipeListLoading: boolean }) => {
     console.log(recipeList)
+    const { control, handleSubmit, isCreate, setIsCreate, onSubmit, clearErrors, isLoading } = useBookmarkList()
     return (
         <div className="mb-5">
+            {isCreate ?
+                <Form onFinish={handleSubmit(onSubmit)}>
+                    <div className="flex gap-2">
+                        <FormItem className="mb-0">
+                            <InputText
+                                placeholder="Tên danh sách"
+                                className="w-full"
+                                autoComplete='off'
+                                name="name"
+                                size='middle'
+                                control={control}
+                            />
+                        </FormItem>
+                        <div className="flex gap-[6px]">
+                            <Button loading={isLoading} htmlType="submit" className="btn-filled">Thêm</Button>
+                            <Button 
+                                className="btn-outlined" 
+                                onClick={() => {
+                                    setIsCreate(false)
+                                    clearErrors('name')
+                                }}
+                            >
+                                Hủy
+                            </Button>
+                        </div>
+                    </div>
+                </Form>
+                :
+                <Button className="btn-filled" onClick={() => setIsCreate(true)}>Thêm danh sách mới</Button>
+            }
             {recipeListLoading ? (
                 <Skeleton active />
             ) : recipeList ?
@@ -33,7 +67,7 @@ const BookMarkList = ({ recipeList, recipeListLoading }: { recipeList: any, reci
                                     </div>
                                 }
                             >
-                                <DetailBookMark recipeListId={item.recipeListId}/>
+                                <DetailBookMark recipeListId={item.recipeListId} />
                             </Panel>
                         </Collapse>
                     ))}

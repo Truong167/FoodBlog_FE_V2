@@ -43,14 +43,15 @@ const ModalRecipeList: React.FC<TModalRecipeList> = ({ bookmarkList, isRecipeLis
         </Fragment>,
       ]}
     >
-      <Form form={form} onFinish={handleSubmit(onSubmit)}>
+      <Form className="grid mt-5 mb-5 gap-4" layout="vertical" form={form} onFinish={handleSubmit(onSubmit)}>
         {fields.map((item: { recipeListId: number, name: string, isBookmarked: boolean }, index) => {
           return (
             <AntdCheckbox
-            defaultChecked={item.isBookmarked}
+              defaultChecked={item.isBookmarked}
               control={control}
               name={`recipeListDetail.${index}.isBookmarked`}
               value={item.name}
+              className="text-base"
             />
           )
         })}

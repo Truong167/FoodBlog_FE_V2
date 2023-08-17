@@ -4,6 +4,7 @@ import { notification } from "antd";
 import {
   useDislikeRecipe,
   useLikeRecipe,
+  useRecipeById,
 } from "../../../services/Recipe/service";
 
 const useRecipeDetail = (userId: string, recipeId: string) => {
@@ -11,6 +12,7 @@ const useRecipeDetail = (userId: string, recipeId: string) => {
   const { mutate: unfollow, isLoading: unfollowLoading } = useUnfollow();
   const { mutate: like } = useLikeRecipe();
   const { mutate: dislike } = useDislikeRecipe();
+  const {refetch} = useRecipeById(recipeId)
   const queryClient = useQueryClient();
 
   const handleFollow = () => {
@@ -42,7 +44,7 @@ const useRecipeDetail = (userId: string, recipeId: string) => {
   const handleLike = () => {
     like(parseInt(recipeId), {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["singleRecipe", recipeId]);
+        refetch()
       },
     });
   };
@@ -50,7 +52,7 @@ const useRecipeDetail = (userId: string, recipeId: string) => {
   const handleUnLike = () => {
     dislike(parseInt(recipeId), {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["singleRecipe", recipeId]);
+        refetch()
       },
     });
   };
