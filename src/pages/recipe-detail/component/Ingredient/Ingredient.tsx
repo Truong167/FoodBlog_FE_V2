@@ -15,7 +15,7 @@ const Ingredient: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({ amount, c
         <Section>
             <Fragment>
                 <h3>Nguyên liệu</h3>
-                <div className="flex mb-3">
+                <div className="flex flex-wrap mb-3">
                     <div className="mr-5 flex items-center justify-center">
                         <ClockCircleOutlined />
                         {preparationTime && <span className="ml-2">{formatTime(preparationTime)} chuẩn bị</span>}

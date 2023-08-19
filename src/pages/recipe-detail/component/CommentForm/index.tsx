@@ -91,9 +91,6 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
             <Form form={form} onFinish={handleSubmit(onSubmit)}>
                 <FormItem>
                     <div className="flex items-center gap-1">
-                        <div className="h-[40px] w-[40px]">
-                            {(data && data?.avatar) && <img src={data?.avatar ? data.avatar : no_avatar} className="h-full w-full object-cover rounded-full" alt={data.avatar} />}
-                        </div>
                         <InputText
                             placeholder="Bình luận của bạn"
                             autoComplete="off"
@@ -102,7 +99,7 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
                             size='large'
                             suffix={
                                 <Fragment>
-                                    <Popover zIndex={1} trigger="click" content={<EmojiPicker onEmojiClick={onEmojiClick} />} title="Title">
+                                    <Popover zIndex={1} trigger="click" content={<EmojiPicker width='100%' onEmojiClick={onEmojiClick} />} title="Title">
                                         <SmileOutlined className="text-xl cursor-pointer" />
                                     </Popover>
                                     <SendOutlined className="ml-2 text-xl cursor-pointer" onClick={() => form.submit()} />

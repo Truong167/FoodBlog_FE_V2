@@ -12,6 +12,7 @@ module.exports = {
 
         // Complex site-specific column configuration
         '4-custom': '1fr 200px 150px 20px',
+        '4-custom1': '100px 1fr 100px 20px',
         '3-custom1': '20px 1fr 20px',
 
       },

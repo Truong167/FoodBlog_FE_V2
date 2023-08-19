@@ -6,6 +6,8 @@ declare namespace AUTH {
     }
 
     type TLoginResult = {
+        message: any
+        error: any
         data?: { success: boolean, message: string, data: string },
         status?: number
     }

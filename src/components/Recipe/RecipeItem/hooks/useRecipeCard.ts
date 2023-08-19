@@ -63,12 +63,12 @@ export const useDelete = (
   const handleDislikeRecipe = () => {
     dislikeRecipe(recipeId, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["recipeFavorite"]);
-        queryClient.invalidateQueries(["searchResultRecipe"]);
         queryClient.invalidateQueries(["recipeByIngredient", ingredientName]);
         queryClient.invalidateQueries(["recipePopular"]);
         queryClient.invalidateQueries(["recipeFollow"]);
+        queryClient.invalidateQueries(["searchResultRecipe"]);
         queryClient.invalidateQueries(["recipeByUserId"]);
+        queryClient.invalidateQueries(["recipeFavorite"]);
         queryClient.invalidateQueries(["myRecipe"]);
         queryClient.invalidateQueries(["userById"]);
       },

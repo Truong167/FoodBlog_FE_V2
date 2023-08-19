@@ -43,7 +43,7 @@ const BookMarkList = ({ recipeList, recipeListLoading }: { recipeList: any, reci
             }
             {recipeListLoading ? (
                 <Skeleton active />
-            ) : recipeList ?
+            ) : (recipeList && Array.isArray(recipeList) && recipeList.length > 0) ?
                 <div className="mt-4 grid gap-y-3">
                     {recipeList.map((item: Recipe_List.TRecipeListResponse) => (
                         <Collapse
@@ -73,7 +73,7 @@ const BookMarkList = ({ recipeList, recipeListLoading }: { recipeList: any, reci
                     ))}
                 </div>
                 :
-                <Empty description={`Không có công thức`} />
+                <Empty description={`Không có danh sách nào`} />
             }
         </div>
     )

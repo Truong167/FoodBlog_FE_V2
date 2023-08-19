@@ -28,7 +28,7 @@ const DetailBookMark: React.FC<TDetailBookMark> = ({ recipeListId }) => {
                 <Skeleton active />
             ) : (data && Array.isArray(data) && data.length > 0) ?
                 <Fragment>
-                    <div className="grid grid-cols-4 gap-y-4 gap-x-1">
+                    <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-y-4 gap-x-1">
                         {data.map((item: Recipe.TRecipeDetailResponse) => {
                                 const deleteIcon = <DeleteOutlined className='text-lg antd-card' onClick={() => {
                                     setRecipeId(item.recipeId)

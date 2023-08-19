@@ -7,7 +7,6 @@ import { useAvatarDropDown } from './hooks/useAvatarDropDown';
 
 const AvatarDropDown: React.FC = () => {
   const {isLoading, data, logout} = useAvatarDropDown()
-  console.log(data)
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -25,16 +24,16 @@ const AvatarDropDown: React.FC = () => {
         </Link>
       ),
     },
+    // {
+    //   key: '3',
+    //   label: (
+    //     <Link to={'/'}>
+    //       Đổi mật khẩu
+    //     </Link>
+    //   ),
+    // },
     {
       key: '3',
-      label: (
-        <Link to={'/'}>
-          Đổi mật khẩu
-        </Link>
-      ),
-    },
-    {
-      key: '4',
       label: (
         <span onClick={logout}>
           Đăng xuất

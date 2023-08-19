@@ -19,7 +19,7 @@ const IngredientForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
         <Section>
             <Fragment>
                 <h3 className='mb-3'>Nguyên liệu</h3>
-                <div className="grid grid-cols-4-custom gap-2">
+                <div className="grid grid-cols-4-custom max-sm:grid-cols-4-custom1 gap-2">
                     {fields.map((field, index) => {
                         return (
                             <Fragment key={field.id}>

@@ -8,7 +8,7 @@ const Recipe = ({ data, isLoading }: { data: Recipe.TRecipeResponse[], isLoading
             {isLoading ? (
                 <Skeleton active />
             ) : data ?
-                <div className="grid grid-cols-4 gap-y-4 gap-x-1 mt-4">
+                <div className="grid grid-cols-4 max-sm:grid-cols-1 gap-y-4 gap-x-1 mt-4">
                     {data.map((item: any) => (
                         <RecipeCard {...item} key={item.recipeId} />
                     ))}

@@ -1,6 +1,6 @@
 import { FormInstance, notification } from "antd";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useUpdatePrivacy } from "../../../../../../services/Recipe/service";
+import { useGetRecipeByUserId, useUpdatePrivacy } from "../../../../../../services/Recipe/service";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIngredientName } from "../../../../../../services/Ingredient/service";
 
@@ -23,6 +23,7 @@ const useSubmit = (
   const {data: ingredientName} = useIngredientName()
   const queryClient = useQueryClient()
   const { mutate, isLoading } = useUpdatePrivacy();
+  const {refetch} = useGetRecipeByUserId('1')
 
   const handleConfirm = () => {
     form.submit();
@@ -46,10 +47,10 @@ const useSubmit = (
               "recipeByIngredient",
               ingredientName,
             ]);
+            queryClient.invalidateQueries(["myRecipe"]);
             queryClient.invalidateQueries(["recipePopular"]);
             queryClient.invalidateQueries(["recipeFollow"]);
             queryClient.invalidateQueries(["searchResultRecipe"]);
-            queryClient.invalidateQueries(["recipeByUserId"]);
             queryClient.invalidateQueries(["recipeFavorite"]);
           }
           setIsPrivacyModalOpen(false);

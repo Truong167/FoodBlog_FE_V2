@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { object, string } from "yup";
 import { useLogin } from "../../../../../services/Auth/service";
-import { useQueryClient } from "@tanstack/react-query";
+import {object, string} from 'yup'
 import { notification } from "antd";
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../../../../contants/constant";
 import axios from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useLoginForm = () => {
     const { isLoading, mutate } = useLogin();
@@ -42,9 +42,10 @@ export const useLoginForm = () => {
                     notification.error({
                         message: 'Tài khoản không tồn tại'
                     })
-                } else {
+                } 
+                else {
                     notification.error({
-                        message: 'Sai mật khẩu'
+                        message: `Sai mật khẩu: ${data.message}`
                     })
                 }
             },

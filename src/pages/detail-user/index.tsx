@@ -23,11 +23,6 @@ const DetailUser = () => {
       label: `Công thức`,
       children: <Recipe data={recipeByUserId} isLoading={recipeByUserIdLoading}/>,
     },
-    {
-      key: '2',
-      label: `Được gắn thẻ`,
-      children: 'Waitting to development',
-    },
   ]
   const itemMyProfile: TabsProps['items'] = [
     {

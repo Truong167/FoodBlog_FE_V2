@@ -41,7 +41,7 @@ const SearchContainer: React.FC = () => {
   );
   return (
     <div className="flex justify-center mt-3 w-full">
-      <div className="flex justify-center flex-col w-[50%] gap-8">
+      <div className="flex justify-center flex-col w-[50%] max-sm:w-[100%] gap-8">
         <div className="flex justify-center">
           <img src={logo} alt={logo} className="w-[40%]" />
         </div>
@@ -51,7 +51,7 @@ const SearchContainer: React.FC = () => {
             content={result}
             arrow={false}
             placement="bottom"
-            overlayStyle={{ width: "calc(31%)", height: "100px" }}
+            overlayClassName='w-[31%] max-sm:w-[90%]'
             zIndex={1}
           >
             <Input

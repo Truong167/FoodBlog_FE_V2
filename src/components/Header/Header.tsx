@@ -6,13 +6,22 @@ import { Form, Link } from 'react-router-dom';
 import SearchInput from '../Search/Search';
 import { PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
+import { useUser } from '../../services/Auth/service';
+import useViewport from '../../hooks/useViewPort';
+import Mobile from './component/Mobile';
 
 const Header = ({ type = 'normal', text, isLoading, form }: { text?: string, type?: string, isLoading?: boolean, form?: any }) => {
     const className = type === 'normal' ? 'grid' : 'flex'
     const isEdit = type === 'normal' ? false : true
+    const {isLoading: userLoading, data} = useUser()
+    console.log(data)
+    const {width: deviceWidth} = useViewport()
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const isValid = !userLoading && data
     return (
         <header className={styles.header}>
+            {isValid && <Mobile isOpen={isOpen} setIsOpen={setIsOpen} userId={data.userId} fullName={data.fullName}/>}
             <div className={styles.container}>
                 <div
                     className={styles.flex}
@@ -28,12 +37,20 @@ const Header = ({ type = 'normal', text, isLoading, form }: { text?: string, typ
                         :
                         (
                             <div className='flex justify-center items-center gap-7'>
-                                {/* <SearchInput /> */}
-                                <Link to={'/create-recipe'} className='flex justify-center items-center gap-1 hover:text-primary-1 ease-in-out'>
-                                    <PlusOutlined />
-                                    Viết món mới
-                                </Link>
-                                <AvatarDropDown />
+                                {deviceWidth < 476 ? 
+                                    <Fragment>
+                                        {!userLoading && data && data.avatar && <img onClick={() => setIsOpen(true)} className='w-8 h-8 object-cover rounded-full' src={data.avatar} alt='avatar'/>}
+                                    </Fragment>
+                                    :
+                                    <Fragment>
+
+                                        <Link to={'/create-recipe'} className='flex justify-center items-center gap-1 hover:text-primary-1 ease-in-out'>
+                                            <PlusOutlined />
+                                            Viết món mới
+                                        </Link>
+                                        <AvatarDropDown />
+                                    </Fragment>
+                                }
                             </div>
                         )
                     }
