@@ -1,4 +1,4 @@
-import { CommentOutlined, EllipsisOutlined, HeartOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons"
+import { CommentOutlined, EllipsisOutlined, SendOutlined, SmileOutlined } from "@ant-design/icons"
 import FormItem from "../../../../components/UI/FormItem"
 import InputText from "../../../../components/UI/Input/Input"
 import EmojiPicker from "emoji-picker-react"
@@ -23,11 +23,8 @@ const CommentForm: React.FC<TCommentFormProps> = ({ recipeId, comments }) => {
     const [type, setType] = useState<string>('create')
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false)
     const { control, onEmojiClick, handleSubmit, onSubmit, setValue, handleConfirm, deleteCommentLoading, setFocus } = useSubmitComment(recipeId, commentId, type, setIsDeleteModalOpen, setType)
-    const { data } = useUser()
-    console.log(data)
     const handleActionComment = (e: any, commentId: number, comment: string) => {
         setCommentId(commentId.toString())
-        console.log(e, comment)
         if (e.key === 'edit') {
             setType('update')
             setValue('comment', comment)

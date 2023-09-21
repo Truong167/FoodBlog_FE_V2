@@ -18,7 +18,6 @@ const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => {
-        console.log(field)
         return (
           <Fragment>
             <DatePicker

@@ -1,5 +1,5 @@
 import { Upload, notification } from 'antd';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../ValidateError';
 import { useDelete, useUpload } from '../../../services/Media/service';

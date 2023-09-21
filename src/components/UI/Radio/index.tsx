@@ -1,4 +1,4 @@
-import { Radio, Select } from 'antd';
+import { Radio } from 'antd';
 import { SizeType } from 'antd/es/config-provider/SizeContext';
 import React, { Fragment, ReactNode } from 'react';
 import { Controller } from 'react-hook-form';

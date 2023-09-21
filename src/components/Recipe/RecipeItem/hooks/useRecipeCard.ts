@@ -3,9 +3,7 @@ import {
   useDeleteRecipe,
   useDislikeRecipe,
   useLikeRecipe,
-  useRecipeByFollow,
   useRecipeByIngredient,
-  useRecipePopular,
 } from "../../../../services/Recipe/service";
 import React from "react";
 import { useQueryClient } from "@tanstack/react-query";

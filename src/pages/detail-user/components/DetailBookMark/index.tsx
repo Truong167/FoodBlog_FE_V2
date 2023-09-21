@@ -1,18 +1,14 @@
-import { Avatar, Button, Card, Empty, Modal, Skeleton } from "antd"
+import { Avatar, Card, Empty, Skeleton } from "antd"
 import React, { Fragment } from "react"
-import Section from "../../../../components/Section/Section"
 import no_avatar from '../../../../assets/images/no_avatar.png'
 import { useRecipe } from "../../../../services/RecipeList/service"
 import { Link } from "react-router-dom"
-import { DeleteOutlined, GlobalOutlined, HeartFilled, HeartOutlined, LockOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons"
 import useDetailBookMark from "./hooks/useDetailBookMark"
 import ModalDelete from "../../../../components/ModalDelete"
 
 
 type TDetailBookMark = {
-    //   isRecipeListModalOpen: boolean,
-    //   setIsRecipeListModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-    //   bookmarkList: { recipeListId: number, name: string, isBookmarked: boolean }[] | string,
     recipeListId: number
 }
 
@@ -21,7 +17,6 @@ const { Meta } = Card
 const DetailBookMark: React.FC<TDetailBookMark> = ({ recipeListId }) => {
     const { data, isLoading } = useRecipe(recipeListId)
     const {handleConfirmDelete, isLoading: deleteLoading, setRecipeId, setIsOpenModal, isOpenModal} = useDetailBookMark(recipeListId)
-    console.log(data)
     return (
         <Fragment>
             {isLoading ? (

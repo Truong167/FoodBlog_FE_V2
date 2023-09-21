@@ -3,7 +3,7 @@ import React, { Fragment, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import ValidateError from '../../ValidateError';
 import ReactPlayer from 'react-player';
-import { useDelete, useUpload } from '../../../../services/Media/service';
+import { useUpload } from '../../../../services/Media/service';
 
 
 
@@ -34,7 +34,6 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
         const { onSuccess, file } = options
         const fmData = new FormData();
         fmData.append('file', file);
-        console.log('lallal')
         mutate(fmData, {
             onSuccess: (response) => {
                 if (response.data.success) {
@@ -46,7 +45,6 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
                     })
                 }
                 setIsLoading(false)
-                console.log(response)
             }
         })
     }
@@ -61,7 +59,6 @@ const AntdUploadVideo: React.FC<Recipe.TPropsForm> = ({ control, name, listType,
             name={name}
             control={control}
             render={({ field, fieldState: { error } }) => {
-                console.log(field.value)
                 return (
                     <Fragment>
                         {isHaveFile ?

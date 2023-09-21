@@ -1,5 +1,4 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { imageUrl } from '../../../contants/constant'
 import classes from './IngredientItem.module.css'
 import React from 'react'
 

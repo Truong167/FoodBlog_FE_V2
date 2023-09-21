@@ -12,7 +12,6 @@ const StepForm: React.FC<Partial<Recipe.TPropsForm>> = ({ control }) => {
         control,
         name: 'Steps'
     })
-    console.log(control)
     const handleClick = (e: any, index: number) => {
         if(e.key === 'insert'){
             insert(index + 1, { description: '', image: [] })

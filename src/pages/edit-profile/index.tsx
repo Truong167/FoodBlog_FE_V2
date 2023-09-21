@@ -1,9 +1,5 @@
-
-import DefaultLayout from '../../components/layout/DefaultLayout/DefaultLayout'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { Form, Skeleton } from 'antd'
+import { Skeleton } from 'antd'
 import { useUser } from '../../services/Auth/service'
-import { useEditProfile } from './hooks/useEditProfile'
 import EditProfileForm from './components/EditProfileForm'
 import { Fragment } from 'react'
 

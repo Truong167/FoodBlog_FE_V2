@@ -1,6 +1,4 @@
-
 import DefaultLayout from '../../../components/layout/DefaultLayout/DefaultLayout'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import { Form } from 'antd'
 import Section from '../../../components/Section/Section'
 import AntdUpload from '../../../components/UI/Upload'

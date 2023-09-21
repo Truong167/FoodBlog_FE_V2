@@ -7,7 +7,6 @@ import FormItem from "../../../../components/UI/FormItem"
 const { Panel } = Collapse
 
 const BookMarkList = ({ recipeList, recipeListLoading }: { recipeList: any, recipeListLoading: boolean }) => {
-    console.log(recipeList)
     const { control, handleSubmit, isCreate, setIsCreate, onSubmit, clearErrors, isLoading } = useBookmarkList()
     return (
         <div className="mb-5">

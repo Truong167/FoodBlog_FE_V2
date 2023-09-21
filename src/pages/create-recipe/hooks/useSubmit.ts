@@ -6,7 +6,7 @@ import { validateRecipe } from "../../../utils/validateRecipe";
 import { sumObjects } from "../../../utils/sumObject";
 
 export const useSubmit = () => {
-    const { control, handleSubmit, formState: {errors} } = useForm<any>({
+    const { control, handleSubmit } = useForm<any>({
         resolver: yupResolver(validateRecipe),
         shouldFocusError: false,
         defaultValues: {
@@ -39,7 +39,6 @@ export const useSubmit = () => {
         }
         mutate(validateData, {
             onSuccess: (data) => {
-                console.log(data)
                 if(data.status === 200) {
                     notification.success({
                         message: 'Thêm công thức thành công'

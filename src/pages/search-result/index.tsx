@@ -1,16 +1,14 @@
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Section from "../../components/Section/Section";
 import DefaultLayout from "../../components/layout/DefaultLayout/DefaultLayout";
 import { useSearchResultRecipe } from "../../services/Recipe/service";
 import { Empty, Skeleton } from "antd";
 import { Fragment } from "react";
-import RecipeList from "../../components/Recipe/RecipeList";
 import RecipeCard from "../../components/Recipe/RecipeItem/RecipeCard";
 
 const SearchResult = () => {
   const { recipeName } = useParams();
   const { data, isLoading } = useSearchResultRecipe(recipeName || "");
-  console.log(data)
   
   return (
     <DefaultLayout className="width">

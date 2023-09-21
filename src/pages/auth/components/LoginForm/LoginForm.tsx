@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form } from 'antd';
 import { Link } from 'react-router-dom';
 import InputText from '../../../../components/UI/Input/Input';
 import InputPassword from '../../../../components/UI/Input/InputPassword';

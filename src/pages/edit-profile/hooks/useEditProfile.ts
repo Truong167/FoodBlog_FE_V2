@@ -21,7 +21,6 @@ export const useEditProfile = (data: AUTH.TUser) => {
   const {mutate, isLoading} = useUpdateUser()
 
   const onSubmit: SubmitHandler<AUTH.TUser> = (values) => {
-    console.log(values);
     const validateDate = {
       ...values,
       avatar: values.avatar && Array.isArray(values.avatar) && values.avatar.length > 0 

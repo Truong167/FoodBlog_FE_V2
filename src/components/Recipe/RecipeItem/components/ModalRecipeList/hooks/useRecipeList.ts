@@ -19,7 +19,6 @@ const useRecipeList = (recipeListDetail: {recipeListId: number, name: string, is
 
     const onSubmit: SubmitHandler<any> = (values) => {
         const validateData = values.recipeListDetail.filter((item: {recipeListId: number, name: string, isBookmarked: boolean}) => item.isBookmarked)
-        console.log(validateData)
         mutate({
             params: {
                 recipeId,

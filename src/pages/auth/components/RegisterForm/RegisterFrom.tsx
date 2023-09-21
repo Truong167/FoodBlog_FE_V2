@@ -1,7 +1,4 @@
-'use client';
-
-import { Button, Card, Col, Form, Input, Row, Space } from 'antd';
-import { Controller, useForm } from 'react-hook-form';
+import { Button, Form } from 'antd';
 import { Link } from 'react-router-dom';
 import InputText from '../../../../components/UI/Input/Input';
 import InputPassword from '../../../../components/UI/Input/InputPassword';

@@ -1,10 +1,8 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  useAddRecipe,
   useUpdateRecipe,
 } from "../../../../../services/Recipe/service";
-import { Steps, notification } from "antd";
-import { imageUrl } from "../../../../../contants/constant";
+import { notification } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { validateRecipe } from "../../../../../utils/validateRecipe";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,7 +17,6 @@ export const useSubmit = (
   const {
     control,
     handleSubmit,
-    formState: { dirtyFields },
   } = useForm<any>({
     resolver: yupResolver(validateRecipe),
     shouldFocusError: false,
@@ -65,7 +62,6 @@ export const useSubmit = (
         };
       }),
     };
-      console.log(validateDate)
     mutate(
       {
         params: {

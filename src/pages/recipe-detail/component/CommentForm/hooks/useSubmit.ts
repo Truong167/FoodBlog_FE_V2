@@ -18,7 +18,6 @@ const useSubmitComment = (
   const queryClient = useQueryClient();
   const { control, watch, setValue, handleSubmit, resetField, setFocus } =
     useForm<Recipe.TComment>();
-  console.log(!!commentId);
   const { mutate } = useCreateComment();
   const { mutate: deleteComment, isLoading: deleteCommentLoading } =
     useDeleteComment();

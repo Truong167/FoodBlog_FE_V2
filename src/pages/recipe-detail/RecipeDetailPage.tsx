@@ -21,7 +21,6 @@ const RecipeDetailPage = () => {
   const { isLoading, data } = useRecipeById(id)
   const { data: comments } = useCommentsById(id)
   const {data: currentUser} = useUser()
-  console.log(currentUser)
   const { handleFollow, handleUnFollow, followLoading, unfollowLoading, handleLike, handleUnLike } =
     useRecipeDetail((data && data?.User && data.User?.userId) ? data.User.userId : '', id || '')
   if (isLoading) {

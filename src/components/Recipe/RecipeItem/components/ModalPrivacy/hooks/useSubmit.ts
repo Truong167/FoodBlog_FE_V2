@@ -1,6 +1,6 @@
 import { FormInstance, notification } from "antd";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useGetRecipeByUserId, useUpdatePrivacy } from "../../../../../../services/Recipe/service";
+import { useUpdatePrivacy } from "../../../../../../services/Recipe/service";
 import { useQueryClient } from "@tanstack/react-query";
 import { useIngredientName } from "../../../../../../services/Ingredient/service";
 
@@ -14,7 +14,6 @@ const useSubmit = (
     control,
     handleSubmit,
     reset,
-    formState: { dirtyFields },
   } = useForm<any>({
     defaultValues: {
       status: status,
@@ -23,7 +22,6 @@ const useSubmit = (
   const {data: ingredientName} = useIngredientName()
   const queryClient = useQueryClient()
   const { mutate, isLoading } = useUpdatePrivacy();
-  const {refetch} = useGetRecipeByUserId('1')
 
   const handleConfirm = () => {
     form.submit();
