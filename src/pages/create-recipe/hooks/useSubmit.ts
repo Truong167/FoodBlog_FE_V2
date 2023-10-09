@@ -4,6 +4,7 @@ import { notification } from "antd";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { validateRecipe } from "../../../utils/validateRecipe";
 import { sumObjects } from "../../../utils/sumObject";
+import ERROR_CODE from "../../../contants/error-code";
 
 export const useSubmit = () => {
     const { control, handleSubmit } = useForm<any>({
@@ -39,13 +40,14 @@ export const useSubmit = () => {
         }
         mutate(validateData, {
             onSuccess: (data) => {
+                console.log(data)
                 if(data.status === 200) {
                     notification.success({
-                        message: 'Thêm công thức thành công'
+                        message: ERROR_CODE.SUCCESS_CREATE_RECIPE
                     })
                 } else if(data.status === 418) {
                     notification.error({
-                        message: 'Vui lòng nhập đầy đủ thông tin'
+                        message: data.data.message
                     })
                 }
             },

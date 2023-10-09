@@ -6,12 +6,13 @@ import { LOCAL_STORAGE_TOKEN_NAME } from "../../../../../contants/constant";
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
+import ERROR_CODE from "../../../../../contants/error-code"
 
 export const useLoginForm = () => {
     const { isLoading, mutate } = useLogin();
     const loginValidattionSchema = object({
-        accountName: string().required('Vui lòng nhập tên tài khoản'),
-        password: string().required('Vui lòng nhập mật khẩu')
+        accountName: string().required(ERROR_CODE.ACCOUNT_BLANK_ERROR),
+        password: string().required(ERROR_CODE.PASSWORD_BLANK_ERROR)
     })
     const {
         control,
@@ -31,7 +32,7 @@ export const useLoginForm = () => {
             onSuccess: (data: AUTH.TLoginResult) => {
                 if (data?.status === 200) {
                     notification.success({
-                        message: 'Đăng nhập thành công'
+                        message: ERROR_CODE.SUCCESS_LOGIN
                     })
                     const token = localStorage.getItem(LOCAL_STORAGE_TOKEN_NAME)
                     if (token) {
@@ -40,12 +41,12 @@ export const useLoginForm = () => {
                     queryClient.setQueryData(['isAuthenticated'], true)
                 } else if(data.status === 424) {
                     notification.error({
-                        message: 'Tài khoản không tồn tại'
+                        message: ERROR_CODE.ACCOUNT_EXIST_ERROR
                     })
                 } 
                 else {
                     notification.error({
-                        message: `Sai mật khẩu: ${data.message}`
+                        message: ERROR_CODE.WRONG_PASSWORD_ERROR
                     })
                 }
             },

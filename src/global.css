@@ -325,6 +325,10 @@ code {
     @apply border-primary-1;
   }
 
+  .border {
+    @apply border-black/30
+  }
+
   .suffix-color {
     @apply text-neutral-5;
   }
@@ -362,6 +366,10 @@ code {
   }
   .error-message {
     @apply text-error-5 text-error;
+  }
+  
+  :where(.css-dev-only-do-not-override-w8mnev).ant-input {
+    @apply border-black/25
   }
   /*
   //////////////////////////////////

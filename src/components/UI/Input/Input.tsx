@@ -30,7 +30,7 @@ const InputText: React.FC<Recipe.TPropsForm> = ({
             placeholder={placeholder}
             prefix={prefix}
             suffix={suffix}
-            className={classNames(error ? `error` : `focus hover`, className)}
+            className={classNames('border', error ? `error` : `focus hover`, className, "placeholder:text-black/60")}
           />
           <ValidateError error={error} />
         </Fragment>

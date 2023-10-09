@@ -26,7 +26,7 @@ const AntdTextArea: React.FC<Recipe.TPropsForm> = ({
             {...field}
             autoSize={autoSize}
             size={size}
-            className={classNames(error ? `error` : `focus hover`, className)}
+            className={classNames('border', error ? `error` : `focus hover`, className, "placeholder:text-black/60")}
             placeholder={placeholder}
           />
           <ValidateError error={error} />
