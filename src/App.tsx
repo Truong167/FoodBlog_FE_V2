@@ -9,6 +9,7 @@ import EditRecipePage from './pages/edit-recipe';
 import SearchResult from './pages/search-result';
 import DetailUser from './pages/detail-user';
 import PrivateRoutes from './components/layout/PrivateRoutes/PrivateRoutes';
+import { ChangePasswordPage } from './pages/change-password/ChangePasswordPage';
 
 function App() {
 	return (
@@ -43,6 +44,10 @@ function App() {
 
 				<Route element={<PrivateRoutes />}>
 					<Route path="user/:userId" element={<DetailUser />} />
+				</Route>
+
+				<Route element={<PrivateRoutes />}>
+					<Route path="change-password" element={<ChangePasswordPage />} />
 				</Route>
 			</Routes>
 		</Router>

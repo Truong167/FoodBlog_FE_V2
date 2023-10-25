@@ -44,7 +44,12 @@ const useRecipeDetail = (userId: string, recipeId: string) => {
   const handleLike = () => {
     like(parseInt(recipeId), {
       onSuccess: (data) => {
-        refetch()
+        console.log(data)
+        if(data.status === 200) {
+          // refetch()
+          queryClient.invalidateQueries(["singleRecipe", recipeId]);
+
+        }
       },
     });
   };
@@ -52,7 +57,12 @@ const useRecipeDetail = (userId: string, recipeId: string) => {
   const handleUnLike = () => {
     dislike(parseInt(recipeId), {
       onSuccess: (data) => {
-        refetch()
+        if(data.status === 200) {
+          // refetch()
+          queryClient.invalidateQueries(["singleRecipe", recipeId]);
+
+        }
+        console.log(data)
       },
     });
   };

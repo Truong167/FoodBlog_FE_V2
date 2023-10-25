@@ -25,7 +25,7 @@ const InputPassword: React.FC<Recipe.TPropsForm> = ({
             size={size}
             placeholder={placeholder}
             prefix={prefix}
-            className={classNames(error ? `error` : `focus hover`, className)}
+            className={classNames('border', error ? `error` : `focus hover`, className, "placeholder:text-black/60")}
           />
           <ValidateError error={error} />
         </Fragment>

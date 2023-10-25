@@ -1,12 +1,20 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../contants/constant";
-import { getCurrentUser, login, register, updateUser } from "./api-service";
+import { changePassword, getCurrentUser, login, register, updateUser } from "./api-service";
 
 
 export const useLogin = () => {
     const { isLoading, mutate } = useMutation({
         mutationFn: login,
+    });
+
+  return { isLoading, mutate };
+};
+
+export const useChangePassword = () => {
+    const { isLoading, mutate } = useMutation({
+        mutationFn: changePassword,
     });
 
   return { isLoading, mutate };

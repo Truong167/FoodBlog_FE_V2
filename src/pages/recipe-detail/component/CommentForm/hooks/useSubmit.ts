@@ -24,7 +24,7 @@ const useSubmitComment = (
   const { mutate: updateComment} = useUpdateComment();
   const watchComment = watch("comment");
   const onEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
-    setValue("comment", watchComment + emojiData.emoji);
+    setValue("comment", watchComment ? watchComment : '' + emojiData.emoji);
   };
 
   const handleConfirm = () => {

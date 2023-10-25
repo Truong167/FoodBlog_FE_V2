@@ -5,6 +5,7 @@ import React, { Fragment } from 'react';
 import { Controller } from 'react-hook-form';
 
 import ValidateError from '../ValidateError';
+import { RangePickerProps } from 'antd/es/date-picker';
 
 const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
   control,
@@ -12,7 +13,14 @@ const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
   format,
   className,
   size,
+  minAge = 18
 }) => {
+
+  console.log(dayjs().year())
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days before today and today
+    return current && dayjs().year() - current.year() < minAge;
+  };
   return (
     <Controller
       name={name}
@@ -22,6 +30,7 @@ const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
           <Fragment>
             <DatePicker
               {...field}
+              disabledDate={disabledDate}
               value={field.value ? dayjs(field.value) : null}
               format={format}
               className={classNames(error ? `error` : `focus hover`, className)}
@@ -32,7 +41,8 @@ const AntdDatePicker: React.FC<Recipe.TPropsForm> = ({
             />
             <ValidateError error={error} />
           </Fragment>
-        )}
+        )
+      }
       }
     />
   )

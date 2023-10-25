@@ -1,4 +1,4 @@
-import { GET_CURRENT_USER, UPDATE_USER, URL_LOGIN, URL_REGISTER } from "./api-path"
+import { CHANGE_PASSWORD, GET_CURRENT_USER, UPDATE_USER, URL_LOGIN, URL_REGISTER } from "./api-path"
 import axios from "axios"
 import { LOCAL_STORAGE_TOKEN_NAME } from "../../contants/constant"
 
@@ -9,6 +9,18 @@ export async function login(body: AUTH.TLoginParams) {
             localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.data)
         }
         return response
+    } catch (error : any) {
+        if(error?.response?.data) return error.response
+        return {success: false, message: error.message}
+    }
+}
+
+export async function changePassword(body: AUTH.TChangePasswordParams) {
+    try {
+        const response = await axios.put(CHANGE_PASSWORD, body)
+        if(response.data.success){
+            return response
+        }
     } catch (error : any) {
         if(error?.response?.data) return error.response
         return {success: false, message: error.message}

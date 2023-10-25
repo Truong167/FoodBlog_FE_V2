@@ -5,6 +5,12 @@ declare namespace AUTH {
         password: string
     }
 
+    type TChangePasswordParams = {
+        oldPassword: string,
+        newPassword: string,
+        checkPassword: string,
+    }
+
     type TLoginResult = {
         message: any
         error: any
@@ -23,7 +29,7 @@ declare namespace AUTH {
     type TUser = {
         address?: string
         avatar?: any
-        dateOfBirth?: string
+        dateOfBirth: string | undefined
         email: string
         fullName: string
         introduce?: string

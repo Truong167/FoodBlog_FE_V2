@@ -92,6 +92,7 @@ declare namespace Recipe {
         autoComplete?: string
         defaultChecked?: boolean
         value?: string
+        minAge?: number
     };
 
     type TSelect = {

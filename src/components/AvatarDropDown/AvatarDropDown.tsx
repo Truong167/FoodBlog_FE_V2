@@ -24,14 +24,14 @@ const AvatarDropDown: React.FC = () => {
         </Link>
       ),
     },
-    // {
-    //   key: '3',
-    //   label: (
-    //     <Link to={'/'}>
-    //       Đổi mật khẩu
-    //     </Link>
-    //   ),
-    // },
+    {
+      key: '3',
+      label: (
+        <Link to={'/change-password'}>
+          Đổi mật khẩu
+        </Link>
+      ),
+    },
     {
       key: '3',
       label: (
