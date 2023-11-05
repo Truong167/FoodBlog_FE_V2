@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 export const useSubmit = () => {
   const navigate = useNavigate();
-  const { control, handleSubmit } = useForm<any>({
+  const { control, handleSubmit, setError, setFocus } = useForm<any>({
     resolver: yupResolver(validateRecipe),
     shouldFocusError: false,
     defaultValues: {
@@ -23,6 +23,11 @@ export const useSubmit = () => {
   const { mutate, isLoading } = useAddRecipe();
 
   const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {
+    if (values.recipeName?.trim() === "") {
+      setFocus('recipeName')
+      setError('recipeName', { message: ERROR_CODE.RECIPE_NAME_BLANK_ERROR })
+      return;
+    }
     const Steps = values.Steps.map((item, index) => {
       item.image =
         item.image && Array.isArray(item.image) && item.image.length > 0

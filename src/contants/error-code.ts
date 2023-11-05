@@ -35,6 +35,14 @@ const COOKING_TIME_NUMBER_ERROR = COOKING_TIME + NUMBER_ERROR
 const AMOUNT_INGREDIENT_NUMBER_ERROR = AMOUNT_INGREDIENT + NUMBER_ERROR
 const DATEOFBIRTH_BLANK_ERROR = 'Vui lòng chọn ngày sinh'
 const ADDRESS_BLANK_ERROR = 'Vui lòng nhập địa chỉ'
+const UPDATE_PROFILE_SUCCESS = 'Cập nhật thông tin thành công'
+const UPDATE_RECIPE_SUCCESS = 'Cập nhật công thức thành công'
+const CHANGE_PASSWORD_SUCCESS = 'Đổi mật khẩu thành công'
+const BOOKMARK_BLANK_ERROR = 'Vui lòng nhập danh sách lưu'
+const CREATE_BOOKMARK_SUCCESS = 'Thêm danh sách lưu thành công'
+
+
+
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -73,7 +81,12 @@ export default {
     COOKING_TIME,
     AMOUNT_INGREDIENT,
     DATEOFBIRTH_BLANK_ERROR,
-    ADDRESS_BLANK_ERROR
+    ADDRESS_BLANK_ERROR,
+    UPDATE_PROFILE_SUCCESS,
+    UPDATE_RECIPE_SUCCESS,
+    CHANGE_PASSWORD_SUCCESS,
+    BOOKMARK_BLANK_ERROR,
+    CREATE_BOOKMARK_SUCCESS
 }
 
 

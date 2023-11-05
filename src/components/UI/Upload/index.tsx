@@ -8,14 +8,21 @@ import { useDelete, useUpload } from '../../../services/Media/service';
 const AntdUpload: React.FC<Recipe.TPropsForm> = ({ control, name, listType, className }) => {
     const { mutate } = useUpload()
     const { mutate: deleteFile } = useDelete()
-    const beforeUpload = (file: { type: string; name: any }) => {
+    const beforeUpload = (file: { type: string; name: any; size: number }) => {
         const isImage = file.type.includes('image');
         if (!isImage) {
             notification.error({
                 message: `${file.name} không phải là hình`
             });
         }
-        return isImage || Upload.LIST_IGNORE;
+
+        const isLimitFileSize = file.size / 1024 / 1024 < 5;
+        if (!isLimitFileSize) {
+            notification.error({
+                message: `Vui lòng gửi file nhỏ hơn 5MB`
+            });
+        }
+        return (isImage && isLimitFileSize) || Upload.LIST_IGNORE;
     };
 
     const customRequest = (options: any) => {

@@ -3,12 +3,13 @@ import { notification } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useChangePassword } from "../../../services/Auth/service";
 import { object, string } from "yup";
+import errorCode from "../../../contants/error-code";
 
 const validateChangePassword = object({
   oldPassword: string().required("Vui lòng nhập mật khẩu cũ"),
   newPassword: string()
     .required("Vui lòng nhập mật khẩu mới")
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{6,}$/, "Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt"),
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{7,}$/, "Mật khẩu có t phải có chữ hoa, chữ thường, số và ký tự đặc biệt"),
   checkPassword: string()
     .required('Vui lòng xác nhận mật khẩu')
 });
@@ -22,7 +23,7 @@ export const useSubmit = () => {
       newPassword: "",
       checkPassword: "",
     },
-    mode: "onBlur",
+    mode: "all",
   });
 
   const { mutate, isLoading } = useChangePassword();
@@ -33,7 +34,7 @@ export const useSubmit = () => {
         console.log(data)
         if(data.status === 200) {
             notification.success({
-                message: 'Đổi mật khẩu thành công'
+                message: errorCode.CHANGE_PASSWORD_SUCCESS
             })
         } else if(data.status === 425) {
             notification.error({
@@ -41,7 +42,7 @@ export const useSubmit = () => {
             })
         } else if(data.status === 419) {
             notification.error({
-                message: 'Xác thực mật khẩu không đúng'
+                message: errorCode.MATCH_PASSWORD_ERROR
             })
         }
        } 

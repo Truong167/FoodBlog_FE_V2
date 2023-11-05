@@ -6,6 +6,7 @@ import { validateRecipe } from "../../../../../utils/validateRecipe";
 import { useQueryClient } from "@tanstack/react-query";
 import { sumObjects } from "../../../../../utils/sumObject";
 import { useNavigate } from "react-router-dom";
+import errorCode from "../../../../../contants/error-code";
 
 export const useSubmit = (
   data: Partial<Recipe.TRecipeDetailResponse>,
@@ -75,20 +76,10 @@ export const useSubmit = (
           switch (data.status) {
             case 200:
               notification.success({
-                message: "Cập nhật công thức thành công",
+                message: errorCode.UPDATE_RECIPE_SUCCESS,
               });
               queryClient.invalidateQueries(["singleRecipe", recipeId]);
               navigate("/");
-              break;
-            case 418:
-              notification.warning({
-                message: "Vui lòng điền đầy đủ thông tin",
-              });
-              break;
-            case 432:
-              notification.warning({
-                message: "Công thức không tồn tại",
-              });
               break;
             default:
               break;

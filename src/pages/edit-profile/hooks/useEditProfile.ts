@@ -56,24 +56,14 @@ export const useEditProfile = (data: AUTH.TUser) => {
         switch (data.status) {
           case 200:
             notification.success({
-              message: "Cập nhật thông tin thành công",
-            });
-            break;
-          case 418:
-            notification.warning({
-              message: "Vui lòng nhập đầy đủ thông tin",
+              message: errorCode.UPDATE_PROFILE_SUCCESS,
             });
             break;
           case 422:
             notification.warning({
-              message: "Email đã tồn tại",
+              message: errorCode.EMAIL_UNIQUE_ERROR,
             });
-            setError("email", { message: "Email đã tồn tại" });
-            break;
-          case 400:
-            notification.warning({
-              message: "Người dùng không tồn tại",
-            });
+            setError("email", { message: errorCode.EMAIL_UNIQUE_ERROR });
             break;
           default:
             break;
