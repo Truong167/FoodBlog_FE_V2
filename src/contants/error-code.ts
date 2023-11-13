@@ -40,12 +40,15 @@ const UPDATE_RECIPE_SUCCESS = 'Cập nhật công thức thành công'
 const CHANGE_PASSWORD_SUCCESS = 'Đổi mật khẩu thành công'
 const BOOKMARK_BLANK_ERROR = 'Vui lòng nhập danh sách lưu'
 const CREATE_BOOKMARK_SUCCESS = 'Thêm danh sách lưu thành công'
+const INTRODUCE_BLANK_ERROR = 'Vui lòng giới thiệu bản thân'
+
 
 
 
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
+    INTRODUCE_BLANK_ERROR,
     FULL_NAME_BLANK_ERROR,
     EMAIL_BLANK_ERROR,
     EMAIL_FORMAT_ERROR,

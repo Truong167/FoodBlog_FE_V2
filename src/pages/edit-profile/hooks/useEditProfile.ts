@@ -9,13 +9,14 @@ import errorCode from "../../../contants/error-code";
 export const useEditProfile = (data: AUTH.TUser) => {
   const userValidattionSchema = object({
     fullName: string().required(errorCode.FULL_NAME_BLANK_ERROR),
+    introduce: string().required(errorCode.INTRODUCE_BLANK_ERROR),
     dateOfBirth: string().required(errorCode.DATEOFBIRTH_BLANK_ERROR),
     email: string()
       .email(errorCode.EMAIL_FORMAT_ERROR)
       .required(errorCode.EMAIL_BLANK_ERROR),
     address: string().required(errorCode.ADDRESS_BLANK_ERROR),
   });
-  const { control, handleSubmit, setError } = useForm<any>({
+  const { control, handleSubmit, setError, formState: {dirtyFields} } = useForm<any>({
     resolver: yupResolver(userValidattionSchema),
     defaultValues: {
       ...data,
@@ -37,10 +38,10 @@ export const useEditProfile = (data: AUTH.TUser) => {
   }
 
   const onSubmit: SubmitHandler<AUTH.TUser> = (values) => {
-   console.log(convertToISOString(values.dateOfBirth))
+   console.log(convertToISOString(values.dateOfBirth), values)
     const validateDate = {
       ...values,
-      dateOfBirth: convertToISOString(values.dateOfBirth),
+      dateOfBirth: dirtyFields.dateOfBirth ? convertToISOString(values.dateOfBirth) : undefined,
       avatar:
         values.avatar &&
         Array.isArray(values.avatar) &&

@@ -60,12 +60,12 @@ export const useRegisterForm = () => {
             setError("accountName", { message: ERROR_CODE.ACCOUNT_UNIQUE_ERROR });
             break;
           case 419:
-            notification.success({
+            notification.error({
               message: ERROR_CODE.MATCH_PASSWORD_ERROR,
             });
             break;
           case 420:
-            notification.success({
+            notification.error({
               message: ERROR_CODE.PASSWORD_FORMAT_ERROR,
             });
             break;

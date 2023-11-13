@@ -16,7 +16,7 @@ const useSubmitComment = (
   setType: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const queryClient = useQueryClient();
-  const { control, watch, setValue, handleSubmit, resetField, setFocus } =
+  const { control, watch, setValue, handleSubmit, resetField, setFocus, getValues } =
     useForm<Recipe.TComment>();
   const { mutate } = useCreateComment();
   const { mutate: deleteComment, isLoading: deleteCommentLoading } =
@@ -24,7 +24,7 @@ const useSubmitComment = (
   const { mutate: updateComment} = useUpdateComment();
   const watchComment = watch("comment");
   const onEmojiClick = (emojiData: EmojiClickData, event: MouseEvent) => {
-    setValue("comment", watchComment ? watchComment : '' + emojiData.emoji);
+    setValue("comment", getValues('comment') + emojiData.emoji);
   };
 
   const handleConfirm = () => {
@@ -60,6 +60,7 @@ const useSubmitComment = (
           onSuccess: (data) => {
             if (data.status === 200) {
               resetField("comment");
+              setValue('comment', '')
               queryClient.invalidateQueries(["comment", recipeId]);
               notification.success({
                 message: "Sửa bình luận thành công",
@@ -83,6 +84,7 @@ const useSubmitComment = (
           onSuccess: (data) => {
             if (data.status === 200) {
               resetField("comment");
+              setValue('comment', '')
               queryClient.invalidateQueries(["comment", recipeId]);
               notification.success({
                 message: "Thêm bình luận thành công",

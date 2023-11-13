@@ -9,7 +9,7 @@ const validateChangePassword = object({
   oldPassword: string().required("Vui lòng nhập mật khẩu cũ"),
   newPassword: string()
     .required("Vui lòng nhập mật khẩu mới")
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{7,}$/, "Mật khẩu có t phải có chữ hoa, chữ thường, số và ký tự đặc biệt"),
+    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{7,}$/, "Mật khẩu phải có chữ hoa, chữ thường, số và ký tự đặc biệt"),
   checkPassword: string()
     .required('Vui lòng xác nhận mật khẩu')
 });
