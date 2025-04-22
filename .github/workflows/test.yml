@@ -59,8 +59,9 @@ jobs:
             escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
             echo "Processing file: $file (escaped: $escaped_file)\n"
             if [[ "$file" == *.spec.* ]]; then
+              quoted_file="\"$file\""
               echo "Running test for spec file: $file (escaped: $escaped_file)"
-              npm test "$escaped_file" # Sử dụng đường dẫn đã escape
+              npm test "$quoted_file" # Sử dụng đường dẫn đã escape
             elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
               base_name=$(basename "$file" .ts)
               base_name="${base_name%.tsx}"
@@ -81,11 +82,12 @@ jobs:
                 "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
               )
               found_test_file=""
-              escaped_test_file=""
+              quoted_test_file=""
               for test_path in "${possible_test_files[@]}"; do
                 echo "Checking for test file: $test_path"
                 if [ -f "$test_path" ]; then
                   found_test_file="$test_path"
+                  quoted_test_file="\"$test_path\""
                   # Escape các ký tự đặc biệt trong đường dẫn file test
                   escaped_test_file=$(printf '%s\n' "$test_path" | sed 's/[][()_ ]/\\&/g')
                   break
@@ -93,8 +95,8 @@ jobs:
               done
 
               if [[ -n "$found_test_file" ]]; then
-                echo "Running test for $file (found test file: $found_test_file, escaped: $escaped_test_file)"
-                npm test "$escaped_test_file" # Sử dụng đường dẫn đã escape
+                echo "Running test for $file (found test file: $found_test_file, escaped: $quoted_test_file)"
+                npm test "$quoted_test_file" # Sử dụng đường dẫn đã escape
               else
                 echo "Skipping test for $file (no related test file found)"
               fi
