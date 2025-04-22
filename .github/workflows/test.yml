@@ -52,7 +52,7 @@ jobs:
         id: changed_files
         run: |
           git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx' | tr ' ' '\n')
+          CHANGED_FILES=$(git diff -z --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
           echo "Changed files: $CHANGED_FILES"
           echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
