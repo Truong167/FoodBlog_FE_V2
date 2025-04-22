@@ -2,8 +2,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useAddRecipe } from "../../../services/Recipe/service";
 import { notification } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validateRecipe } from "../../../utils/validateRecipe";
-import { sumObjects } from "../../../utils/sumObject";
+import { validateRecipe } from "../../../(utils)/validateRecipe";
+import { sumObjects } from "../../../(utils)/sumObject";
 import ERROR_CODE from "../../../contants/error-code";
 import { useNavigate } from "react-router-dom";
 
@@ -24,8 +24,8 @@ export const useSubmit = () => {
 
   const onSubmit: SubmitHandler<Recipe.TRecipeParams> = (values) => {
     if (values.recipeName?.trim() === "") {
-      setFocus('recipeName')
-      setError('recipeName', { message: ERROR_CODE.RECIPE_NAME_BLANK_ERROR })
+      setFocus("recipeName");
+      setError("recipeName", { message: ERROR_CODE.RECIPE_NAME_BLANK_ERROR });
       return;
     }
     const Steps = values.Steps.map((item, index) => {
@@ -58,12 +58,12 @@ export const useSubmit = () => {
           notification.success({
             message: ERROR_CODE.SUCCESS_CREATE_RECIPE,
           });
-          navigate('/')
+          navigate("/");
         } else if (data.status === 418) {
           notification.error({
             message: data.data.message,
           });
-        } else if(data.status === 500) {
+        } else if (data.status === 500) {
           notification.error({
             message: data.data.message,
           });
