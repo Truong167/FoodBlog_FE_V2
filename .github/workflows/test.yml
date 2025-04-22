@@ -71,6 +71,7 @@ jobs:
             elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
               base_name=$(basename "$file" .$(echo "$file" | awk -F'.' '{print $(NF-1)}').$(echo "$file" | awk -F'.' '{print $NF}'))
               file_dir=$(dirname "$file")
+              echo "Base name: $base_name, File directory: $file_dir"
               possible_test_files=(
                 "$file_dir/${base_name}.spec.ts"
                 "$file_dir/${base_name}.test.ts"
