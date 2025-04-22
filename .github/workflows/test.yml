@@ -54,11 +54,11 @@ jobs:
           git fetch origin ${{ github.base_ref }}
           CHANGED_FILES=$(git diff -z --name-only origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
           printf "%s\n" "$CHANGED_FILES" | tr '\0' '\n'
-          echo "CHANGED_FILES=$changed_files" >> "$GITHUB_OUTPUT"
+          echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Find and run tests
         run: |
-          CHANGED_FILES="${{ steps.changed_files.outputs.CHANGED_FILES }}"
+          CHANGED_FILES="${{ steps.CHANGED_FILES.outputs.CHANGED_FILES }}"
           IFS=$'\n'
           echo "Changed files: $CHANGED_FILES"
           for file in $CHANGED_FILES; do
