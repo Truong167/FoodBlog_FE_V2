@@ -52,7 +52,6 @@ jobs:
         run: |
           git fetch origin ${{ github.base_ref }}
           CHANGED_FILES=$(git diff --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
-          CHANGED_FILES="${{ steps.changed_files.outputs.CHANGED_FILES }}"
           IFS=$'\n'
           tested_files=() # Mảng để theo dõi các file test đã được lên lịch chạy
 
