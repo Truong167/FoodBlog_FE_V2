@@ -52,13 +52,13 @@ jobs:
         id: changed_files
         run: |
           git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff -z --name-only origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx' | tr '\n' ' ')
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx' | tr '\n' ' ')
+          echo "Changed files: $CHANGED_FILES"
           echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Find and run tests
         run: |
           CHANGED_FILES="${{ steps.CHANGED_FILES.outputs.CHANGED_FILES }}"
-          echo "Changed files: $CHANGED_FILES"
           while IFS= read -r file; do
             # Escape các ký tự đặc biệt trong đường dẫn file
             escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
