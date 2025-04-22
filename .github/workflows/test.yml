@@ -59,52 +59,53 @@ jobs:
         run: |
           CHANGED_FILES="${{ steps.CHANGED_FILES.outputs.CHANGED_FILES }}"
           IFS=$'\n'
-          echo "Changed files: $CHANGED_FILES"
-          set -x # Bật chế độ debug để xem vòng lặp chạy như thế nào
-          for file in $CHANGED_FILES; do
-            # Escape các ký tự đặc biệt trong đường dẫn file
-            escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
-            echo "Processing file: $file (escaped: $escaped_file)\n"
-            if [[ "$file" == *.spec.* ]]; then
-              echo "Running test for spec file: $file (escaped: $escaped_file)"
-              npm test "$escaped_file" # Sử dụng đường dẫn đã escape
-            elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
-              base_name=$(basename "$file" .ts)
-              base_name="${base_name%.tsx}"
-              file_dir=$(dirname "$file")
-              echo "Base name: $base_name, File directory: $file_dir"
-              possible_test_files=(
-                "$file_dir/${base_name}.spec.ts"
-                "$file_dir/${base_name}.test.ts"
-                "$file_dir/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$file_dir/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
-                "$file_dir/__tests__/${base_name}.spec.ts"
-                "$file_dir/__tests__/${base_name}.test.ts"
-                "$file_dir/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$file_dir/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
-                "$(dirname "$file_dir")/__tests__/${base_name}.spec.ts"
-                "$(dirname "$file_dir")/__tests__/${base_name}.test.ts"
-                "$(dirname "$file_dir")/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
-              )
-              found_test_file=""
-              escaped_test_file=""
-              for test_path in "${possible_test_files[@]}"; do
-                echo "Checking for test file: $test_path"
-                if [ -f "$test_path" ]; then
-                  found_test_file="$test_path"
-                  # Escape các ký tự đặc biệt trong đường dẫn file test
-                  escaped_test_file=$(printf '%s\n' "$test_path" | sed 's/[][()_ ]/\\&/g')
-                  break
-                fi
-              done
+          while IFS= read -r file; do
+            echo "Changed files: $CHANGED_FILES"
+            set -x # Bật chế độ debug để xem vòng lặp chạy như thế nào
+            for file in $CHANGED_FILES; do
+              # Escape các ký tự đặc biệt trong đường dẫn file
+              escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
+              echo "Processing file: $file (escaped: $escaped_file)\n"
+              if [[ "$file" == *.spec.* ]]; then
+                echo "Running test for spec file: $file (escaped: $escaped_file)"
+                npm test "$escaped_file" # Sử dụng đường dẫn đã escape
+              elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
+                base_name=$(basename "$file" .ts)
+                base_name="${base_name%.tsx}"
+                file_dir=$(dirname "$file")
+                echo "Base name: $base_name, File directory: $file_dir"
+                possible_test_files=(
+                  "$file_dir/${base_name}.spec.ts"
+                  "$file_dir/${base_name}.test.ts"
+                  "$file_dir/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                  "$file_dir/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                  "$file_dir/__tests__/${base_name}.spec.ts"
+                  "$file_dir/__tests__/${base_name}.test.ts"
+                  "$file_dir/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                  "$file_dir/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                  "$(dirname "$file_dir")/__tests__/${base_name}.spec.ts"
+                  "$(dirname "$file_dir")/__tests__/${base_name}.test.ts"
+                  "$(dirname "$file_dir")/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                  "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                )
+                found_test_file=""
+                escaped_test_file=""
+                for test_path in "${possible_test_files[@]}"; do
+                  echo "Checking for test file: $test_path"
+                  if [ -f "$test_path" ]; then
+                    found_test_file="$test_path"
+                    # Escape các ký tự đặc biệt trong đường dẫn file test
+                    escaped_test_file=$(printf '%s\n' "$test_path" | sed 's/[][()_ ]/\\&/g')
+                    break
+                  fi
+                done
 
-              if [[ -n "$found_test_file" ]]; then
-                echo "Running test for $file (found test file: $found_test_file, escaped: $escaped_test_file)"
-                npm test "$escaped_test_file" # Sử dụng đường dẫn đã escape
-              else
-                echo "Skipping test for $file (no related test file found)"
+                if [[ -n "$found_test_file" ]]; then
+                  echo "Running test for $file (found test file: $found_test_file, escaped: $escaped_test_file)"
+                  npm test "$escaped_test_file" # Sử dụng đường dẫn đã escape
+                else
+                  echo "Skipping test for $file (no related test file found)"
+                fi
               fi
-            fi
-          done
-          set +x # Tắt chế độ debug
+            done
+            set +x # Tắt chế độ debug
