@@ -52,51 +52,73 @@ jobs:
         run: |
           git fetch origin ${{ github.base_ref }}
           CHANGED_FILES=$(git diff --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
+          CHANGED_FILES="${{ steps.changed_files.outputs.CHANGED_FILES }}"
           IFS=$'\n'
-          echo "Changed files: $CHANGED_FILES"
+          tested_files=() # Mảng để theo dõi các file test đã được lên lịch chạy
+
           for file in $CHANGED_FILES; do
-            # Escape các ký tự đặc biệt trong đường dẫn file
-            escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
-            echo "Processing file: $file (escaped: $escaped_file)\n"
+            quoted_file="\"$file\""
+
             if [[ "$file" == *.spec.* ]]; then
-              quoted_file="\"$file\""
-              echo "Running test for spec file: $file (escaped: $escaped_file)"
-              npm test "$quoted_file" # Sử dụng đường dẫn đã escape
+              # Kiểm tra xem file spec này đã được lên lịch chạy chưa
+              is_tested=false
+              for tested in "${tested_files[@]}"; do
+                if [[ "$quoted_file" == "$tested" ]]; then
+                  is_tested=true
+                  break
+                fi
+              done
+              if ! "$is_tested"; then
+                echo "Running test for spec file: $file (quoted: $quoted_file)"
+                npx vitest "$quoted_file" # Gọi vitest cho file spec
+                tested_files+=("$quoted_file") # Thêm vào danh sách đã chạy
+              else
+                echo "Skipping already tested spec file: $file"
+              fi
             elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
               base_name=$(basename "$file" .ts)
               base_name="${base_name%.tsx}"
               file_dir=$(dirname "$file")
-              echo "Base name: $base_name, File directory: $file_dir"
               possible_test_files=(
                 "$file_dir/${base_name}.spec.ts"
                 "$file_dir/${base_name}.test.ts"
-                "$file_dir/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$file_dir/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                "$file_dir/${base_name}.spec.tsx"
+                "$file_dir/${base_name}.test.tsx"
                 "$file_dir/__tests__/${base_name}.spec.ts"
                 "$file_dir/__tests__/${base_name}.test.ts"
-                "$file_dir/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$file_dir/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                "$file_dir/__tests__/${base_name}.spec.tsx"
+                "$file_dir/__tests__/${base_name}.test.tsx"
                 "$(dirname "$file_dir")/__tests__/${base_name}.spec.ts"
                 "$(dirname "$file_dir")/__tests__/${base_name}.test.ts"
-                "$(dirname "$file_dir")/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
-                "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
+                "$(dirname "$file_dir")/__tests__/${base_name}.spec.tsx"
+                "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx"
               )
               found_test_file=""
               quoted_test_file=""
               for test_path in "${possible_test_files[@]}"; do
-                echo "Checking for test file: $test_path"
                 if [ -f "$test_path" ]; then
                   found_test_file="$test_path"
                   quoted_test_file="\"$test_path\""
-                  # Escape các ký tự đặc biệt trong đường dẫn file test
-                  escaped_test_file=$(printf '%s\n' "$test_path" | sed 's/[][()_ ]/\\&/g')
                   break
                 fi
               done
 
               if [[ -n "$found_test_file" ]]; then
-                echo "Running test for $file (found test file: $found_test_file, escaped: $quoted_test_file)"
-                npm test "$quoted_test_file" # Sử dụng đường dẫn đã escape
+                # Kiểm tra xem file test này đã được lên lịch chạy chưa
+                is_tested=false
+                for tested in "${tested_files[@]}"; do
+                  if [[ "$quoted_test_file" == "$tested" ]]; then
+                    is_tested=true
+                    break
+                  fi
+                done
+                if ! "$is_tested"; then
+                  echo "Running test for $file (found test file: $found_test_file, quoted: $quoted_test_file)"
+                  npx vitest "$quoted_test_file" # Gọi vitest cho file test tìm thấy
+                  tested_files+=("$quoted_test_file") # Thêm vào danh sách đã chạy
+                else
+                  echo "Skipping already tested file: $found_test_file"
+                fi
               else
                 echo "Skipping test for $file (no related test file found)"
               fi
