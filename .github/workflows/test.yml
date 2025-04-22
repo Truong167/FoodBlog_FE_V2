@@ -53,7 +53,6 @@ jobs:
         run: |
           git fetch origin ${{ github.base_ref }}
           CHANGED_FILES=$(git diff -z --name-only origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
-          printf "%s\n" "$CHANGED_FILES" | tr '\0' '\n'
           echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Find and run tests
@@ -61,6 +60,7 @@ jobs:
           CHANGED_FILES="${{ steps.CHANGED_FILES.outputs.CHANGED_FILES }}"
           IFS=$'\n'
           echo "Changed files: $CHANGED_FILES"
+          set -x # Bật chế độ debug để xem vòng lặp chạy như thế nào
           for file in $CHANGED_FILES; do
             # Escape các ký tự đặc biệt trong đường dẫn file
             escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
@@ -107,3 +107,4 @@ jobs:
               fi
             fi
           done
+          set +x # Tắt chế độ debug
