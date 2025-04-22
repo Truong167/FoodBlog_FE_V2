@@ -2,9 +2,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useUpdateRecipe } from "../../../../../services/Recipe/service";
 import { notification } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validateRecipe } from "../../../../../(utils)/validateRecipe";
+import { validateRecipe } from "../../../../../utils/validateRecipe";
 import { useQueryClient } from "@tanstack/react-query";
-import { sumObjects } from "../../../../../(utils)/sumObject";
+import { sumObjects } from "../../../../../utils/sumObject";
 import { useNavigate } from "react-router-dom";
 import errorCode from "../../../../../contants/error-code";
 

@@ -13,7 +13,7 @@ import { Fragment, useState } from "react";
 import { useUser } from "../../../../services/Auth/service";
 import no_avatar from "../../../../assets/images/no_avatar.png";
 import Meta from "antd/es/card/Meta";
-import { formatDate } from "../../../../(utils)/[format-time]";
+import { formatDate } from "../../../../utils/[format-time]";
 import ModalDelete from "./ModalDelete";
 
 type TCommentFormProps = {

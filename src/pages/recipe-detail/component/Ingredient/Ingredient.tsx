@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Section from "../../../../components/Section/Section";
 import { ClockCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { formatTime } from "../../../../(utils)/[format-time]";
+import { formatTime } from "../../../../utils/[format-time]";
 
 const Ingredient: React.FC<Partial<Recipe.TRecipeDetailResponse>> = ({
   amount,

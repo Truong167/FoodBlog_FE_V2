@@ -2,8 +2,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useAddRecipe } from "../../../services/Recipe/service";
 import { notification } from "antd";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { validateRecipe } from "../../../(utils)/validateRecipe";
-import { sumObjects } from "../../../(utils)/sumObject";
+import { validateRecipe } from "../../../utils/validateRecipe";
+import { sumObjects } from "../../../utils/sumObject";
 import ERROR_CODE from "../../../contants/error-code";
 import { useNavigate } from "react-router-dom";
 
