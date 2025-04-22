@@ -64,7 +64,7 @@ jobs:
           for file in $CHANGED_FILES; do
             # Escape các ký tự đặc biệt trong đường dẫn file
             escaped_file=$(printf '%s\n' "$file" | sed 's/[][()_ ]/\\&/g')
-            echo "Processing file: $file (escaped: $escaped_file)"
+            echo "Processing file: $file (escaped: $escaped_file)\n"
             if [[ "$file" == *.spec.* ]]; then
               echo "Running test for spec file: $file (escaped: $escaped_file)"
               npm test "$escaped_file" # Sử dụng đường dẫn đã escape
