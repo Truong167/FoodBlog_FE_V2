@@ -69,16 +69,23 @@ jobs:
               echo "Running test for spec file: $file (escaped: $escaped_file)"
               npm test "$escaped_file" # Sử dụng đường dẫn đã escape
             elif [[ "$file" == *.ts || "$file" == *.tsx ]]; then
-              base_name=$(basename "$file" .$(echo "$file" | awk -F'.' '{print $(NF-1)}').$(echo "$file" | awk -F'.' '{print $NF}'))
+              base_name=$(basename "$file" .ts)
+              base_name="${base_name%.tsx}"
               file_dir=$(dirname "$file")
               echo "Base name: $base_name, File directory: $file_dir"
               possible_test_files=(
                 "$file_dir/${base_name}.spec.ts"
                 "$file_dir/${base_name}.test.ts"
+                "$file_dir/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                "$file_dir/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
                 "$file_dir/__tests__/${base_name}.spec.ts"
                 "$file_dir/__tests__/${base_name}.test.ts"
+                "$file_dir/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                "$file_dir/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
                 "$(dirname "$file_dir")/__tests__/${base_name}.spec.ts"
                 "$(dirname "$file_dir")/__tests__/${base_name}.test.ts"
+                "$(dirname "$file_dir")/__tests__/${base_name}.spec.tsx" # Thêm trường hợp cho test của .tsx
+                "$(dirname "$file_dir")/__tests__/${base_name}.test.tsx" # Thêm trường hợp cho test của .tsx
               )
               found_test_file=""
               escaped_test_file=""
