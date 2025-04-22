@@ -83,6 +83,7 @@ jobs:
               found_test_file=""
               escaped_test_file=""
               for test_path in "${possible_test_files[@]}"; do
+                echo "Checking for test file: $test_path"
                 if [ -f "$test_path" ]; then
                   found_test_file="$test_path"
                   # Escape các ký tự đặc biệt trong đường dẫn file test
