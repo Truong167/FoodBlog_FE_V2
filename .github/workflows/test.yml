@@ -51,8 +51,8 @@ jobs:
       - name: Find and run tests
         run: |
           git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff -z --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
-          IFS=$' '
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
+          IFS=$'\n'
           echo "Changed files: $CHANGED_FILES"
           for file in $CHANGED_FILES; do
             # Escape các ký tự đặc biệt trong đường dẫn file
