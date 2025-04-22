@@ -48,17 +48,10 @@ jobs:
         if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install
 
-      - name: Get changed files
-        id: changed_files
+      - name: Find and run tests
         run: |
           git fetch origin ${{ github.base_ref }}
           CHANGED_FILES=$(git diff -z --name-only --diff-filter=AMCR origin/${{ github.base_ref }}...HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx')
-          echo "Changed files: $CHANGED_FILES"
-          echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
-
-      - name: Find and run tests
-        run: |
-          CHANGED_FILES="${{ steps.CHANGED_FILES.outputs.CHANGED_FILES }}"
           IFS=$' '
           echo "Changed files: $CHANGED_FILES"
           for file in $CHANGED_FILES; do
