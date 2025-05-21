@@ -58,5 +58,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Show files after changelog generation
+        run: ls -la
+
+      - name: Git status
+        run: git status
+
       - name: Push changes
         run: git push --follow-tags origin HEAD:refs/heads/${GITHUB_REF_NAME}
