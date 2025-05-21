@@ -10,7 +10,6 @@ import ERROR_CODE from "../../../../../contants/error-code";
 
 export const useLoginForm = () => {
   const { isLoading, mutate } = useLogin();
-  console.log(isLoading);
   const loginValidattionSchema = object({
     accountName: string().required(ERROR_CODE.ACCOUNT_BLANK_ERROR),
     password: string().required(ERROR_CODE.PASSWORD_BLANK_ERROR),
