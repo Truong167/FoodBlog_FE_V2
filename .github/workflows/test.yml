@@ -16,11 +16,6 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
 
     steps:
-      - name: Configure Git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -52,6 +47,11 @@ jobs:
       - name: Install dependencies
         if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install
+
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Generate changelog & bump version
         run: npx standard-version
