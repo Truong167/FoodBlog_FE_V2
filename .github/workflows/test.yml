@@ -16,6 +16,11 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
 
     steps:
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
