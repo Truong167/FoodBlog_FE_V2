@@ -1,0 +1,29 @@
+name: Docker Build from Tag for specific Environment
+
+on:
+  repository_dispatch:
+    types: [trigger-build]
+
+jobs:
+  staging-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.ref_name }}
+
+      - name: Google Authentication
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_STG }}"
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Get secrets from Secret Manager
+        id: secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: secrets:${{ secrets.SECRET_NAME }}
+
+env:
+  INPUT_ENVIRONMENT: ${{ github.event.client_payload.environment }}
