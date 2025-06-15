@@ -7,7 +7,6 @@ module.exports = {
       {
         preset: "angular",
         parserOpts: {
-          // Custom parser cho format feat/scope:
           headerPattern:
             /^(feat|fix|docs|style|refactor|perf|test|chore)(?:\/([^:]+))?\s*:\s*(.*)$/,
           headerCorrespondence: ["type", "scope", "subject"],
