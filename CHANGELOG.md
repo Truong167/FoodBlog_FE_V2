@@ -1,4 +1,9 @@
-# 📦 Changelog
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.1.8...v) (2025-06-15)
+
 ### [0.1.8](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.1.7...v0.1.8) (2025-06-15)
 
 ### [0.1.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.1.6...v0.1.7) (2025-06-15)
