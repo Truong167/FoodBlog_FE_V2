@@ -1,5 +1,5 @@
 # 📦 Changelog
-
+### [0.1.6](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.1.5...v0.1.6) (2025-06-15)
 
 ### 0.1.5 (2025-06-15)
 
