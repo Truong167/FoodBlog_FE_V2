@@ -1,5 +1,4 @@
 {
-  "header": "# 📦 Changelog\n\n",
   "types": [
     {
       "type": "feat",
@@ -11,8 +10,36 @@
     },
     {
       "type": "chore",
-      "section": "🧹 Chores",
-      "hidden": true
+      "section": "🧹 Chores"
+    },
+    {
+      "type": "docs",
+      "section": "📝 Docs"
+    },
+    {
+      "type": "style",
+      "section": "🎨 Styles"
+    },
+    {
+      "type": "refactor",
+      "section": "🛠 Refactors"
+    },
+    {
+      "type": "perf",
+      "section": "⚡ Performance"
+    },
+    {
+      "type": "test",
+      "section": "✅ Tests"
     }
-  ]
+  ],
+  "header": "# 📦 Changelog",
+  "parserOpts": {
+    "headerPattern": "^(\\w+)(?:\\/(\\w+))?\\: (.*)$",
+    "headerCorrespondence": [
+      "type",
+      "scope",
+      "subject"
+    ]
+  }
 }
