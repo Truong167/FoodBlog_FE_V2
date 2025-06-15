@@ -1,26 +1,4 @@
-# name: Release Please
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   release:
-#     permissions:
-#       contents: write
-#       pull-requests: write
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Release Please GitHub Action
-#         uses: google-github-actions/release-please-action@v4
-#         with:
-#           release-type: node
-#           package-name: foodblog_fe_v2
-
-name: Release
+name: Release Please
 
 on:
   push:
@@ -29,32 +7,52 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
+      pull-requests: write
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Release Please GitHub Action
+        uses: google-github-actions/release-please-action@v4
         with:
-          fetch-depth: 0
+          release-type: node
+# name: Release
 
-      - name: Setup Node & bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.4
+# on:
+#   push:
+#     branches:
+#       - main
 
-      - name: Install deps
-        run: bun install
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
 
-      - name: Setup Git config
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Generate release (tag + changelog)
-        run: bunx standard-version
+#       - name: Setup Node & bun
+#         uses: oven-sh/setup-bun@v1
+#         with:
+#           bun-version: 1.1.4
 
-      - name: Push changes and tags
-        run: |
-          git push --follow-tags origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Install deps
+#         run: bun install
+
+#       - name: Setup Git config
+#         run: |
+#           git config user.name "github-actions[bot]"
+#           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+#       - name: Generate release (tag + changelog)
+#         run: bunx standard-version
+
+#       - name: Push changes and tags
+#         run: |
+#           git push --follow-tags origin main
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
