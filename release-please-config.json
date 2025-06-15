@@ -1,52 +1,23 @@
 {
-  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
-  "release-type": "node",
-  "changelog-sections": [
-    {
-      "type": "feat/",
-      "section": "✨ Tính năng mới",
-      "hidden": false
-    },
-    {
-      "type": "fix",
-      "section": "🐛 Sửa lỗi",
-      "hidden": false
-    },
-    {
-      "type": "docs",
-      "section": "📚 Tài liệu",
-      "hidden": false
-    },
-    {
-      "type": "perf",
-      "section": "⚡ Cải thiện hiệu suất",
-      "hidden": false
-    },
-    {
-      "type": "refactor",
-      "section": "💡 Tái cấu trúc",
-      "hidden": false
-    },
-    {
-      "type": "chore",
-      "section": "⚙️ Công việc nội bộ",
-      "hidden": true
-    },
-    {
-      "type": "test",
-      "section": "🧪 Kiểm thử",
-      "hidden": true
-    },
-    {
-      "type": "build",
-      "section": "📦 Build",
-      "hidden": true
-    },
-    {
-      "type": "ci",
-      "section": "💻 CI/CD",
-      "hidden": true
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "foodblog_fe_v2",
+      "changelog-sections": [
+        { "type": "feat", "section": "Features", "hidden": false },
+        { "type": "fix", "section": "Bug Fixes", "hidden": false },
+        { "type": "docs", "section": "Documentation", "hidden": false },
+        { "type": "style", "section": "Styling", "hidden": false },
+        { "type": "refactor", "section": "Code Refactoring", "hidden": false },
+        {
+          "type": "perf",
+          "section": "Performance Improvements",
+          "hidden": false
+        },
+        { "type": "test", "section": "Tests", "hidden": false },
+        { "type": "chore", "section": "Miscellaneous", "hidden": false }
+      ],
+      "extra-files": []
     }
-  ],
-  "bump-minor-pre-major": true
+  }
 }

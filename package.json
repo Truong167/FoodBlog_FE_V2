@@ -1,6 +1,6 @@
 {
   "name": "foodblog_fe_v2",
-  "version": null,
+  "version": "0.1.7",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
