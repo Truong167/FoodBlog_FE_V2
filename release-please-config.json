@@ -1,0 +1,52 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "changelog-sections": [
+    {
+      "type": "feat/",
+      "section": "✨ Tính năng mới",
+      "hidden": false
+    },
+    {
+      "type": "fix",
+      "section": "🐛 Sửa lỗi",
+      "hidden": false
+    },
+    {
+      "type": "docs",
+      "section": "📚 Tài liệu",
+      "hidden": false
+    },
+    {
+      "type": "perf",
+      "section": "⚡ Cải thiện hiệu suất",
+      "hidden": false
+    },
+    {
+      "type": "refactor",
+      "section": "💡 Tái cấu trúc",
+      "hidden": false
+    },
+    {
+      "type": "chore",
+      "section": "⚙️ Công việc nội bộ",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "section": "🧪 Kiểm thử",
+      "hidden": true
+    },
+    {
+      "type": "build",
+      "section": "📦 Build",
+      "hidden": true
+    },
+    {
+      "type": "ci",
+      "section": "💻 CI/CD",
+      "hidden": true
+    }
+  ],
+  "bump-minor-pre-major": true
+}
