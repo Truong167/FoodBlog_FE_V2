@@ -48,15 +48,21 @@ jobs:
         if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install
 
-      - name: Configure Git user
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # - name: Configure Git user
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Generate changelog & bump version
-        run: npx standard-version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Generate changelog & bump version
+      #   run: bunx run release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push changes
-        run: git push --follow-tags origin HEAD:refs/heads/${GITHUB_REF_NAME}
+      # - name: Push changes
+      #   run: git push --follow-tags origin HEAD:refs/heads/${GITHUB_REF_NAME}
+
+      - name: Release Please GitHub Action
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: node
+          package-name: your-package-name
