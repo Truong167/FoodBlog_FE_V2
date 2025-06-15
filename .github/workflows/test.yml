@@ -1,68 +1,21 @@
-name: Test and Build
+name: Release Please
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - labeled
-      - synchronize
 
 jobs:
-  build-and-test:
+  release:
+    permissions:
+      contents: write
+      pull-requests: write
+
     runs-on: ubuntu-latest
 
-    if: contains(github.event.pull_request.labels.*.name, 'ready for review') || github.event_name == 'push'
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - uses: oven-sh/setup-bun@v1
-        name: Install bun
-        id: bun-install
-        with:
-          bun-version: 1.1.4
-
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        id: bun-cache
-        with:
-          path: |
-            **/node_modules
-            ~/.bun/install/cache
-            .bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
-        run: bun install
-
-      # - name: Configure Git user
-      #   run: |
-      #     git config user.name "github-actions[bot]"
-      #     git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      # - name: Generate changelog & bump version
-      #   run: bunx run release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Push changes
-      #   run: git push --follow-tags origin HEAD:refs/heads/${GITHUB_REF_NAME}
-
       - name: Release Please GitHub Action
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: node
-          package-name: your-package-name
+          package-name: foodblog_fe_v2
