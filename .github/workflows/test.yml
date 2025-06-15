@@ -1,4 +1,26 @@
-name: Release Please
+# name: Release Please
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   release:
+#     permissions:
+#       contents: write
+#       pull-requests: write
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Release Please GitHub Action
+#         uses: google-github-actions/release-please-action@v4
+#         with:
+#           release-type: node
+#           package-name: foodblog_fe_v2
+
+name: Release
 
 on:
   push:
@@ -7,15 +29,30 @@ on:
 
 jobs:
   release:
-    permissions:
-      contents: write
-      pull-requests: write
-
     runs-on: ubuntu-latest
 
     steps:
-      - name: Release Please GitHub Action
-        uses: google-github-actions/release-please-action@v4
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node & bun
+        uses: oven-sh/setup-bun@v1
         with:
-          release-type: node
-          package-name: foodblog_fe_v2
+          bun-version: 1.1.4
+
+      - name: Install deps
+        run: bun install
+
+      - name: Setup Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Generate release (tag + changelog)
+        run: bunx standard-version
+
+      - name: Push changes and tags
+        run: |
+          git push --follow-tags origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
