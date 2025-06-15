@@ -15,9 +15,10 @@ jobs:
 
     steps:
       - name: Release Please GitHub Action
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           release-type: node
+          config-file: .release-please-config.json
 # name: Release
 
 # on:
