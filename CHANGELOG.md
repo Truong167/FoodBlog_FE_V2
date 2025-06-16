@@ -1,3 +1,15 @@
+# [0.5.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.4.0...v0.5.0) (2025-06-16)
+
+
+### Features
+
+* **new:** add debug log ([8fae1b4](https://github.com/Truong167/FoodBlog_FE_V2/commit/8fae1b45af46b4d444f675d0227c0fc33a546c2f))
+* **new:** change file name ([6d16c45](https://github.com/Truong167/FoodBlog_FE_V2/commit/6d16c45cd40cae040abba380097959e97e6c341d))
+* **new:** change file name 23 ([5b198e3](https://github.com/Truong167/FoodBlog_FE_V2/commit/5b198e328a8d93c6f88b9234e2c3c2b42ea4a81f))
+* **new:** migrate to semantic-release ([6df0f30](https://github.com/Truong167/FoodBlog_FE_V2/commit/6df0f304db5957c2979a65c632161346d31914a2))
+* **new:** migrate to semantic-release 1 ([03146aa](https://github.com/Truong167/FoodBlog_FE_V2/commit/03146aa8a2b57daf00a0eab59a14faeaa132f74b))
+* **new:** remove writeOpts ([90a9f29](https://github.com/Truong167/FoodBlog_FE_V2/commit/90a9f29879e4942e8cbc17a5a983a674af7f9069))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
