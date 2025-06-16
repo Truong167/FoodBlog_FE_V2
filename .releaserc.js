@@ -9,11 +9,8 @@ const parserOpts = {
 };
 
 const writerOpts = {
-  // Hàm transform để định dạng lại output cho CHANGELOG
-  // Bạn có thể tùy chỉnh hiển thị scope và type ở đây
   transform: (commit, context) => {
-    console.log({ commit, context });
-    let discard = true; // Mặc định bỏ qua nếu không khớp rules dưới đây
+    let discard = true;
     const issues = [];
 
     commit.notes.forEach((note) => {
@@ -21,41 +18,59 @@ const writerOpts = {
       discard = false;
     });
 
-    // Các rule để quyết định hiển thị commit nào trong CHANGELOG
-    // Và map các type tùy chỉnh về các section mong muốn
+    // Tạo một biến để lưu trữ loại commit hiển thị
+    let displayType = "";
+
+    // Dựa vào commit.type (đã được parserOpts trích xuất) để quyết định hiển thị gì
     if (commit.type === "feat") {
-      commit.type = "✨ Tính năng mới"; // Hoặc '🚀 Tính năng tùy chỉnh'
+      displayType = "✨ Tính năng mới";
+      discard = false; // Luôn hiển thị tính năng mới
     } else if (commit.type === "fix") {
-      commit.type = "🐛 Sửa lỗi";
+      displayType = "🐛 Sửa lỗi";
+      discard = false;
     } else if (commit.type === "perf") {
-      commit.type = "⚡ Cải thiện hiệu suất";
+      displayType = "⚡ Cải thiện hiệu suất";
+      discard = false;
     } else if (commit.type === "refactor") {
-      commit.type = "💡 Tái cấu trúc";
+      displayType = "💡 Tái cấu trúc";
+      discard = false;
     } else if (commit.type === "docs") {
-      commit.type = "📚 Tài liệu";
+      displayType = "📚 Tài liệu";
+      discard = false;
     } else if (commit.type === "build") {
-      commit.type = "📦 Build";
+      displayType = "📦 Build";
+      discard = false;
     } else if (commit.type === "ci") {
-      commit.type = "💻 CI/CD";
-    } else if (commit.type === "chore") {
-      discard = true; // Ẩn chore mặc định
-    } else if (commit.type === "test") {
-      discard = true; // Ẩn test mặc định
-    } else if (commit.type === "style") {
-      discard = true; // Ẩn style mặc định
+      displayType = "💻 CI/CD";
+      discard = false;
     } else if (commit.type === "revert") {
-      commit.type = "⏪ Hoàn tác";
+      displayType = "⏪ Hoàn tác";
+      discard = false;
+    } else if (
+      commit.type === "chore" ||
+      commit.type === "test" ||
+      commit.type === "style"
+    ) {
+      discard = true; // Ẩn các loại này mặc định
+    } else {
+      // Nếu không khớp với bất kỳ type nào khác, vẫn có thể hiển thị nếu muốn
+      // Ví dụ: displayType = '❓ Khác';
+      // discard = false;
+      discard = true; // Mặc định ẩn nếu không khớp
     }
 
-    // Nếu không khớp với bất kỳ type nào trên, bạn có thể phân loại là 'Other'
-    if (discard) return;
+    if (discard) return; // Nếu discard là true, bỏ qua commit này
+
+    // Gán displayType vào một thuộc tính mà writerOpts có thể sử dụng
+    // Hoặc sửa đổi commit.header nếu bạn muốn thay đổi toàn bộ tiêu đề
+    // Cách tốt nhất là sử dụng một thuộc tính custom cho việc nhóm trong CHANGELOG
+    commit.changelogGroup = displayType; // Tạo một thuộc tính mới để nhóm
 
     // Xử lý issues references
     if (commit.scope === "*") {
       commit.scope = "";
     }
 
-    // Đảm bảo issue references được xử lý đúng cách
     if (typeof commit.hash === "string") {
       commit.hash = commit.hash.substring(0, 7);
     }
@@ -65,7 +80,6 @@ const writerOpts = {
         ? `${context.host}/${context.owner}/${context.repository}`
         : context.linkReferences;
       if (url) {
-        // Thay thế issue references trong subject bằng link
         commit.subject = commit.subject.replace(/#([0-9]+)/g, (_, issue) => {
           issues.push(issue);
           return `[#${issue}](${url}/issues/${issue})`;
@@ -73,15 +87,15 @@ const writerOpts = {
       }
     }
 
-    return commit;
+    return commit; // Trả về đối tượng commit đã được sửa đổi (nhưng không phải thuộc tính immutable)
   },
-  // Nhóm các type lại trong CHANGELOG
-  groupBy: "type",
+  // Nhóm các type lại trong CHANGELOG sử dụng thuộc tính mới 'changelogGroup'
+  groupBy: "changelogGroup", // THAY ĐỔI TỪ 'type' SANG 'changelogGroup'
   commitSort: ["scope", "subject"],
-  // Đặt thứ tự các section trong CHANGELOG
   commitGroupsSort: [
     "BREAKING CHANGES",
     "✨ Tính năng mới",
+    "🚀 Tính năng tùy chỉnh", // Đảm bảo đúng thứ tự nếu bạn có cả hai
     "🐛 Sửa lỗi",
     "⚡ Cải thiện hiệu suất",
     "💡 Tái cấu trúc",
