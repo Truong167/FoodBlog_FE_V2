@@ -133,7 +133,6 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts, // Sử dụng parserOpts đã định nghĩa ở trên
-        writerOpts, // Sử dụng writerOpts đã định nghĩa ở trên
       },
     ],
     [
