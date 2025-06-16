@@ -4,11 +4,21 @@ module.exports = {
     [
       "@semantic-release/commit-analyzer",
       {
+        preset: "conventionalcommits",
         parserOpts: {
           headerPattern: /^(\w+)(?:\/(\w+))?: (.+)$/,
           headerCorrespondence: ["type", "scope", "subject"],
         },
-        preset: "conventionalcommits",
+        releaseRules: [
+          { type: "feat", release: "minor" },
+          { type: "fix", release: "patch" },
+          { type: "perf", release: "patch" },
+          { type: "refactor", release: "patch" },
+          { type: "docs", release: false },
+          { type: "chore", release: false },
+          { type: "test", release: false },
+          { type: "style", release: false },
+        ],
       },
     ],
     [
