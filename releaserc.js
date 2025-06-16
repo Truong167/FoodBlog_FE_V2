@@ -1,15 +1,10 @@
 // .releaserc.js
 const parserOpts = {
-  // Regex để phân tích tiêu đề commit: type/scope: description
-  // Nhóm 1: type (e.g., feat, fix)
-  // Nhóm 2: scope (e.g., authentication, dashboard)
-  // Nhóm 3: subject (description)
+  // Đảm bảo regex này khớp với định dạng của bạn một cách chính xác
   headerPattern:
     /^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)\/([\w-]+):\s(.+)$/,
   headerCorrespondence: ["type", "scope", "subject"],
-  // Regex để tìm các từ khóa cho Breaking Changes (ở cuối commit body hoặc footer)
   noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING-CHANGE"],
-  // Regex để tìm các issue references (e.g., Closes #123)
   issuePrefixes: ["#"],
 };
 
@@ -103,18 +98,19 @@ module.exports = {
     [
       "@semantic-release/commit-analyzer",
       {
-        parserOpts, // Sử dụng parserOpts đã định nghĩa ở trên
-        // Định nghĩa các quy tắc release dựa trên type và scope
+        parserOpts,
         releaseRules: [
-          { type: "feat", release: "minor" }, // 'feat' type (bao gồm feat/<scope>) sẽ bump minor
-          { type: "fix", release: "patch" }, // 'fix' type sẽ bump patch
+          // Thêm rule này để đảm bảo khớp với type có scope
+          { type: "feat", scope: "*", release: "minor" },
+          { type: "feat", release: "minor" }, // Giữ cái này nếu bạn cũng dùng "feat: message"
+          { type: "fix", scope: "*", release: "patch" },
+          { type: "fix", release: "patch" },
           { type: "perf", release: "patch" },
           { type: "refactor", release: "patch" },
           { type: "docs", release: "patch" },
           { type: "revert", release: "patch" },
           { type: "build", release: "patch" },
           { type: "ci", release: "patch" },
-          // Rule cho Breaking Changes
           { breaking: true, release: "major" },
         ],
       },
