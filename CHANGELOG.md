@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.5.0...v0.6.0) (2025-06-16)
+
+
+### Features
+
+* **tacman:** remove log ([3e4b9c9](https://github.com/Truong167/FoodBlog_FE_V2/commit/3e4b9c9cd2c1dff817d5282add192386fde45d70))
+
 # [0.5.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.4.0...v0.5.0) (2025-06-16)
 
 
