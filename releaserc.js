@@ -10,9 +10,13 @@ module.exports = {
           headerCorrespondence: ["type", "scope", "subject"],
         },
         releaseRules: [
+          { type: "feat", scope: "*", release: "minor" },
           { type: "feat", release: "minor" },
+          { type: "fix", scope: "*", release: "patch" },
           { type: "fix", release: "patch" },
+          { type: "perf", scope: "*", release: "patch" },
           { type: "perf", release: "patch" },
+          { type: "refactor", scope: "*", release: "patch" },
           { type: "refactor", release: "patch" },
           { type: "docs", release: false },
           { type: "chore", release: false },
