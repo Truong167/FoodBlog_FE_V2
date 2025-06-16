@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.3.0...v0.4.0) (2025-06-16)
+
+
+### Features
+
+* add simple test feature ([1550809](https://github.com/Truong167/FoodBlog_FE_V2/commit/1550809052ec3e2c0068ff2d716a5f66b0264672))
+* add simple test feature ([5b7424d](https://github.com/Truong167/FoodBlog_FE_V2/commit/5b7424dd93b0972000356a9ab4a7900d3b75cbb1))
+
 ## [0.3.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.2.0...v0.3.0) (2025-06-16)
 
 
