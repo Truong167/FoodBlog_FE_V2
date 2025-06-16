@@ -1,25 +1,25 @@
-# name: Release Please
+name: Release Please
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
 
-# jobs:
-#   release:
-#     permissions:
-#       contents: write
-#       pull-requests: write
-#       issues: write
+jobs:
+  release:
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
 
-#     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Release Please GitHub Action
-#         uses: googleapis/release-please-action@v4
-#         with:
-#           release-type: node
-#           config-file: .release-please-config.json
+    steps:
+      - name: Release Please GitHub Action
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: node
+          config-file: .release-please-config.json
 # name: Release
 
 # on:
@@ -59,36 +59,36 @@
 #         env:
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-name: Semantic Release
+# name: Semantic Release
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+# permissions:
+#   contents: write
+#   issues: write
+#   pull-requests: write
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup Node & bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.4
+#       - name: Setup Node & bun
+#         uses: oven-sh/setup-bun@v1
+#         with:
+#           bun-version: 1.1.4
 
-      - name: Install deps
-        run: bun install
+#       - name: Install deps
+#         run: bun install
 
-      - name: Run semantic release
-        run: bunx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+#       - name: Run semantic release
+#         run: bunx semantic-release
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
