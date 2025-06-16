@@ -3,6 +3,11 @@
   "release-type": "node",
   "changelog-sections": [
     {
+      "type": "feat/",
+      "section": "🚀 Tính năng tùy chỉnh",
+      "hidden": false
+    },
+    {
       "type": "feat",
       "section": "✨ Tính năng mới",
       "hidden": false
@@ -20,6 +25,11 @@
     {
       "type": "chore",
       "section": "⚙️ Công việc nội bộ",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "section": "🧪 Kiểm thử",
       "hidden": true
     }
   ],
