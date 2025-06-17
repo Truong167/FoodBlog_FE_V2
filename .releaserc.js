@@ -1,4 +1,5 @@
 // .releaserc.js
+
 const parserOpts = {
   // Đảm bảo regex này khớp với định dạng của bạn một cách chính xác
   headerPattern:
@@ -8,12 +9,26 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-const getReleaseNotes = async ({ nextRelease: { version, gitTag } }) => {
-  const changelogUrl = `https://github.com/Truong167/FoodBlog_FE_V2/blob/${gitTag}/CHANGELOG.md`;
+// ====================================================================
+// Hàm getReleaseNotes tùy chỉnh của bạn
+// Bây giờ nó nhận cả 'context' để lấy owner/repo một cách đáng tin cậy
+// ====================================================================
+const getReleaseNotes = async (
+  { nextRelease: { version, gitTag } },
+  context
+) => {
+  // Lấy owner và repo từ context hoặc từ biến môi trường GITHUB_REPOSITORY
+  // GITHUB_REPOSITORY có định dạng "owner/repo"
+  const [owner, repo] = (
+    context.repository ||
+    process.env.GITHUB_REPOSITORY ||
+    "Truong167/FoodBlog_FE_V2"
+  ).split("/");
+
+  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${gitTag}/CHANGELOG.md`;
 
   let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
 
-  // Bạn có thể thêm nội dung ngắn gọn cho từng loại release nếu muốn
   if (gitTag.includes("-beta") || gitTag.includes("-dev")) {
     releaseBody =
       `### 🧪 Prerelease v${version}\n\n` +
@@ -26,17 +41,26 @@ const getReleaseNotes = async ({ nextRelease: { version, gitTag } }) => {
   return releaseBody;
 };
 
+// ====================================================================
+// Cấu hình chính của semantic-release
+// Đảm bảo cấu hình branches bao gồm cả main và feat/dev (nếu bạn muốn prerelease)
+// ====================================================================
 module.exports = {
-  branches: ["main"], // Branch chính của bạn
+  branches: [
+    "main", // Nhánh chính cho các release production
+    {
+      name: "feat/dev", // Tên nhánh Git của bạn cho môi trường dev/staging
+      prerelease: "dev", // Tên kênh prerelease hợp lệ theo SemVer (ví dụ: v1.0.0-dev.1)
+    },
+  ],
   plugins: [
     [
       "@semantic-release/commit-analyzer",
       {
         parserOpts,
         releaseRules: [
-          // Thêm rule này để đảm bảo khớp với type có scope
           { type: "feat", scope: "*", release: "minor" },
-          { type: "feat", release: "minor" }, // Giữ cái này nếu bạn cũng dùng "feat: message"
+          { type: "feat", release: "minor" },
           { type: "fix", scope: "*", release: "patch" },
           { type: "fix", release: "patch" },
           { type: "perf", release: "patch" },
@@ -64,24 +88,21 @@ module.exports = {
     [
       "@semantic-release/npm",
       {
-        // Tùy chọn: chỉ publish nếu dự án có package.json
-        npmPublish: true, // Đặt false nếu bạn không muốn publish lên npm registry
-        // Ví dụ: chỉ cần update version trong package.json
-        // pkgRoot: "./dist" // nếu bạn muốn update package.json trong thư mục dist
+        npmPublish: false, // Giữ false nếu bạn không publish package lên npm registry
       },
     ],
     [
       "@semantic-release/git",
       {
-        assets: ["CHANGELOG.md", "package.json"], // Các file sẽ được commit lại sau khi update version
+        assets: ["CHANGELOG.md", "package.json"],
         message:
-          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}", // Commit message cho release commit
+          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },
     ],
     [
       "@semantic-release/github",
       {
-        releaseNotes: getReleaseNotes,
+        releaseNotes: getReleaseNotes, // Gắn hàm tùy chỉnh vào đây
       },
     ],
   ],
