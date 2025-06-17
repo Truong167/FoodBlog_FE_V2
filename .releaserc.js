@@ -78,13 +78,12 @@ module.exports = {
         ],
       },
     ],
-    [
-      "@semantic-release/release-notes-generator",
-      {
-        parserOpts,
-        // writerOpts không được truyền vào đây, do đó sẽ dùng mặc định
-      },
-    ],
+    // [
+    //   "@semantic-release/release-notes-generator",
+    //   {
+    //     parserOpts,
+    //   },
+    // ],
     [
       "@semantic-release/changelog",
       {
