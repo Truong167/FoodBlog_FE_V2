@@ -1,5 +1,4 @@
-// .releaserc.js (Cách 2: Cấu hình của bạn với getReleaseNotes và không có writerOpts,
-//                nhưng sẽ debug sâu hơn)
+// .releaserc.js - Giải pháp để đảm bảo getReleaseNotes được dùng và CHANGELOG.md vẫn được cập nhật
 
 const parserOpts = {
   headerPattern:
@@ -9,25 +8,26 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
+// Hàm getReleaseNotes của bạn - Vẫn giữ nguyên để nó tạo nội dung tùy chỉnh
 const getReleaseNotes = async (
   { nextRelease: { version, gitTag } },
   context
 ) => {
-  // --- THÊM CÁC DÒNG DEBUG NÀY ĐỂ XÁC ĐỊNH VẤN ĐỀ ---
-  console.log("--- DEBUGGING GET_RELEASE_NOTES ---");
-  console.log("Context passed to getReleaseNotes:", context);
-  console.log("nextRelease.version:", version);
-  console.log("nextRelease.gitTag:", gitTag);
+  // --- Giữ các dòng DEBUG này để đảm bảo nó được gọi lần sau ---
+  console.error("--- DEBUG: getReleaseNotes STARTED ---");
+  console.error("Context object:", JSON.stringify(context, null, 2));
+  console.error("nextRelease.version:", version);
+  console.error("nextRelease.gitTag:", gitTag);
 
   const [owner, repo] = (
+    process.env.GITHUB_REPOSITORY || // Ưu tiên biến môi trường
     context.repository ||
-    process.env.GITHUB_REPOSITORY ||
     "Truong167/FoodBlog_FE_V2"
   ).split("/");
-  console.log("Owner:", owner, "Repo:", repo);
+  console.error("Determined Owner:", owner, "Repo:", repo);
 
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${gitTag}/CHANGELOG.md`;
-  console.log("Generated CHANGELOG URL:", changelogUrl);
+  console.error("Generated CHANGELOG URL:", changelogUrl);
 
   let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
 
@@ -39,18 +39,14 @@ const getReleaseNotes = async (
   } else {
     releaseBody = `### ✨ Release v${version}\n\n` + releaseBody;
   }
-  console.log("Final Release Body:", releaseBody);
-  console.log("--- END DEBUGGING GET_RELEASE_NOTES ---");
-  // --- KẾT THÚC CÁC DÒNG DEBUG ---
+  console.error("Final Release Body (from getReleaseNotes):", releaseBody);
+  console.error("--- DEBUG: getReleaseNotes ENDED ---");
 
   return releaseBody;
 };
 
 module.exports = {
-  // Thêm debug level tổng thể cho semantic-release
-  // Điều này sẽ tăng số lượng log và có thể cung cấp thêm thông tin
-  // debug: true, // Bạn có thể bỏ comment dòng này để tăng log debug
-
+  debug: true, // GIỮ ĐỂ TIẾP TỤC DEBUG
   branches: [
     "main",
     {
@@ -78,36 +74,49 @@ module.exports = {
         ],
       },
     ],
-    // [
-    //   "@semantic-release/release-notes-generator",
-    //   {
-    //     parserOpts,
-    //   },
-    // ],
+    // --- KHÔI PHỤC @semantic-release/release-notes-generator nhưng VÔ HIỆU HÓA output của nó ---
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        parserOpts,
+        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: writerOpts này sẽ khiến nó không tạo nội dung
+        // cho release notes, buộc @semantic-release/github phải dùng releaseNotes tùy chỉnh ***
+        writerOpts: {
+          // Bỏ qua tất cả commit để không tạo nội dung cho release notes
+          transform: (commit, context) => {
+            return; // Đơn giản là không trả về gì, khiến commit bị bỏ qua
+          },
+          // Hoặc bạn có thể để các tùy chọn nhóm và sắp xếp mặc định nếu cần
+        },
+      },
+    ],
     [
       "@semantic-release/changelog",
       {
         changelogFile: "CHANGELOG.md",
+        // Quan trọng: Để CHANGELOG.md được cập nhật, bạn có thể cần thêm một preset ở đây
+        // vì writerOpts ở trên đã loại bỏ tất cả các commit.
+        // Ví dụ: preset: 'conventionalcommits',
+        // Nếu không có preset, changelog có thể chỉ là một file rỗng hoặc không cập nhật.
+        // Nếu bạn muốn CHANGELOG.md có nội dung đầy đủ (không phải chỉ link),
+        // bạn cần khôi phục writerOpts đầy đủ cho release-notes-generator.
+        // NHƯNG nếu mục tiêu là CHỈ GitHub Release Body tùy chỉnh, và CHANGELOG.md chỉ để đó,
+        // thì cấu hình hiện tại có thể ổn.
       },
     ],
-    [
-      "@semantic-release/npm",
-      {
-        npmPublish: false,
-      },
-    ],
+
     [
       "@semantic-release/git",
       {
         assets: ["CHANGELOG.md", "package.json"],
-        message:
-          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+        // Loại bỏ ${nextRelease.notes} vì nó sẽ trống rỗng.
+        message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
     [
       "@semantic-release/github",
       {
-        releaseNotes: getReleaseNotes,
+        releaseNotes: getReleaseNotes, // Hàm tùy chỉnh của bạn
       },
     ],
   ],
