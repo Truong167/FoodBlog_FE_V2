@@ -1,3 +1,7 @@
+## <small>0.6.7 (2025-06-17)</small>
+
+* fix/tacman: update body for release 6 ([418d9d7](https://github.com/Truong167/FoodBlog_FE_V2/commit/418d9d7))
+
 ## 0.6.6 (2025-06-17)
 
 
