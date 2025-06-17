@@ -1,7 +1,7 @@
-// .releaserc.js
+// .releaserc.js (Cách 2: Cấu hình của bạn với getReleaseNotes và không có writerOpts,
+//                nhưng sẽ debug sâu hơn)
 
 const parserOpts = {
-  // Đảm bảo regex này khớp với định dạng của bạn một cách chính xác
   headerPattern:
     /^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)\/([\w-]+):\s(.+)$/,
   headerCorrespondence: ["type", "scope", "subject"],
@@ -9,23 +9,25 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-// ====================================================================
-// Hàm getReleaseNotes tùy chỉnh của bạn
-// Bây giờ nó nhận cả 'context' để lấy owner/repo một cách đáng tin cậy
-// ====================================================================
 const getReleaseNotes = async (
   { nextRelease: { version, gitTag } },
   context
 ) => {
-  // Lấy owner và repo từ context hoặc từ biến môi trường GITHUB_REPOSITORY
-  // GITHUB_REPOSITORY có định dạng "owner/repo"
+  // --- THÊM CÁC DÒNG DEBUG NÀY ĐỂ XÁC ĐỊNH VẤN ĐỀ ---
+  console.log("--- DEBUGGING GET_RELEASE_NOTES ---");
+  console.log("Context passed to getReleaseNotes:", context);
+  console.log("nextRelease.version:", version);
+  console.log("nextRelease.gitTag:", gitTag);
+
   const [owner, repo] = (
     context.repository ||
     process.env.GITHUB_REPOSITORY ||
     "Truong167/FoodBlog_FE_V2"
   ).split("/");
+  console.log("Owner:", owner, "Repo:", repo);
 
   const changelogUrl = `https://github.com/${owner}/${repo}/blob/${gitTag}/CHANGELOG.md`;
+  console.log("Generated CHANGELOG URL:", changelogUrl);
 
   let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
 
@@ -37,20 +39,23 @@ const getReleaseNotes = async (
   } else {
     releaseBody = `### ✨ Release v${version}\n\n` + releaseBody;
   }
+  console.log("Final Release Body:", releaseBody);
+  console.log("--- END DEBUGGING GET_RELEASE_NOTES ---");
+  // --- KẾT THÚC CÁC DÒNG DEBUG ---
 
   return releaseBody;
 };
 
-// ====================================================================
-// Cấu hình chính của semantic-release
-// Đảm bảo cấu hình branches bao gồm cả main và feat/dev (nếu bạn muốn prerelease)
-// ====================================================================
 module.exports = {
+  // Thêm debug level tổng thể cho semantic-release
+  // Điều này sẽ tăng số lượng log và có thể cung cấp thêm thông tin
+  // debug: true, // Bạn có thể bỏ comment dòng này để tăng log debug
+
   branches: [
-    "main", // Nhánh chính cho các release production
+    "main",
     {
-      name: "feat/dev", // Tên nhánh Git của bạn cho môi trường dev/staging
-      prerelease: "dev", // Tên kênh prerelease hợp lệ theo SemVer (ví dụ: v1.0.0-dev.1)
+      name: "feat/dev",
+      prerelease: "dev",
     },
   ],
   plugins: [
@@ -77,6 +82,7 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
+        // writerOpts không được truyền vào đây, do đó sẽ dùng mặc định
       },
     ],
     [
@@ -88,7 +94,7 @@ module.exports = {
     [
       "@semantic-release/npm",
       {
-        npmPublish: false, // Giữ false nếu bạn không publish package lên npm registry
+        npmPublish: false,
       },
     ],
     [
@@ -102,7 +108,7 @@ module.exports = {
     [
       "@semantic-release/github",
       {
-        releaseNotes: getReleaseNotes, // Gắn hàm tùy chỉnh vào đây
+        releaseNotes: getReleaseNotes,
       },
     ],
   ],
