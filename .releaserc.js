@@ -1,4 +1,4 @@
-// .releaserc.js - Giải pháp cuối cùng: CHANGELOG.md đầy đủ, GitHub Release Body là link
+// .releaserc.js - CHANGELOG.md đầy đủ, GitHub Release Body là link TỪ TEMPLATE
 
 const parserOpts = {
   headerPattern:
@@ -8,51 +8,8 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-// Hàm tùy chỉnh để tạo nội dung cho GitHub Release Body
-// Hàm này sẽ ĐƯỢC GỌI bởi plugin @semantic-release/github.
-const getGitHubReleaseBody = async (
-  { nextRelease: { version, gitTag } },
-  context
-) => {
-  // --- DEBUGGING CHO HÀM NÀY ---
-  console.error("--- DEBUG: getGitHubReleaseBody STARTED ---");
-  console.error("nextRelease.version:", version);
-  console.error("nextRelease.gitTag:", gitTag);
-  console.error(
-    "Context for getGitHubReleaseBody:",
-    JSON.stringify(context, null, 2)
-  );
-
-  const [owner, repo] = (
-    process.env.GITHUB_REPOSITORY ||
-    context.repository ||
-    "Truong167/FoodBlog_FE_V2"
-  ) // Fallback nếu không lấy được repo từ env/context
-    .split("/");
-  console.error("Determined Owner:", owner, "Repo:", repo);
-
-  // Tạo URL đến CHANGELOG.md trên GitHub
-  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${gitTag}/CHANGELOG.md`;
-  console.error("Generated CHANGELOG URL for Release Body:", changelogUrl);
-
-  let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
-
-  if (gitTag.includes("-beta") || gitTag.includes("-dev")) {
-    releaseBody =
-      `### 🧪 Prerelease v${version}\n\n` +
-      releaseBody +
-      "\n\n**This is a pre-release version and may contain bugs.**";
-  } else {
-    releaseBody = `### ✨ Release v${version}\n\n` + releaseBody;
-  }
-  console.error("Final GitHub Release Body:", releaseBody);
-  console.error("--- DEBUG: getGitHubReleaseBody ENDED ---");
-
-  return releaseBody;
-};
-
 module.exports = {
-  debug: true, // GIỮ ĐỂ DEBUG
+  debug: true,
   branches: [
     "main",
     {
@@ -84,10 +41,9 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
-        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: KHÔNG ĐỊNH NGHĨA `writerOpts` hay `footerPartial` ở đây.
-        // Điều này sẽ khiến plugin này tạo ra CHANGELOG.md ĐẦY ĐỦ VỚI DANH SÁCH COMMIT
-        // theo định dạng của preset.
-        preset: "conventionalcommits", // SỬ DỤNG PRESET ĐỂ CÓ CHANGELOG ĐẦY ĐỦ
+        // Sử dụng preset để tạo CHANGELOG.md đầy đủ và có cấu trúc.
+        // Đây cũng là nội dung sẽ được lưu vào nextRelease.notes.
+        preset: "conventionalcommits",
       },
     ],
     [
@@ -106,17 +62,29 @@ module.exports = {
       "@semantic-release/git",
       {
         assets: ["CHANGELOG.md", "package.json"],
-        // QUAN TRỌNG: KHÔNG sử dụng ${nextRelease.notes} ở đây.
-        // Vì nextRelease.notes sẽ chứa nội dung CHANGELOG đầy đủ.
-        // Git commit message chỉ nên ngắn gọn.
+        // Giữ tin nhắn commit ngắn gọn, không đưa toàn bộ notes vào.
         message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
     [
       "@semantic-release/github",
       {
-        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: Sử dụng hàm tùy chỉnh cho GitHub Release Body ***
-        releaseBodyTemplate: getGitHubReleaseBody,
+        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG NHẤT: SỬ DỤNG `releaseBodyTemplate` VỚI CHUỖI ***
+        // Sử dụng biến của semantic-release để tạo URL động
+        // `nextRelease.gitTag` sẽ là vX.Y.Z hoặc vX.Y.Z-dev.N
+        // `nextRelease.version` sẽ là X.Y.Z hoặc X.Y.Z-dev.N
+        // `config.repositoryUrl` sẽ là https://github.com/Truong167/FoodBlog_FE_V2
+        releaseBodyTemplate: `
+### {{#if nextRelease.prerelease}}🧪 Prerelease {{/if}}✨ Release v\${nextRelease.version}
+
+Please refer to the [CHANGELOG.md](\${config.repositoryUrl}/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
+
+{{#if nextRelease.prerelease}}
+**This is a pre-release version and may contain bugs.**
+{{/if}}
+        `,
+        // Bỏ hoàn toàn releaseNotes: getGitHubReleaseBody
+        // Vì nó đã báo lỗi là không chấp nhận hàm.
       },
     ],
   ],
