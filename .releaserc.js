@@ -116,7 +116,9 @@ module.exports = {
       "@semantic-release/github",
       {
         // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: Sử dụng hàm tùy chỉnh cho GitHub Release Body ***
+
         releaseBodyTemplate: getGitHubReleaseBody,
+
       },
     ],
   ],
