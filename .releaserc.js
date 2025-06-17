@@ -8,102 +8,22 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-const writerOpts = {
-  transform: (commit, context) => {
-    let discard = true;
-    const issues = [];
+const getReleaseNotes = async ({ nextRelease: { version, gitTag } }) => {
+  const changelogUrl = `https://github.com/Truong167/FoodBlog_FE_V2/blob/${gitTag}/CHANGELOG.md`;
 
-    commit.notes.forEach((note) => {
-      note.title = "BREAKING CHANGES";
-      discard = false;
-    });
+  let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
 
-    // Tạo một biến để lưu trữ loại commit hiển thị
-    let displayType = "";
+  // Bạn có thể thêm nội dung ngắn gọn cho từng loại release nếu muốn
+  if (gitTag.includes("-beta") || gitTag.includes("-dev")) {
+    releaseBody =
+      `### 🧪 Prerelease v${version}\n\n` +
+      releaseBody +
+      "\n\n**This is a pre-release version and may contain bugs.**";
+  } else {
+    releaseBody = `### ✨ Release v${version}\n\n` + releaseBody;
+  }
 
-    // Dựa vào commit.type (đã được parserOpts trích xuất) để quyết định hiển thị gì
-    if (commit.type === "feat") {
-      displayType = "✨ Tính năng mới";
-      discard = false; // Luôn hiển thị tính năng mới
-    } else if (commit.type === "fix") {
-      displayType = "🐛 Sửa lỗi";
-      discard = false;
-    } else if (commit.type === "perf") {
-      displayType = "⚡ Cải thiện hiệu suất";
-      discard = false;
-    } else if (commit.type === "refactor") {
-      displayType = "💡 Tái cấu trúc";
-      discard = false;
-    } else if (commit.type === "docs") {
-      displayType = "📚 Tài liệu";
-      discard = false;
-    } else if (commit.type === "build") {
-      displayType = "📦 Build";
-      discard = false;
-    } else if (commit.type === "ci") {
-      displayType = "💻 CI/CD";
-      discard = false;
-    } else if (commit.type === "revert") {
-      displayType = "⏪ Hoàn tác";
-      discard = false;
-    } else if (
-      commit.type === "chore" ||
-      commit.type === "test" ||
-      commit.type === "style"
-    ) {
-      discard = true; // Ẩn các loại này mặc định
-    } else {
-      // Nếu không khớp với bất kỳ type nào khác, vẫn có thể hiển thị nếu muốn
-      // Ví dụ: displayType = '❓ Khác';
-      // discard = false;
-      discard = true; // Mặc định ẩn nếu không khớp
-    }
-
-    if (discard) return; // Nếu discard là true, bỏ qua commit này
-
-    // Gán displayType vào một thuộc tính mà writerOpts có thể sử dụng
-    // Hoặc sửa đổi commit.header nếu bạn muốn thay đổi toàn bộ tiêu đề
-    // Cách tốt nhất là sử dụng một thuộc tính custom cho việc nhóm trong CHANGELOG
-    commit.changelogGroup = displayType; // Tạo một thuộc tính mới để nhóm
-
-    // Xử lý issues references
-    if (commit.scope === "*") {
-      commit.scope = "";
-    }
-
-    if (typeof commit.hash === "string") {
-      commit.hash = commit.hash.substring(0, 7);
-    }
-
-    if (typeof commit.subject === "string") {
-      let url = context.repository
-        ? `${context.host}/${context.owner}/${context.repository}`
-        : context.linkReferences;
-      if (url) {
-        commit.subject = commit.subject.replace(/#([0-9]+)/g, (_, issue) => {
-          issues.push(issue);
-          return `[#${issue}](${url}/issues/${issue})`;
-        });
-      }
-    }
-
-    return commit; // Trả về đối tượng commit đã được sửa đổi (nhưng không phải thuộc tính immutable)
-  },
-  // Nhóm các type lại trong CHANGELOG sử dụng thuộc tính mới 'changelogGroup'
-  groupBy: "changelogGroup", // THAY ĐỔI TỪ 'type' SANG 'changelogGroup'
-  commitSort: ["scope", "subject"],
-  commitGroupsSort: [
-    "BREAKING CHANGES",
-    "✨ Tính năng mới",
-    "🚀 Tính năng tùy chỉnh", // Đảm bảo đúng thứ tự nếu bạn có cả hai
-    "🐛 Sửa lỗi",
-    "⚡ Cải thiện hiệu suất",
-    "💡 Tái cấu trúc",
-    "📚 Tài liệu",
-    "⏪ Hoàn tác",
-    "📦 Build",
-    "💻 CI/CD",
-  ],
+  return releaseBody;
 };
 
 module.exports = {
@@ -161,8 +81,7 @@ module.exports = {
     [
       "@semantic-release/github",
       {
-        // Tạo GitHub Release và cập nhật các Pull Request/Issues
-        // assets: [{ path: "your-binary-file", label: "Binary" }] // Nếu bạn có file đính kèm release
+        releaseNotes: getReleaseNotes,
       },
     ],
   ],
