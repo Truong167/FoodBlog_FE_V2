@@ -1,3 +1,10 @@
+## 0.6.6 (2025-06-17)
+
+
+
+Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/v0.6.6/CHANGELOG.md) for full details on this release.
+### ✨ Release v0.6.6
+
 ## [0.6.5](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.4...v0.6.5) (2025-06-17)
 
 ## [0.6.3](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.2...v0.6.3) (2025-06-17)
