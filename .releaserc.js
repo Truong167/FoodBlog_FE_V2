@@ -1,4 +1,4 @@
-// .releaserc.js - CHANGELOG.md đầy đủ, GitHub Release Body là link TỪ TEMPLATE
+// .releaserc.js - Cấu hình FINAL (hy vọng vậy!)
 
 const parserOpts = {
   headerPattern:
@@ -41,8 +41,6 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
-        // Sử dụng preset để tạo CHANGELOG.md đầy đủ và có cấu trúc.
-        // Đây cũng là nội dung sẽ được lưu vào nextRelease.notes.
         preset: "conventionalcommits",
       },
     ],
@@ -62,29 +60,24 @@ module.exports = {
       "@semantic-release/git",
       {
         assets: ["CHANGELOG.md", "package.json"],
-        // Giữ tin nhắn commit ngắn gọn, không đưa toàn bộ notes vào.
         message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
     [
       "@semantic-release/github",
       {
-        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG NHẤT: SỬ DỤNG `releaseBodyTemplate` VỚI CHUỖI ***
-        // Sử dụng biến của semantic-release để tạo URL động
-        // `nextRelease.gitTag` sẽ là vX.Y.Z hoặc vX.Y.Z-dev.N
-        // `nextRelease.version` sẽ là X.Y.Z hoặc X.Y.Z-dev.N
-        // `config.repositoryUrl` sẽ là https://github.com/Truong167/FoodBlog_FE_V2
+        // *** ĐIỂM THAY ĐỔI Ở ĐÂY ***
+        // Sử dụng `repositoryUrl` trực tiếp từ context của template.
+        // Hoặc chúng ta có thể xây dựng URL tĩnh nếu biết nó không đổi.
         releaseBodyTemplate: `
 ### {{#if nextRelease.prerelease}}🧪 Prerelease {{/if}}✨ Release v\${nextRelease.version}
 
-Please refer to the [CHANGELOG.md](\${config.repositoryUrl}/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
+Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
 
 {{#if nextRelease.prerelease}}
 **This is a pre-release version and may contain bugs.**
 {{/if}}
         `,
-        // Bỏ hoàn toàn releaseNotes: getGitHubReleaseBody
-        // Vì nó đã báo lỗi là không chấp nhận hàm.
       },
     ],
   ],
