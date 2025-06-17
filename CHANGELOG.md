@@ -1,3 +1,5 @@
+## [0.6.5](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.4...v0.6.5) (2025-06-17)
+
 ## [0.6.3](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.2...v0.6.3) (2025-06-17)
 
 
