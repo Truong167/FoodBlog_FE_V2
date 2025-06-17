@@ -1,4 +1,4 @@
-// .releaserc.js - Giải pháp để đảm bảo getReleaseNotes được dùng và CHANGELOG.md vẫn được cập nhật
+// .releaserc.js - Giải pháp mới: Custom writerOpts trong release-notes-generator
 
 const parserOpts = {
   headerPattern:
@@ -8,45 +8,8 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-// Hàm getReleaseNotes của bạn - Vẫn giữ nguyên để nó tạo nội dung tùy chỉnh
-const getReleaseNotes = async (
-  { nextRelease: { version, gitTag } },
-  context
-) => {
-  // --- Giữ các dòng DEBUG này để đảm bảo nó được gọi lần sau ---
-  console.error("--- DEBUG: getReleaseNotes STARTED ---");
-  console.error("Context object:", JSON.stringify(context, null, 2));
-  console.error("nextRelease.version:", version);
-  console.error("nextRelease.gitTag:", gitTag);
-
-  const [owner, repo] = (
-    process.env.GITHUB_REPOSITORY || // Ưu tiên biến môi trường
-    context.repository ||
-    "Truong167/FoodBlog_FE_V2"
-  ).split("/");
-  console.error("Determined Owner:", owner, "Repo:", repo);
-
-  const changelogUrl = `https://github.com/${owner}/${repo}/blob/${gitTag}/CHANGELOG.md`;
-  console.error("Generated CHANGELOG URL:", changelogUrl);
-
-  let releaseBody = `Please refer to the [CHANGELOG.md](${changelogUrl}) for full details on this release.`;
-
-  if (gitTag.includes("-beta") || gitTag.includes("-dev")) {
-    releaseBody =
-      `### 🧪 Prerelease v${version}\n\n` +
-      releaseBody +
-      "\n\n**This is a pre-release version and may contain bugs.**";
-  } else {
-    releaseBody = `### ✨ Release v${version}\n\n` + releaseBody;
-  }
-  console.error("Final Release Body (from getReleaseNotes):", releaseBody);
-  console.error("--- DEBUG: getReleaseNotes ENDED ---");
-
-  return releaseBody;
-};
-
 module.exports = {
-  debug: true, // GIỮ ĐỂ TIẾP TỤC DEBUG
+  debug: true, // GIỮ ĐỂ DEBUG
   branches: [
     "main",
     {
@@ -74,19 +37,66 @@ module.exports = {
         ],
       },
     ],
-    // --- KHÔI PHỤC @semantic-release/release-notes-generator nhưng VÔ HIỆU HÓA output của nó ---
     [
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
-        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: writerOpts này sẽ khiến nó không tạo nội dung
-        // cho release notes, buộc @semantic-release/github phải dùng releaseNotes tùy chỉnh ***
+        // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: Custom writerOpts để tạo nội dung release bạn muốn ***
         writerOpts: {
-          // Bỏ qua tất cả commit để không tạo nội dung cho release notes
+          // Hàm này sẽ được gọi để tạo release notes.
+          // Bạn có thể tùy chỉnh nó hoàn toàn để tạo ra chuỗi Markdown mong muốn.
           transform: (commit, context) => {
-            return; // Đơn giản là không trả về gì, khiến commit bị bỏ qua
+            // Không thay đổi commit, chỉ là một ví dụ
+            // Đây là nơi bạn có thể tạo ra nội dung chi tiết từ commit nếu muốn
+            return commit;
           },
-          // Hoặc bạn có thể để các tùy chọn nhóm và sắp xếp mặc định nếu cần
+          // Customize the "sections" (e.g., Features, Bug Fixes)
+          // Để đảm bảo nội dung của bạn được thêm vào, bạn sẽ cần tùy chỉnh các template handlebars.
+          // Cách đơn giản nhất là ghi đè toàn bộ template hoặc thêm vào cuối.
+
+          // Để có nội dung hoàn chỉnh và tùy chỉnh theo ý bạn,
+          // chúng ta sẽ sử dụng template `mainTemplate` và `commitPartial`.
+          // Điều này sẽ phức tạp hơn một chút, nhưng là cách duy nhất đáng tin cậy.
+
+          // *********************************************************************************
+          // CÁCH TỐT NHẤT LÀ SỬ DỤNG MỘT PRESET VÀ THAY ĐỔI NÓ, HOẶC CHỈ CẤU HÌNH writerOpts ĐƠN GIẢN
+          // Thay vì writerOpts phức tạp ở đây, hãy dùng một preset và sau đó thêm đoạn text của bạn
+          // vào phần body của GitHub.
+          // *********************************************************************************
+
+          // Hãy thử lại với preset 'conventionalcommits' và sau đó điều chỉnh body GitHub.
+          // HOẶC cách đơn giản nhất là chỉ sử dụng một writerOpts rất đơn giản
+          // để thêm text của bạn vào cuối nội dung mặc định.
+
+          // Để tránh quá phức tạp, chúng ta sẽ tạo một writerOpts đơn giản nhất
+          // để thêm ghi chú của bạn vào.
+          mainTemplate: `
+{{> header}}
+{{#if noteGroups}}
+{{#each noteGroups}}
+### {{title}}
+
+{{#each commits}}
+* {{#if scope}}**{{scope}}:** {{/if}}{{subject}} ([{{hash}}](https://github.com/Truong167/FoodBlog_FE_V2/commit/{{hash}}))
+{{/each}}
+{{/each}}
+{{/if}}
+
+{{> footer}}
+`,
+          headerPartial: `## {{version}} ({{date}})
+
+`,
+          // Sử dụng footerPartial để thêm ghi chú của bạn vào cuối.
+          footerPartial: `
+Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/v{{version}}/CHANGELOG.md) for full details on this release.
+{{#if prerelease}}
+### 🧪 Prerelease v{{version}}
+**This is a pre-release version and may contain bugs.**
+{{else}}
+### ✨ Release v{{version}}
+{{/if}}
+`,
         },
       },
     ],
@@ -94,29 +104,30 @@ module.exports = {
       "@semantic-release/changelog",
       {
         changelogFile: "CHANGELOG.md",
-        // Quan trọng: Để CHANGELOG.md được cập nhật, bạn có thể cần thêm một preset ở đây
-        // vì writerOpts ở trên đã loại bỏ tất cả các commit.
-        // Ví dụ: preset: 'conventionalcommits',
-        // Nếu không có preset, changelog có thể chỉ là một file rỗng hoặc không cập nhật.
-        // Nếu bạn muốn CHANGELOG.md có nội dung đầy đủ (không phải chỉ link),
-        // bạn cần khôi phục writerOpts đầy đủ cho release-notes-generator.
-        // NHƯNG nếu mục tiêu là CHỈ GitHub Release Body tùy chỉnh, và CHANGELOG.md chỉ để đó,
-        // thì cấu hình hiện tại có thể ổn.
       },
     ],
-
+    [
+      "@semantic-release/npm",
+      {
+        npmPublish: false,
+      },
+    ],
     [
       "@semantic-release/git",
       {
         assets: ["CHANGELOG.md", "package.json"],
-        // Loại bỏ ${nextRelease.notes} vì nó sẽ trống rỗng.
-        message: "chore(release): ${nextRelease.version} [skip ci]",
+        // Giữ nguyên message này. ${nextRelease.notes} sẽ được điền từ generateNotes.
+        message:
+          "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
       },
     ],
     [
       "@semantic-release/github",
       {
-        releaseNotes: getReleaseNotes, // Hàm tùy chỉnh của bạn
+        // QUAN TRỌNG: Bỏ releaseNotes tùy chỉnh ở đây!
+        // Vì giờ chúng ta dùng generateNotes để tạo nội dung.
+        // semantic-release sẽ tự động chuyển nội dung từ generateNotes sang GitHub.
+        // releaseNotes: getReleaseNotes, // BỎ DÒNG NÀY ĐI!
       },
     ],
   ],
