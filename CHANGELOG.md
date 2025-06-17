@@ -1,3 +1,10 @@
+## [0.6.2](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.1...v0.6.2) (2025-06-17)
+
+
+### Bug Fixes
+
+* **tacman:** update body for release 1 ([f7e77bc](https://github.com/Truong167/FoodBlog_FE_V2/commit/f7e77bca946aac0db048bebcc9a3683b2a8799f0))
+
 ## [0.6.1](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.6.0...v0.6.1) (2025-06-17)
 
 
