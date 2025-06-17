@@ -18,17 +18,13 @@ const getGitHubReleaseBody = async (
   console.error("--- DEBUG: getGitHubReleaseBody STARTED ---");
   console.error("nextRelease.version:", version);
   console.error("nextRelease.gitTag:", gitTag);
-  console.error(
-    "Context for getGitHubReleaseBody:",
-    JSON.stringify(context, null, 2)
-  );
+  console.error("Context for getGitHubReleaseBody:", JSON.stringify(context, null, 2));
 
   const [owner, repo] = (
     process.env.GITHUB_REPOSITORY ||
     context.repository ||
-    "Truong167/FoodBlog_FE_V2"
-  ) // Fallback nếu không lấy được repo từ env/context
-    .split("/");
+    "Truong167/FoodBlog_FE_V2" // Fallback nếu không lấy được repo từ env/context
+  ).split("/");
   console.error("Determined Owner:", owner, "Repo:", repo);
 
   // Tạo URL đến CHANGELOG.md trên GitHub
@@ -50,6 +46,7 @@ const getGitHubReleaseBody = async (
 
   return releaseBody;
 };
+
 
 module.exports = {
   debug: true, // GIỮ ĐỂ DEBUG
@@ -87,7 +84,7 @@ module.exports = {
         // *** ĐÂY LÀ ĐIỂM QUAN TRỌNG: KHÔNG ĐỊNH NGHĨA `writerOpts` hay `footerPartial` ở đây.
         // Điều này sẽ khiến plugin này tạo ra CHANGELOG.md ĐẦY ĐỦ VỚI DANH SÁCH COMMIT
         // theo định dạng của preset.
-        preset: "conventionalcommits", // SỬ DỤNG PRESET ĐỂ CÓ CHANGELOG ĐẦY ĐỦ
+        preset: 'conventionalcommits', // SỬ DỤNG PRESET ĐỂ CÓ CHANGELOG ĐẦY ĐỦ
       },
     ],
     [
@@ -109,7 +106,8 @@ module.exports = {
         // QUAN TRỌNG: KHÔNG sử dụng ${nextRelease.notes} ở đây.
         // Vì nextRelease.notes sẽ chứa nội dung CHANGELOG đầy đủ.
         // Git commit message chỉ nên ngắn gọn.
-        message: "chore(release): ${nextRelease.version} [skip ci]",
+        message:
+          "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
     [
