@@ -13,8 +13,8 @@ module.exports = {
   branches: [
     "main",
     {
-      name: "feat/dev",
-      prerelease: "dev",
+      name: "dev",
+      prerelease: "canary",
     },
   ],
   plugins: [
