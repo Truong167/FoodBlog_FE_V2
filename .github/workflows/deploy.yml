@@ -33,45 +33,40 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const environment = "${{ github.event.inputs.environment }}";
-            let tagToDeploy = "${{ github.event.inputs.tag_to_deploy }}";
-            let isPrerelease = false; // Mặc định là false
+            // Sử dụng toJSON để mã hóa an toàn các giá trị đầu vào
+             const environment = ${{ toJSON(github.event.inputs.environment) }};
+             let tagToDeploy = ${{ toJSON(github.event.inputs.tag_to_deploy) }};
+             let isPrerelease = false;
 
-            if (tagToDeploy) {
-              // Nếu người dùng đã nhập tag, sử dụng tag đó
-              console.log(`User specified tag: ${tagToDeploy}`);
-              // Cố gắng xác định is_prerelease từ tên tag (thường các pre-release tag có hậu tố như -canary, -beta, -alpha)
-              isPrerelease = tagToDeploy.includes('canary') || tagToDeploy.includes('beta') || tagToDeploy.includes('alpha');
-            } else {
-              // Nếu người dùng không nhập, tìm tag mới nhất thông qua GitHub API Releases
-              console.log(`No tag specified. Finding latest release for ${environment} environment.`);
-              const { data: releases } = await github.rest.repos.listReleases({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: 10, // Lấy 10 release gần nhất để tìm kiếm
-              });
+             if (tagToDeploy) {
+               console.log(`User specified tag: ${tagToDeploy}`);
+               isPrerelease = tagToDeploy.includes('canary') || tagToDeploy.includes('beta') || tagToDeploy.includes('alpha');
+             } else {
+               console.log(`No tag specified. Finding latest release for ${environment} environment.`);
+               const { data: releases } = await github.rest.repos.listReleases({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 per_page: 10,
+               });
 
-              let latestFoundRelease = null;
-              if (environment === 'PROD') {
-                // Tìm bản release mới nhất KHÔNG phải là pre-release (production)
-                latestFoundRelease = releases.find(release => !release.prerelease);
-                isPrerelease = false;
-              } else { // environment === 'STG'
-                # Tìm bản release mới nhất LÀ pre-release (staging)
-                latestFoundRelease = releases.find(release => release.prerelease);
-                isPrerelease = true;
-              }
+               let latestFoundRelease = null;
+               if (environment === 'PROD') {
+                 latestFoundRelease = releases.find(release => !release.prerelease);
+                 isPrerelease = false;
+               } else { // STG
+                 latestFoundRelease = releases.find(release => release.prerelease);
+                 isPrerelease = true;
+               }
 
-              if (latestFoundRelease) {
-                tagToDeploy = latestFoundRelease.tag_name;
-                console.log(`Found latest tag for ${environment}: ${tagToDeploy}`);
-              } else {
-                console.log(`No suitable release found for ${environment}. Aborting.`);
-                // Nếu không tìm thấy tag, đánh dấu bước này là thất bại
-                core.setFailed(`No suitable release found for ${environment} environment.`);
-                return; // Ngừng script
-              }
-            }
-            # Thiết lập output của bước này để job tiếp theo có thể truy cập
-            core.setOutput('tag', tagToDeploy);
-            core.setOutput('is_prerelease', isPrerelease.toString()); # Chuyển boolean thành chuỗi 'true'/'false'
+               if (latestFoundRelease) {
+                 tagToDeploy = latestFoundRelease.tag_name;
+                 console.log(`Found latest tag for ${environment}: ${tagToDeploy}`);
+               } else {
+                 console.log(`No suitable release found for ${environment}. Aborting.`);
+                 core.setFailed(`No suitable release found for ${environment} environment.`);
+                 return;
+               }
+             }
+
+             core.setOutput('tag', tagToDeploy);
+             core.setOutput('is_prerelease', isPrerelease.toString());
