@@ -33,49 +33,53 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run semantic-release
+      - name: Run semantic-release and capture output
         id: semantic
-        # Chạy semantic-release. Plugin @semantic-release/git sẽ cố gắng push và thất bại,
-        # nhưng các file và tags cục bộ vẫn được tạo ra.
-        # Chúng ta sẽ không sử dụng continue-on-error ở đây để kiểm soát lỗi tốt hơn.
-        # Thay vào đó, chúng ta sẽ bắt lỗi push một cách "có ý đồ".
+        # Chạy semantic-release. Nó sẽ thất bại ở bước push của @semantic-release/git.
+        # 'continue-on-error: true' sẽ đảm bảo workflow không dừng lại,
+        # và chúng ta sẽ parse output từ stdout để lấy thông tin release.
+        continue-on-error: true # Cho phép bước này không làm workflow dừng lại khi gặp lỗi
         run: |
-          if ! bunx semantic-release --debug; then
-            echo "Semantic-release finished with errors. This is expected if branch protection is active."
-            # Lấy các outputs quan trọng ngay cả khi có lỗi push
-            # Đảm bảo các outputs này luôn được set
-            if [ -f /tmp/semantic-release-output.json ]; then
-              cat /tmp/semantic-release-output.json
-              NEW_RELEASE_PUBLISHED=$(jq -r '.new_release_published // "false"' /tmp/semantic-release-output.json)
-              RELEASE_NOTES=$(jq -r '.release_notes // ""' /tmp/semantic-release-output.json)
-              echo "new_release_published=$NEW_RELEASE_PUBLISHED" >> $GITHUB_OUTPUT
-              echo "release_notes=$RELEASE_NOTES" >> $GITHUB_OUTPUT
-            else
-              echo "new_release_published=false" >> $GITHUB_OUTPUT
-              echo "release_notes=No release notes generated due to error." >> $GITHUB_OUTPUT
-            fi
-            exit 0 # Thoát với exit code 0 để bước này được coi là thành công
+          OUTPUT=$(bunx semantic-release --debug 2>&1 || true) # Chạy và chuyển stderr sang stdout, '|| true' để command không fail shell
+          echo "$OUTPUT"
+
+          # Phân tích output để lấy new_release_published và release_notes
+          NEW_RELEASE_PUBLISHED=$(echo "$OUTPUT" | grep "\[semantic-release\] › ℹ  Published release" | wc -l | xargs)
+          RELEASE_NOTES=$(echo "$OUTPUT" | grep -A 100 "Release notes:" | tail -n +2 | sed '/^\[semantic-release\]/d' | sed '/^$/d' | tr -d '\r' || echo "No release notes found.")
+
+          # Nếu có bản release mới, NEW_RELEASE_PUBLISHED sẽ là 1, ngược lại là 0
+          # Đặt output cho step này
+          if [ "$NEW_RELEASE_PUBLISHED" -gt 0 ]; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+            echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            echo "release_notes=No release published." >> $GITHUB_OUTPUT
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Sử dụng GH_TOKEN của bạn
-          # Thêm biến môi trường để semantic-release xuất output vào một file
-          # Điều này giúp chúng ta parse output dễ dàng hơn khi có lỗi
-          DEBUG_SEMANTIC_RELEASE_OUTPUT_FILE: /tmp/semantic-release-output.json
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Đảm bảo biến này được truyền vào
+
+      - name: Debug Semantic Release Output
+        run: |
+          echo "new_release_published: ${{ steps.semantic.outputs.new_release_published }}"
+          echo "release_notes:"
+          echo "${{ steps.semantic.outputs.release_notes }}"
 
       - name: Create Pull Request for Release
-        # Chỉ chạy bước này nếu semantic-release đã tính toán một bản phát hành mới
-        # (tức là new_release_published là true, bất kể bước push có thành công hay không)
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_TOKEN }} # Token có quyền tạo PR
-          commit-message: "chore(release): prepare for new release"
-          title: "chore(release): New Release Candidate for ${{ github.ref_name }}"
+          commit-message: "chore(release): prepare for new release" # Tiêu đề commit cho PR
+          title: "chore(release): New Release Candidate for ${{ github.ref_name }}" # Tiêu đề của PR
           body: |
             This Pull Request contains the automated release changes from `semantic-release`.
 
             **Release Notes:**
             ${{ steps.semantic.outputs.release_notes }}
-          branch: "release/candidate-${{ github.ref_name }}"
-          base: ${{ github.ref_name }}
-          labels: "release, automated-pr"
+          branch: "release/candidate-${{ github.ref_name }}" # Nhánh tạm thời sẽ tạo ra
+          base: ${{ github.ref_name }} # Nhánh đích mà PR sẽ merge vào
+          labels: "release, automated-pr" # Gán nhãn cho PR
+          # reviewers: your_github_username # (Tùy chọn) Thêm người đánh giá nếu cần
