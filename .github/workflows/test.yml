@@ -35,29 +35,44 @@ jobs:
 
       - name: Run semantic-release and capture output
         id: semantic
-        # Chạy semantic-release. Nó sẽ thất bại ở bước push của @semantic-release/git.
-        # 'continue-on-error: true' sẽ đảm bảo workflow không dừng lại,
-        # và chúng ta sẽ parse output từ stdout để lấy thông tin release.
         continue-on-error: true # Cho phép bước này không làm workflow dừng lại khi gặp lỗi
         run: |
-          OUTPUT=$(bunx semantic-release --debug 2>&1 || true) # Chạy và chuyển stderr sang stdout, '|| true' để command không fail shell
+          # Chạy semantic-release và ghi toàn bộ output (stdout và stderr) vào một biến
+          OUTPUT=$(bunx semantic-release --debug 2>&1 || true)
           echo "$OUTPUT"
 
-          # Phân tích output để lấy new_release_published và release_notes
-          NEW_RELEASE_PUBLISHED=$(echo "$OUTPUT" | grep "\[semantic-release\] › ℹ  Published release" | wc -l | xargs)
-          RELEASE_NOTES=$(echo "$OUTPUT" | grep -A 100 "Release notes:" | tail -n +2 | sed '/^\[semantic-release\]/d' | sed '/^$/d' | tr -d '\r' || echo "No release notes found.")
-
-          # Nếu có bản release mới, NEW_RELEASE_PUBLISHED sẽ là 1, ngược lại là 0
-          # Đặt output cho step này
-          if [ "$NEW_RELEASE_PUBLISHED" -gt 0 ]; then
-            echo "new_release_published=true" >> $GITHUB_OUTPUT
-            echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-            echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+          # KIỂM TRA XEM CÓ BẢN RELEASE MỚI ĐƯỢC XÁC ĐỊNH KHÔNG
+          # Tìm dòng "The next release version is X.Y.Z"
+          # Nếu dòng này tồn tại, nghĩa là semantic-release đã quyết định tạo một bản release
+          if echo "$OUTPUT" | grep -q "\[semantic-release\] › ℹ  The next release version is"; then
+            NEW_RELEASE_PUBLISHED="true"
+            echo "Semantic-release determined a new release is needed."
           else
-            echo "new_release_published=false" >> $GITHUB_OUTPUT
-            echo "release_notes=No release published." >> $GITHUB_OUTPUT
+            NEW_RELEASE_PUBLISHED="false"
+            echo "Semantic-release did not determine a new release is needed."
           fi
+
+          # PHÂN TÍCH RELEASE NOTES
+          # Tìm phần release notes giữa "generateNotes" và "prepare" hoặc "prepare" và "Failed step"
+          # Lấy các dòng nằm giữa "Completed step "generateNotes" of plugin "@semantic-release/release-notes-generator""
+          # và "Start step "prepare" of plugin "@semantic-release/changelog""
+          # hoặc "Start step "prepare" of plugin "@semantic-release/git""
+          # Đoạn này cần phải rất cẩn thận để bắt đúng phần nội dung release notes.
+          RELEASE_NOTES=$(echo "$OUTPUT" | \
+            sed -n '/Completed step "generateNotes" of plugin "@semantic-release\/release-notes-generator"/,/Start step "prepare" of plugin "@semantic-release\/changelog"/p' | \
+            head -n -1 | tail -n +2 | \
+            sed '/^\[semantic-release\]/d' | sed '/^$/d' | tr -d '\r' || echo "No release notes generated.")
+
+          # Nếu RELEASE_NOTES trống rỗng hoặc chỉ chứa khoảng trắng, đặt lại thông báo
+          if [[ -z "${RELEASE_NOTES// }" ]]; then
+            RELEASE_NOTES="No release notes available from semantic-release output."
+          fi
+
+          # Đặt output cho step này
+          echo "new_release_published=$NEW_RELEASE_PUBLISHED" >> $GITHUB_OUTPUT
+          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Đảm bảo biến này được truyền vào
 
