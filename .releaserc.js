@@ -51,16 +51,11 @@ module.exports = {
       },
     ],
     [
-      "@semantic-release/npm",
-      {
-        npmPublish: false,
-      },
-    ],
-    [
       "@semantic-release/git",
       {
         assets: ["CHANGELOG.md", "package.json"],
         message: "chore(release): ${nextRelease.version} [skip ci]",
+        push: false,
       },
     ],
     [
@@ -68,10 +63,10 @@ module.exports = {
       {
         releaseBodyTemplate: `
 
-Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
+  Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
 
 
-        `,
+          `,
       },
     ],
   ],
