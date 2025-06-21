@@ -1,3 +1,14 @@
+## 0.7.0-canary.2 (2025-06-21)
+
+* feat/tacman: update body for release 12 ([eea1d37](https://github.com/Truong167/FoodBlog_FE_V2/commit/eea1d37))
+* feat/tacman: update body for release 13 ([f073804](https://github.com/Truong167/FoodBlog_FE_V2/commit/f073804))
+* feat/tacman: update body for release 14 ([23c5839](https://github.com/Truong167/FoodBlog_FE_V2/commit/23c5839))
+* feat/tacman: update body for release 15 ([d6d43b1](https://github.com/Truong167/FoodBlog_FE_V2/commit/d6d43b1))
+* feat/tacman: update body for release 16 ([05693e6](https://github.com/Truong167/FoodBlog_FE_V2/commit/05693e6))
+* feat/tacman: update body for release 17 ([8129770](https://github.com/Truong167/FoodBlog_FE_V2/commit/8129770))
+* feat/tacman: update body for release 17 ([0b5b63c](https://github.com/Truong167/FoodBlog_FE_V2/commit/0b5b63c))
+* feat/tacman: update body for release 18 ([72fff91](https://github.com/Truong167/FoodBlog_FE_V2/commit/72fff91))
+
 ## 0.7.0-canary.1 (2025-06-19)
 
 * feat/tacman: update body for release 12 ([b6534b8](https://github.com/Truong167/FoodBlog_FE_V2/commit/b6534b8))
