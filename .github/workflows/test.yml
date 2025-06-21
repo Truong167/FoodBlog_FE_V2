@@ -1,65 +1,4 @@
-# name: Release Please
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   release:
-#     permissions:
-#       contents: write
-#       pull-requests: write
-#       issues: write
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Release Please GitHub Action
-#         uses: googleapis/release-please-action@v4
-#         with:
-#           release-type: node
-#           config-file: .release-please-config.json
-# name: Release
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   release:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0
-
-#       - name: Setup Node & bun
-#         uses: oven-sh/setup-bun@v1
-#         with:
-#           bun-version: 1.1.4
-
-#       - name: Install deps
-#         run: bun install
-
-#       - name: Setup Git config
-#         run: |
-#           git config user.name "github-actions[bot]"
-#           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-#       - name: Generate release (tag + changelog)
-#         run: bunx standard-version
-
-#       - name: Push changes and tags
-#         run: |
-#           git push --follow-tags origin main
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-name: Semantic Release
+name: Semantic Release with PR
 
 on:
   push:
@@ -76,20 +15,48 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Quan trọng để semantic-release có đầy đủ lịch sử git
 
       - name: Setup Node & bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.4
+          bun-version: 1.1.4 # Đảm bảo phiên bản bun bạn muốn dùng
 
-      - name: Install deps
+      - name: Install dependencies
         run: bun install
 
-      - name: Run semantic release
+      - name: Set up Git user
+        # Cấu hình người dùng Git để các commit của bot có thể được nhận diện
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run semantic-release (prepare)
+        id: semantic
+        # Chạy semantic-release để tạo CHANGELOG, cập nhật version, và tạo tags cục bộ
+        # Lưu ý: semantic-release sẽ không push thành công do branch protection,
+        # nhưng nó sẽ chuẩn bị các file cần thiết cho PR.
         run: bunx semantic-release --debug
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }} # Sử dụng GH_TOKEN của bạn
+
+      - name: Create Pull Request for Release
+        # Chỉ chạy bước này nếu semantic-release thành công và có một bản phát hành mới
+        if: success() && steps.semantic.outputs.new_release_published == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GH_TOKEN }} # Token có quyền tạo PR
+          commit-message: "chore(release): prepare for new release" # Tiêu đề commit cho PR
+          title: "chore(release): New Release Candidate for ${{ github.ref_name }}" # Tiêu đề của PR
+          body: |
+            This Pull Request contains the automated release changes from `semantic-release`.
+
+            **Release Notes:**
+            ${{ steps.semantic.outputs.release_notes }}
+          branch: "release/candidate-${{ github.ref_name }}" # Nhánh tạm thời sẽ tạo ra (ví dụ: release/candidate-dev)
+          base: ${{ github.ref_name }} # Nhánh đích mà PR sẽ merge vào (main hoặc dev)
+          labels: "release, automated-pr" # Gán nhãn cho PR
+          # reviewers: your_github_username # (Tùy chọn) Thêm người đánh giá nếu cần
