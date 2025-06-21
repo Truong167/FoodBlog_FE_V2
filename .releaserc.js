@@ -51,14 +51,6 @@ module.exports = {
       },
     ],
     [
-      "@semantic-release/git",
-      {
-        assets: ["CHANGELOG.md", "package.json"],
-        message: "chore(release): ${nextRelease.version} [skip ci]",
-        push: false,
-      },
-    ],
-    [
       "@semantic-release/github",
       {
         releaseBodyTemplate: `
@@ -67,6 +59,13 @@ module.exports = {
 
 
           `,
+      },
+    ],
+    [
+      "@semantic-release/git",
+      {
+        assets: ["CHANGELOG.md", "package.json"],
+        message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
   ],
