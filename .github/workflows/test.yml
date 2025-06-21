@@ -18,7 +18,6 @@ permissions:
   contents: write # Cần để checkout code, commit và push (qua PR)
   issues: write # Cần cho semantic-release (và github plugin)
   pull-requests: write # Cần để tạo Pull Request
-  releases: write # Cần để tạo GitHub Release sau khi PR được merge
 
 jobs:
   release:
