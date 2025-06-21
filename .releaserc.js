@@ -66,17 +66,11 @@ module.exports = {
     [
       "@semantic-release/github",
       {
-        // *** ĐIỂM THAY ĐỔI Ở ĐÂY ***
-        // Sử dụng `repositoryUrl` trực tiếp từ context của template.
-        // Hoặc chúng ta có thể xây dựng URL tĩnh nếu biết nó không đổi.
         releaseBodyTemplate: `
-### {{#if nextRelease.prerelease}}🧪 Prerelease {{/if}}✨ Release v\${nextRelease.version}
 
 Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
 
-{{#if nextRelease.prerelease}}
-**This is a pre-release version and may contain bugs.**
-{{/if}}
+
         `,
       },
     ],
