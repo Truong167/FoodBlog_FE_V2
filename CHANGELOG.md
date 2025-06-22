@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+##  (2025-06-22)
+
+
+
+
 ## [0.7.0](https://github.com/Truong167/FoodBlog_FE_V2/compare/v0.7.0-canary.2...v0.7.0) (2025-06-22)
 
 ## 0.7.0-canary.19 (2025-06-22)
