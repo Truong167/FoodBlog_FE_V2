@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Install JQ # Vẫn cần JQ cho bước Update package.json
+      - name: Install JQ
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Configure Git for Actions
@@ -45,6 +45,8 @@ jobs:
         run: |
           echo "--- START: semantic-release execution ---"
           # Chạy semantic-release. Ghi tất cả output vào một file.
+          # Chúng ta không muốn semantic-release tự động commit và push.
+          # Điều này được kiểm soát bởi cấu hình plugins trong .releaserc.js.
           set -o pipefail
           npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
             echo "semantic-release command failed with exit code $?."
@@ -53,12 +55,23 @@ jobs:
           }
           echo "--- END: semantic-release execution ---"
 
-          echo "--- START: Content of semantic_release_raw_output.txt (full logs) ---"
+          echo "--- Content of semantic_release_raw_output.txt (full logs) ---"
           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
           echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          # Không parse JSON từ output của semantic-release nữa.
-          # Thay vào đó, đọc phiên bản từ CHANGELOG.md đã được cập nhật.
+          echo "--- Content of CHANGELOG.md after semantic-release ---"
+          cat CHANGELOG.md || echo "CHANGELOG.md not found or empty."
+          echo "--- Content of package.json after semantic-release ---"
+          cat package.json || echo "package.json not found or empty."
+
+          # DEBUG: Log trạng thái Git sau khi semantic-release chạy
+          echo "--- Git Status after semantic-release (before custom parsing) ---"
+          git status --short
+          echo "--- Git Diff (staged) after semantic-release ---"
+          git diff --cached --name-only
+          echo "--- Git Diff (unstaged) after semantic-release ---"
+          git diff --name-only
+
           NEW_VERSION_FROM_CHANGELOG=""
           # Tìm dòng bắt đầu bằng "## " (heading 2) và có chứa năm hiện tại hoặc một định dạng version.
           # Lấy dòng đầu tiên (mới nhất) sau khi semantic-release chạy.
@@ -86,7 +99,6 @@ jobs:
           fi
 
           # Escape backslashes and double quotes in RELEASE_NOTES_BODY for JSON string.
-          # We need to escape these carefully for the JSON format.
           ESCAPED_RELEASE_NOTES_BODY=$(echo "$RELEASE_NOTES_BODY" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | tr -d '\n')
 
           # Tạo JSON output giả
@@ -104,24 +116,15 @@ jobs:
             echo "release_output_json={}" >> "$GITHUB_OUTPUT"
           fi
 
-          echo "--- Content of CHANGELOG.md after semantic-release ---"
-          cat CHANGELOG.md || echo "CHANGELOG.md not found or empty."
-          echo "--- Content of package.json after semantic-release ---"
-          cat package.json || echo "package.json not found or empty."
-
       - name: Upload semantic-release raw output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: semantic-release-raw-output
           path: semantic_release_raw_output.txt
 
-      # Bỏ qua artifact semantic_release_json_output.json vì chúng ta không tạo ra nó trực tiếp nữa.
-      # Nếu bạn vẫn muốn có một file JSON với output tổng hợp, bạn có thể thêm một bước riêng để tạo nó.
-
       - name: Parse semantic-release output for new version and release notes
         id: get_release_info
         env:
-          # Đặt JSON string vào một biến môi trường
           RELEASE_JSON_CONTENT: ${{ steps.semantic_release_run.outputs.release_output_json }}
         run: |
           NEW_VERSION=""
@@ -131,8 +134,6 @@ jobs:
 
           if [ -n "$RELEASE_JSON_CONTENT" ] && [ "$RELEASE_JSON_CONTENT" != "{}" ]; then
             echo "DEBUG: Attempting to parse JSON for nextRelease.version and notes."
-            # Sử dụng jq để parse JSON từ biến môi trường
-            # Đảm bảo dấu ngoặc đơn cho jq query là chính xác
             PARSED_VERSION=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.version // empty')
             PARSED_NOTES=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.notes // empty')
 
@@ -145,7 +146,6 @@ jobs:
 
             if [ -n "$PARSED_NOTES" ]; then
               RELEASE_NOTES="$PARSED_NOTES"
-              # Chỉ in ra vài ký tự đầu để tránh log quá dài
               echo "DEBUG: Successfully parsed RELEASE_NOTES (first 50 chars): ${RELEASE_NOTES:0:50}..."
             else
               echo "DEBUG: nextRelease.notes not found in JSON or is empty."
@@ -199,6 +199,11 @@ jobs:
           echo "package.json updated."
           echo "--- Content of package.json after update ---"
           cat package.json
+          # DEBUG: Log trạng thái Git sau khi package.json được cập nhật
+          echo "--- Git Status after package.json update ---"
+          git status --short
+          echo "--- Git Diff (unstaged) after package.json update ---"
+          git diff --name-only
 
       - name: Create Release Branch
         id: create_branch
@@ -214,12 +219,17 @@ jobs:
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
           echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
 
-          # Đảm bảo chỉ thêm CHANGELOG.md và package.json
           git add CHANGELOG.md package.json
 
           # Loại bỏ các file tạm thời hoặc file log khỏi staging area
-          git reset semantic_release_raw_output.txt || true # Sử dụng || true để không fail nếu file không tồn tại
+          git reset semantic_release_raw_output.txt || true
           git reset ./.github/release-assets/release_notes.md || true 
+
+          # DEBUG: Log trạng thái Git trước khi commit
+          echo "--- Git Status before commit attempt ---"
+          git status --short
+          echo "--- Git Diff (staged) before commit attempt ---"
+          git diff --cached --name-only
 
           if ! git diff --cached --exit-code; then
             echo "DEBUG: Changes detected, committing."
@@ -227,9 +237,16 @@ jobs:
             echo "Committed version and changelog changes to branch."
           else
             echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
-            # Nếu không có thay đổi nào để commit, có thể là do semantic-release đã commit
-            # hoặc không có thay đổi version. Cần kiểm tra lại luồng.
+            echo "Warning: No changes in CHANGELOG.md or package.json to commit. This might be expected if semantic-release did not detect a new release, or an issue with the workflow's git state."
           fi
+
+          # DEBUG: Log trạng thái Git sau khi commit
+          echo "--- Git Status after commit attempt ---"
+          git status --short
+          echo "--- Git Diff (staged) after commit attempt ---"
+          git diff --cached --name-only
+          echo "--- Git Diff (unstaged) after commit attempt ---"
+          git diff --name-only
 
       - name: Push Release Branch
         env:
