@@ -3,7 +3,7 @@ name: Semantic Release PR
 on:
   push:
     branches:
-      - feat/dev # Hoặc nhánh bạn muốn chạy release PR
+      - dev # Hoặc nhánh bạn muốn chạy release PR
 
 jobs:
   release:
@@ -231,7 +231,7 @@ jobs:
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
           branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: feat/dev
+          base: dev
           labels: |
             release
             automated
