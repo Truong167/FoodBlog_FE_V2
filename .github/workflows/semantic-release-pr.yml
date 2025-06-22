@@ -213,13 +213,22 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
           echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
+
+          # Đảm bảo chỉ thêm CHANGELOG.md và package.json
           git add CHANGELOG.md package.json
+
+          # Loại bỏ các file tạm thời hoặc file log khỏi staging area
+          git reset semantic_release_raw_output.txt || true # Sử dụng || true để không fail nếu file không tồn tại
+          git reset ./.github/release-assets/release_notes.md || true 
+
           if ! git diff --cached --exit-code; then
             echo "DEBUG: Changes detected, committing."
             git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]"
             echo "Committed version and changelog changes to branch."
           else
             echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
+            # Nếu không có thay đổi nào để commit, có thể là do semantic-release đã commit
+            # hoặc không có thay đổi version. Cần kiểm tra lại luồng.
           fi
 
       - name: Push Release Branch
