@@ -57,27 +57,46 @@ jobs:
           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
           echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          # Bước quan trọng: Lọc JSON output chứa nextRelease từ toàn bộ log.
-          # semantic-release sẽ in ra một dòng JSON hợp lệ chứa nextRelease khi tạo release thành công.
-          # Chúng ta sẽ tìm dòng đó.
-          RELEASE_OUTPUT=$(
-            cat semantic_release_raw_output.txt |
-            grep -E '^\s*\{.*"nextRelease".*\}\s*$' | # Lọc các dòng bắt đầu bằng '{', kết thúc bằng '}' và CHỨA "nextRelease"
-            tail -n 1 | # Lấy dòng cuối cùng (để đảm bảo là object release mới nhất)
-            jq -s '.' # Đảm bảo đó là JSON hợp lệ. Nếu không, jq sẽ lỗi hoặc trả về null/empty.
+          # Không parse JSON từ output của semantic-release nữa.
+          # Thay vào đó, đọc phiên bản từ CHANGELOG.md đã được cập nhật.
+          NEW_VERSION_FROM_CHANGELOG=""
+          # Tìm dòng bắt đầu bằng "## " (heading 2) và có chứa năm hiện tại hoặc một định dạng version.
+          # Lấy dòng đầu tiên (mới nhất) sau khi semantic-release chạy.
+          NEW_VERSION_FROM_CHANGELOG=$(
+            grep -E '^##\s(v)?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\)' CHANGELOG.md |
+            head -n 1 | # Lấy dòng changelog mới nhất
+            sed -E 's/^##\s(v)?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?)\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\).*$/\2/' # Trích xuất chỉ số phiên bản
           )
 
-          echo "--- DEBUG: Value of RELEASE_OUTPUT variable after filtering ---"
-          echo "${RELEASE_OUTPUT}"
+          echo "--- DEBUG: New version extracted from CHANGELOG.md: ${NEW_VERSION_FROM_CHANGELOG} ---"
 
-          if [ -n "$RELEASE_OUTPUT" ] && [ "$RELEASE_OUTPUT" != "null" ] && [ "$RELEASE_OUTPUT" != "{}" ]; then
-            echo "DEBUG: Found valid JSON containing nextRelease. Setting to step output."
+          # Bây giờ, chúng ta sẽ tạo một JSON object giả để truyền vào các bước tiếp theo,
+          # vì chúng mong đợi một JSON object có nextRelease.version và nextRelease.notes.
+          # Chúng ta sẽ sử dụng release notes từ CHANGELOG.md
+          RELEASE_NOTES_BODY=$(
+              sed -n '/^## '"$NEW_VERSION_FROM_CHANGELOG"'\s/,/^##/P' CHANGELOG.md |
+              grep -v '^## ' | # Bỏ qua dòng tiêu đề phiên bản
+              sed 's/^\s*//;s/\s*$//' | # Cắt khoảng trắng ở đầu/cuối dòng
+              awk 'NF {found=1} found' # Bỏ qua các dòng trống ở đầu block
+          )
+
+          # Nếu không tìm thấy release notes, đặt giá trị mặc định
+          if [ -z "$RELEASE_NOTES_BODY" ]; then
+              RELEASE_NOTES_BODY="No detailed release notes available."
+          fi
+
+          # Tạo JSON output giả
+          RELEASE_OUTPUT_JSON="{ \"nextRelease\": { \"version\": \"$NEW_VERSION_FROM_CHANGELOG\", \"notes\": \"$(echo "$RELEASE_NOTES_BODY" | tr -d '\n' | sed 's/"/\\"/g')\" } }"
+
+          echo "--- DEBUG: Synthesized RELEASE_OUTPUT_JSON: ${RELEASE_OUTPUT_JSON} ---"
+
+          if [ -n "$NEW_VERSION_FROM_CHANGELOG" ]; then
+            echo "DEBUG: New version found from CHANGELOG.md. Setting to step output."
             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
+            echo "$RELEASE_OUTPUT_JSON" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
           else
-            echo "DEBUG: No valid semantic-release JSON output with 'nextRelease' found. Setting empty JSON."
-            echo "RELEASE_OUTPUT content was: '${RELEASE_OUTPUT}'" # Log content for debug
+            echo "DEBUG: No new version found from CHANGELOG.md. Setting empty JSON."
             echo "release_output_json={}" >> "$GITHUB_OUTPUT"
           fi
 
