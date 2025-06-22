@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ##  (2025-06-22)
 
+* feat: update body for release 71 ([dbcba75](https://github.com/Truong167/FoodBlog_FE_V2/commit/dbcba75))
+* chore(release): null ([41a2d7f](https://github.com/Truong167/FoodBlog_FE_V2/commit/41a2d7f))
 
 
 
