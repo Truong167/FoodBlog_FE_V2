@@ -1,3 +1,15 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+##  (2025-06-22)
+
+
+* add simple test feature ([5b7424d](https://github.com/Truong167/FoodBlog_FE_V2/commit/5b7424dd93b0972000356a9ab4a7900d3b75cbb1))
+* **api:** add github token ([cbbdd97](https://github.com/Truong167/FoodBlog_FE_V2/commit/cbbdd97f884e405bff23a36f3308c5b8dc4b09de))
+* test commit message ([183cfc4](https://github.com/Truong167/FoodBlog_FE_V2/commit/183cfc4ed1b070bbb506187ab2aa289009c88146))
+* **test-ci:** remove log ([614503f](https://github.com/Truong167/FoodBlog_FE_V2/commit/614503f4f73d67f99df592d187203dcf3920aabe))
+
 ## 0.7.0-canary.19 (2025-06-22)
 
 - feat/tacman: update body for release 63 ([03b4a3e](https://github.com/Truong167/FoodBlog_FE_V2/commit/03b4a3e))
