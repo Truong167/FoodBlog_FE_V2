@@ -1,0 +1,37 @@
+[3:14:59 AM] [semantic-release] › ℹ  Running semantic-release version 24.2.5
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "verifyConditions" from "@semantic-release/changelog"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "verifyConditions" from "@semantic-release/github"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "analyzeCommits" from "@semantic-release/commit-analyzer"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "generateNotes" from "@semantic-release/release-notes-generator"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "prepare" from "@semantic-release/changelog"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "publish" from "@semantic-release/github"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "addChannel" from "@semantic-release/github"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "success" from "@semantic-release/github"
+[3:14:59 AM] [semantic-release] › ✔  Loaded plugin "fail" from "@semantic-release/github"
+[3:15:01 AM] [semantic-release] › ✔  Run automated release from branch dev on repository https://github.com/Truong167/FoodBlog_FE_V2
+[3:15:01 AM] [semantic-release] › ✔  Allowed to push to the Git repository
+[3:15:01 AM] [semantic-release] › ℹ  Start step "verifyConditions" of plugin "@semantic-release/changelog"
+[3:15:01 AM] [semantic-release] › ✔  Completed step "verifyConditions" of plugin "@semantic-release/changelog"
+[3:15:01 AM] [semantic-release] › ℹ  Start step "verifyConditions" of plugin "@semantic-release/github"
+[3:15:01 AM] [semantic-release] [@semantic-release/github] › ℹ  Verify GitHub authentication (https://api.github.com)
+[3:15:01 AM] [semantic-release] › ✔  Completed step "verifyConditions" of plugin "@semantic-release/github"
+[3:15:01 AM] [semantic-release] › ℹ  Found git tag v0.8.0-canary.2 associated with version 0.8.0-canary.2 on branch dev
+[3:15:01 AM] [semantic-release] › ℹ  Found 1 commits since last release
+[3:15:01 AM] [semantic-release] › ℹ  Start step "analyzeCommits" of plugin "@semantic-release/commit-analyzer"
+[3:15:01 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  Analyzing commit: feat/tacman: update body for release 24
+[3:15:01 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  The release type for the commit is minor
+[3:15:01 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  Analysis of 1 commits complete: minor release
+[3:15:01 AM] [semantic-release] › ✔  Completed step "analyzeCommits" of plugin "@semantic-release/commit-analyzer"
+[3:15:01 AM] [semantic-release] › ℹ  The next release version is 0.8.0-canary.3
+[3:15:01 AM] [semantic-release] › ℹ  Start step "generateNotes" of plugin "@semantic-release/release-notes-generator"
+[3:15:01 AM] [semantic-release] › ✔  Completed step "generateNotes" of plugin "@semantic-release/release-notes-generator"
+[3:15:01 AM] [semantic-release] › ℹ  Start step "prepare" of plugin "@semantic-release/changelog"
+[3:15:01 AM] [semantic-release] [@semantic-release/changelog] › ℹ  Update /home/runner/work/FoodBlog_FE_V2/FoodBlog_FE_V2/CHANGELOG.md
+[3:15:01 AM] [semantic-release] › ✔  Completed step "prepare" of plugin "@semantic-release/changelog"
+[3:15:02 AM] [semantic-release] › ✔  Created tag v0.8.0-canary.3
+[3:15:02 AM] [semantic-release] › ℹ  Start step "publish" of plugin "@semantic-release/github"
+[3:15:03 AM] [semantic-release] [@semantic-release/github] › ℹ  Published GitHub release: https://github.com/Truong167/FoodBlog_FE_V2/releases/tag/v0.8.0-canary.3
+[3:15:03 AM] [semantic-release] › ✔  Completed step "publish" of plugin "@semantic-release/github"
+[3:15:03 AM] [semantic-release] › ℹ  Start step "success" of plugin "@semantic-release/github"
+[3:15:05 AM] [semantic-release] › ✔  Completed step "success" of plugin "@semantic-release/github"
+[3:15:05 AM] [semantic-release] › ✔  Published release 0.8.0-canary.3 on dev channel
