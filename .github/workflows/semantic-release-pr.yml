@@ -148,7 +148,7 @@ jobs:
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
           branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: feat/dev # Nhánh đích của PR (nhánh được bảo vệ)
+          base: dev # Nhánh đích của PR (nhánh được bảo vệ)
           labels: |
             release
             automated
