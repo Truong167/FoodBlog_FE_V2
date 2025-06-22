@@ -1,0 +1,91 @@
+# .github/workflows/semantic-release-pr.yml
+name: Semantic Release PR (Dev)
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node & Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.4
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run semantic-release dry run
+        id: semantic_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OUTPUT=$(npx semantic-release --dry-run --branches dev || true)
+          echo "$OUTPUT"
+          VERSION=$(echo "$OUTPUT" | grep -oP 'The next release version is \K[^\s]+')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Stop if no version bump
+        if: steps.semantic_release.outputs.version == ''
+        run: echo "No release needed" && exit 0
+
+      - name: Create release branch
+        run: |
+          VERSION=${{ steps.semantic_release.outputs.version }}
+          BRANCH="release/v$VERSION"
+          git checkout -b "$BRANCH"
+
+      - name: Generate changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx semantic-release --no-ci --branches dev || true
+
+      - name: Commit version bump
+        run: |
+          VERSION=${{ steps.semantic_release.outputs.version }}
+          git add CHANGELOG.md package.json
+          git commit -m "chore(release): prepare for v$VERSION release PR [skip ci]"
+
+      - name: Push branch
+        run: |
+          VERSION=${{ steps.semantic_release.outputs.version }}
+          git push origin "release/v$VERSION"
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Release v${{ steps.semantic_release.outputs.version }}"
+          branch: "release/v${{ steps.semantic_release.outputs.version }}"
+          base: dev
+          commit-message: "chore(release): prepare for v${{ steps.semantic_release.outputs.version }} release PR"
+          body: |
+            ### 🚀 Release PR v${{ steps.semantic_release.outputs.version }}
+
+            - Version bump
+            - Updated changelog
+          draft: false
+          labels: |
+            release
+            automated
