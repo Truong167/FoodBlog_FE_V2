@@ -3,7 +3,7 @@ name: Semantic Release PR
 on:
   push:
     branches:
-      - dev # Hoặc nhánh bạn muốn chạy release PR
+      - feat/dev # Hoặc nhánh bạn muốn chạy release PR
 
 jobs:
   release:
@@ -31,7 +31,6 @@ jobs:
 
       - name: Install JQ
         run: sudo apt-get update && sudo apt-get install -y jq
-        # This ensures jq is available.
 
       - name: Configure Git for Actions
         run: |
@@ -39,50 +38,50 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           echo "Git user configured for automated actions."
 
-      - name: Run semantic-release (get release info)
+      - name: Run semantic-release and capture outputs
         id: semantic_release_run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Verifying npx availability..."
-          which npx || { echo "npx not found! Exiting."; exit 1; }
-          echo "npx is located at: $(which npx)"
+          echo "--- START: semantic-release execution ---"
+          # Chạy semantic-release, redirect stdout (JSON) vào một file, redirect stderr (logs) vào file khác.
+          # Chúng ta dùng "set -o pipefail" để đảm bảo nếu npx semantic-release thất bại, lệnh sẽ trả về lỗi.
+          set -o pipefail
+          npx semantic-release --debug > semantic_release_json_output.json 2> semantic_release_raw_output.txt || {
+            echo "semantic-release command failed with exit code $?."
+            # In ra toàn bộ log để debug nếu có lỗi
+            cat semantic_release_raw_output.txt
+            exit 1
+          }
+          echo "--- END: semantic-release execution ---"
 
-          echo "Verifying semantic-release package..."
-          npx --version || { echo "npx failed to run. Exiting."; exit 1; }
-          npx semantic-release --help > /dev/null || { echo "semantic-release not callable via npx! Exiting."; exit 1; }
-          echo "semantic-release is callable via npx."
+          echo "--- START: Content of semantic_release_raw_output.txt (full logs) ---"
+          cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
+          echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          echo "Verifying jq availability..."
-          which jq || { echo "jq not found! Exiting."; exit 1; }
-          echo "jq is located at: $(which jq)"
-
-          echo "Running semantic-release and capturing JSON output..."
-          # Chạy semantic-release. stdout chứa JSON output của nextRelease, stderr chứa log.
-          # Chúng ta sẽ capture stdout vào biến RELEASE_JSON và stderr vào semantic_release_raw_output.txt.
-          RELEASE_JSON=$(npx semantic-release --debug >&1 2>semantic_release_raw_output.txt)
-          # Lưu ý: ">&1" có nghĩa là stdout và stderr đều đi qua pipe đến RELEASE_JSON
-          #  sau đó dùng 2>semantic_release_raw_output.txt để stderr ghi vào file
-          #  Cách này sẽ không hoạt động như mong đợi vì stdout và stderr bị trộn lẫn trước khi capture.
-          #  Chúng ta cần capture stdout riêng.
-
-          # CÁCH CHUẨN XÁC HƠN ĐỂ CAPTURE STDOUT (JSON) VÀ STDERR (LOGS):
-          # Chạy semantic-release, redirect stdout (JSON) vào một file, redirect stderr (logs) vào file khác,
-          # rồi đọc file JSON đó.
-          npx semantic-release --debug > semantic_release_json_output.json 2> semantic_release_raw_output.txt
+          echo "--- START: Content of semantic_release_json_output.json (expected JSON) ---"
+          cat semantic_release_json_output.json || echo "semantic_release_json_output.json not found or empty."
+          echo "--- END: Content of semantic_release_json_output.json ---"
 
           # Đọc nội dung JSON từ file.
           RELEASE_OUTPUT=$(cat semantic_release_json_output.json)
 
-          if [ -n "$RELEASE_OUTPUT" ] && [ "$RELEASE_OUTPUT" != "{}" ]; then
-            echo "Found semantic-release JSON output:"
-            echo "$RELEASE_OUTPUT"
+          echo "--- DEBUG: Value of RELEASE_OUTPUT variable ---"
+          echo "${{ env.RELEASE_OUTPUT }}" # Sử dụng env để in ra biến shell ngay lập tức
+
+          # Kiểm tra nếu RELEASE_OUTPUT trống hoặc không phải JSON hợp lệ
+          if [ -z "$RELEASE_OUTPUT" ]; then
+            echo "DEBUG: RELEASE_OUTPUT is empty."
+            echo "release_output_json={}" >> "$GITHUB_OUTPUT"
+          elif ! echo "$RELEASE_OUTPUT" | jq -e '.' > /dev/null; then
+            echo "DEBUG: RELEASE_OUTPUT is not valid JSON."
+            echo "RELEASE_OUTPUT content: $RELEASE_OUTPUT"
+            echo "release_output_json={}" >> "$GITHUB_OUTPUT"
+          else
+            echo "DEBUG: RELEASE_OUTPUT is valid JSON."
             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
             echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
-          else
-            echo "No semantic-release JSON output found (no new release determined or parsing failed)."
-            echo "release_output_json={}" >> "$GITHUB_OUTPUT" # Ensure output variable is always set
           fi
 
           echo "--- Content of CHANGELOG.md after semantic-release ---"
@@ -90,11 +89,17 @@ jobs:
           echo "--- Content of package.json after semantic-release ---"
           cat package.json || echo "package.json not found or empty."
 
-      - name: Upload semantic-release raw output
+      - name: Upload semantic-release raw output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: semantic-release-raw-output
           path: semantic_release_raw_output.txt
+
+      - name: Upload semantic-release JSON output as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-release-json-output
+          path: semantic_release_json_output.json
 
       - name: Parse semantic-release output for new version and release notes
         id: get_release_info
@@ -102,16 +107,30 @@ jobs:
           NEW_VERSION=""
           RELEASE_NOTES=""
 
-          RELEASE_JSON="${{ steps.semantic_release_run.outputs.release_output_json }}"
+          RELEASE_JSON_CONTENT="${{ steps.semantic_release_run.outputs.release_output_json }}"
+          echo "DEBUG: RELEASE_JSON_CONTENT from step output: $RELEASE_JSON_CONTENT"
 
-          # Only attempt to parse if the JSON is not empty and is valid
-          if [ -n "$RELEASE_JSON" ] && echo "$RELEASE_JSON" | jq -e '.' &>/dev/null; then
-            if echo "$RELEASE_JSON" | jq -e '.nextRelease.version' &>/dev/null; then
-              NEW_VERSION=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.version')
+          if [ -n "$RELEASE_JSON_CONTENT" ] && [ "$RELEASE_JSON_CONTENT" != "{}" ]; then
+            echo "DEBUG: Attempting to parse JSON for nextRelease.version and notes."
+            # Sử dụng jq để parse JSON từ biến
+            PARSED_VERSION=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.version // empty')
+            PARSED_NOTES=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.notes // empty')
+
+            if [ -n "$PARSED_VERSION" ]; then
+              NEW_VERSION="$PARSED_VERSION"
+              echo "DEBUG: Successfully parsed NEW_VERSION: $NEW_VERSION"
+            else
+              echo "DEBUG: nextRelease.version not found in JSON or is empty."
             fi
-            if echo "$RELEASE_JSON" | jq -e '.nextRelease.notes' &>/dev/null; then
-              RELEASE_NOTES=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.notes')
+
+            if [ -n "$PARSED_NOTES" ]; then
+              RELEASE_NOTES="$PARSED_NOTES"
+              echo "DEBUG: Successfully parsed RELEASE_NOTES (first 50 chars): ${RELEASE_NOTES:0:50}..."
+            else
+              echo "DEBUG: nextRelease.notes not found in JSON or is empty."
             fi
+          else
+            echo "DEBUG: RELEASE_JSON_CONTENT is empty or is a blank JSON object."
           fi
 
           if [ -z "$NEW_VERSION" ]; then
@@ -135,20 +154,26 @@ jobs:
         id: read_release_notes
         run: |
           RELEASE_NOTES_FILE="${{ steps.get_release_info.outputs.release_notes_file }}"
+          echo "DEBUG: Reading release notes from $RELEASE_NOTES_FILE"
           if [ -f "$RELEASE_NOTES_FILE" ]; then
             RELEASE_NOTES_CONTENT=$(cat "$RELEASE_NOTES_FILE")
+            echo "DEBUG: Release notes content (first 50 chars): ${RELEASE_NOTES_CONTENT:0:50}..."
             echo "release_notes_pr_body<<EOF" >> "$GITHUB_OUTPUT"
             echo "$RELEASE_NOTES_CONTENT" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
           else
-            echo "No release notes file found, setting empty notes."
+            echo "DEBUG: No release notes file found at $RELEASE_NOTES_FILE."
             echo "release_notes_pr_body=No detailed release notes available." >> "$GITHUB_OUTPUT"
           fi
 
       - name: Update package.json version
         run: |
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
-          echo "Updating package.json to version $NEW_VERSION"
+          echo "DEBUG: Attempting to update package.json with version: $NEW_VERSION"
+          if [ "$NEW_VERSION" == "none" ]; then
+            echo "Error: Cannot update package.json with 'none' version. Something went wrong upstream."
+            exit 1
+          fi
           jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
           echo "package.json updated."
           echo "--- Content of package.json after update ---"
@@ -159,19 +184,21 @@ jobs:
         run: |
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
           BRANCH_NAME="release/v$NEW_VERSION"
-          echo "Creating new branch: $BRANCH_NAME"
+          echo "DEBUG: Creating new branch: $BRANCH_NAME"
           git checkout -b "$BRANCH_NAME"
           echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Commit version and changelog changes to new branch
         run: |
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+          echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
           git add CHANGELOG.md package.json
           if ! git diff --cached --exit-code; then
+            echo "DEBUG: Changes detected, committing."
             git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]"
             echo "Committed version and changelog changes to branch."
           else
-            echo "No changes in CHANGELOG.md or package.json to commit."
+            echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
           fi
 
       - name: Push Release Branch
@@ -179,6 +206,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
+          echo "DEBUG: Pushing branch: $BRANCH_NAME"
           git push origin "$BRANCH_NAME"
           echo "Pushed branch: $BRANCH_NAME to remote."
 
@@ -203,7 +231,7 @@ jobs:
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
           branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: dev
+          base: feat/dev
           labels: |
             release
             automated
