@@ -201,15 +201,14 @@ jobs:
           git checkout -b "$BRANCH_NAME"
           echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
-      # GIỮ LẠI CHỈ MỘT BƯỚC COMMIT NÀY!
+      # === THAY ĐỔI ĐẦY ĐỦ Ở ĐÂY ===
+      # Bước commit phải xảy ra trước khi đẩy nhánh
       - name: Commit version and changelog changes to new branch
         run: |
           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
           echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
 
           git add CHANGELOG.md package.json
-
-          # Không cần git reset ở đây vì chúng ta sẽ xóa hẳn các file này sau.
 
           echo "--- Git Status before commit attempt ---"
           git status --short
@@ -232,23 +231,27 @@ jobs:
           echo "--- Git Diff (unstaged) after commit attempt ---"
           git diff --name-only
 
-      # BƯỚC CLEANUP NÀY LÀ CỰC KỲ QUAN TRỌNG VÀ CẦN ĐẶT TRƯỚC BƯỚC PUSH
+      # Bước Cleanup phải xảy ra sau khi commit, nhưng trước khi đẩy nhánh
       - name: Cleanup temporary files
         run: |
           echo "--- Cleaning up temporary files ---"
           rm -f semantic_release_raw_output.txt
-          rm -rf ./.github/release-assets/ # Xóa toàn bộ thư mục và nội dung của nó
+          rm -rf ./.github/release-assets/
           echo "Temporary files cleaned up."
           echo "--- Git Status after cleanup ---"
-          git status --short # Kiểm tra lại trạng thái sau khi xóa
+          git status --short
 
+      # Bước đẩy nhánh lên remote phải là bước cuối cùng trước khi tạo PR
       - name: Push Release Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
           echo "DEBUG: Pushing branch: $BRANCH_NAME"
-          git push origin "$BRANCH_NAME"
+          # Sử dụng --force-with-lease nếu bạn muốn đảm bảo push ghi đè nhánh remote
+          # trong trường hợp có gì đó không đồng bộ, nhưng thường không cần thiết
+          # nếu đây là nhánh mới và chỉ workflow này tác động.
+          git push --set-upstream origin "$BRANCH_NAME" # Thêm --set-upstream
           echo "Pushed branch: $BRANCH_NAME to remote."
 
       - name: Create Pull Request
@@ -279,7 +282,7 @@ jobs:
           draft: false
 
       - name: Create GitHub Release
-        if: success() # Chỉ tạo GitHub Release nếu các bước trước đó thành công
+        if: success()
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
