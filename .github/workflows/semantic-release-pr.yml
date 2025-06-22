@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "--- START: semantic-release execution ---"
-          # Chạy semantic-release. Redirect CẢ stdout và stderr vào một file duy nhất.
+          # Chạy semantic-release. Ghi tất cả output vào một file.
           set -o pipefail
           npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
             echo "semantic-release command failed with exit code $?."
@@ -57,41 +57,27 @@ jobs:
           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
           echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          # Bây giờ, chúng ta sẽ tìm JSON object trong file log tổng hợp.
-          # semantic-release in ra JSON object CHÍNH xác chứa nextRelease ở cuối output khi thành công.
-          # Chúng ta sẽ sử dụng grep để tìm các dòng bắt đầu bằng '{' và kết thúc bằng '}'
-          # Sau đó dùng jq để kiểm tra xem nó có phải là JSON hợp lệ VÀ có chứa key "nextRelease" không.
-
-          # Đọc toàn bộ output vào một biến tạm
-          FULL_SR_OUTPUT=$(cat semantic_release_raw_output.txt)
-
-          # Tìm JSON object cuối cùng có chứa "nextRelease"
-          # Lặp qua từng dòng có thể là JSON, kiểm tra tính hợp lệ và sự tồn tại của .nextRelease
-          RELEASE_OUTPUT=""
-          while IFS= read -r line; do
-            if echo "$line" | grep -q '^\s*{\s*"nextRelease"'; then # Tìm nhanh các dòng có vẻ là JSON và chứa nextRelease
-              # Cố gắng parse dòng này như một JSON object
-              # Bỏ qua lỗi nếu nó không phải JSON hợp lệ
-              PARSED_LINE=$(echo "$line" | jq -e '.')
-              if [ $? -eq 0 ]; then # Nếu jq thành công (là JSON hợp lệ)
-                # Kiểm tra nếu object này chứa nextRelease
-                if echo "$PARSED_LINE" | jq -e '.nextRelease' > /dev/null; then
-                  RELEASE_OUTPUT="$PARSED_LINE"
-                fi
-              fi
-            fi
-          done <<< "$FULL_SR_OUTPUT"
+          # Bước quan trọng: Lọc JSON output chứa nextRelease từ toàn bộ log.
+          # semantic-release sẽ in ra một dòng JSON hợp lệ chứa nextRelease khi tạo release thành công.
+          # Chúng ta sẽ tìm dòng đó.
+          RELEASE_OUTPUT=$(
+            cat semantic_release_raw_output.txt |
+            grep -E '^\s*\{.*"nextRelease".*\}\s*$' | # Lọc các dòng bắt đầu bằng '{', kết thúc bằng '}' và CHỨA "nextRelease"
+            tail -n 1 | # Lấy dòng cuối cùng (để đảm bảo là object release mới nhất)
+            jq -s '.' # Đảm bảo đó là JSON hợp lệ. Nếu không, jq sẽ lỗi hoặc trả về null/empty.
+          )
 
           echo "--- DEBUG: Value of RELEASE_OUTPUT variable after filtering ---"
           echo "${RELEASE_OUTPUT}"
 
-          if [ -n "$RELEASE_OUTPUT" ]; then
+          if [ -n "$RELEASE_OUTPUT" ] && [ "$RELEASE_OUTPUT" != "null" ] && [ "$RELEASE_OUTPUT" != "{}" ]; then
             echo "DEBUG: Found valid JSON containing nextRelease. Setting to step output."
             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
             echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
           else
             echo "DEBUG: No valid semantic-release JSON output with 'nextRelease' found. Setting empty JSON."
+            echo "RELEASE_OUTPUT content was: '${RELEASE_OUTPUT}'" # Log content for debug
             echo "release_output_json={}" >> "$GITHUB_OUTPUT"
           fi
 
