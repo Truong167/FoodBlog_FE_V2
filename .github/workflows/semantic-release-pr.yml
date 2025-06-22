@@ -120,16 +120,19 @@ jobs:
 
       - name: Parse semantic-release output for new version and release notes
         id: get_release_info
+        env:
+          # Đặt JSON string vào một biến môi trường
+          RELEASE_JSON_CONTENT: ${{ steps.semantic_release_run.outputs.release_output_json }}
         run: |
           NEW_VERSION=""
           RELEASE_NOTES=""
 
-          RELEASE_JSON_CONTENT="${{ steps.semantic_release_run.outputs.release_output_json }}"
-          echo "DEBUG: RELEASE_JSON_CONTENT from step output: $RELEASE_JSON_CONTENT"
+          echo "DEBUG: RELEASE_JSON_CONTENT from env: $RELEASE_JSON_CONTENT"
 
           if [ -n "$RELEASE_JSON_CONTENT" ] && [ "$RELEASE_JSON_CONTENT" != "{}" ]; then
             echo "DEBUG: Attempting to parse JSON for nextRelease.version and notes."
-            # Sử dụng jq để parse JSON từ biến
+            # Sử dụng jq để parse JSON từ biến môi trường
+            # Đảm bảo dấu ngoặc đơn cho jq query là chính xác
             PARSED_VERSION=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.version // empty')
             PARSED_NOTES=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.notes // empty')
 
