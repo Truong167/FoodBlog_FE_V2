@@ -240,7 +240,19 @@ jobs:
           echo "Temporary files cleaned up."
           echo "--- Git Status after cleanup ---"
           git status --short
-
+      - name: Verify Local Branch State Before Push # <-- BƯỚC MỚI ĐỂ CHẨN ĐOÁN
+        run: |
+          BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
+          echo "--- DEBUG: Current HEAD and branch info before push ---"
+          git branch --show-current # Hiển thị nhánh hiện tại
+          git log -1 --pretty=format:"%h %s" # Hiển thị commit cuối cùng trên nhánh hiện tại
+          echo "--- DEBUG: Diff of current branch against origin/dev before push ---"
+          git diff origin/dev --name-only # Hiển thị các file khác biệt so với origin/dev
+          echo "--- DEBUG: Contents of CHANGELOG.md before push ---"
+          cat CHANGELOG.md # In nội dung CHANGELOG.md
+          echo "--- DEBUG: Contents of package.json before push ---"
+          cat package.json # In nội dung package.json
+          echo "--- END DEBUG ---"
       # Bước đẩy nhánh lên remote phải là bước cuối cùng trước khi tạo PR
       - name: Push Release Branch
         env:
