@@ -96,18 +96,7 @@ const writerOpts = {
   // Ví dụ: headerPartial, commitPartial, footerPartial
 };
 
-// module.exports = Promise.resolve({
-//   parserOpts,
-//   writerOpts,
-// });
-
 module.exports = Promise.resolve({
-  parserOpts: {
-    // Đây là parser cơ bản nhất cho Conventional Commits
-    // Thử dùng preset angular làm cơ sở
-    headerPattern: /^(\w*)(?:\((.*)\))?!?: (.*)$/,
-    headerCorrespondence: ["type", "scope", "subject"],
-    noteKeywords: ["BREAKING CHANGE"],
-  },
-  writerOpts: {}, // Để trống
+  parserOpts,
+  writerOpts,
 });

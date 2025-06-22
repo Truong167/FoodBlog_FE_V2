@@ -39,7 +39,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create release commit and tag
-        run: npm run ${{ steps.env.outputs.release_script }} --verbose
+        run: npm run ${{ steps.env.outputs.release_script }} -- --verbose --debug
 
       - name: Create pull request for changelog + tag
         uses: peter-evans/create-pull-request@v6
