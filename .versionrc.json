@@ -1,61 +1,54 @@
 {
-  "header": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n",
   "types": [
     {
       "type": "feat",
-      "section": "✨ Features"
+      "section": "Features"
     },
     {
       "type": "fix",
-      "section": "🐛 Bug Fixes"
+      "section": "Bug Fixes"
     },
     {
       "type": "docs",
-      "section": "📚 Documentation"
+      "section": "Documentation"
     },
     {
       "type": "style",
-      "section": "💄 Styles"
+      "section": "Styles"
     },
     {
       "type": "refactor",
-      "section": "♻️ Code Refactoring"
+      "section": "Code Refactoring"
     },
     {
       "type": "perf",
-      "section": "⚡ Performance Improvements"
+      "section": "Performance Improvements"
     },
     {
       "type": "test",
-      "section": "✅ Tests"
+      "section": "Tests"
     },
     {
       "type": "build",
-      "section": "🏗️ Build System"
+      "section": "Build System"
     },
     {
       "type": "ci",
-      "section": "👷 CI/CD"
+      "section": "Continuous Integration"
     },
     {
       "type": "chore",
-      "hidden": true
+      "section": "Chores"
     }
   ],
-  "parserOpts": {
-    "headerPattern": "^(\\w+)/(\\w+):\\s+(.+)$",
-    "headerCorrespondence": ["type", "scope", "subject"]
-  },
-  "releaseCommitMessageFormat": "chore(release): bump version to {{currentTag}}",
-  "skip": {
-    "bump": false,
-    "changelog": false,
-    "commit": false,
-    "tag": false
-  },
-  "tagPrefix": "v",
-  "scripts": {
-    "prebump": "echo 'Preparing release...'",
-    "postbump": "echo 'Release completed!'"
+  "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
+  "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}",
+  "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
+  "userUrlFormat": "{{host}}/{{user}}",
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}",
+  "issuePrefixes": ["#"],
+  "header": {
+    "pattern": "^(\\w*)(?:\\/([\\w\\$\\.\\-\\*\\s]*))?\\:\\s(.*)$",
+    "patternCorrespondence": ["type", "scope", "subject"]
   }
 }
