@@ -73,57 +73,5 @@
     "standard-version": "^9.5.0",
     "tailwindcss": "^3.3.2",
     "vitest": "^3.1.2"
-  },
-  "standard-version": {
-    "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
-    "issueUrlFormat": "{{host}}/{{owner}}/{{repository}}/issues/{{id}}",
-    "types": [
-      {
-        "type": "feat",
-        "scope": "*",
-        "release": "minor"
-      },
-      {
-        "type": "feat",
-        "release": "minor"
-      },
-      {
-        "type": "fix",
-        "scope": "*",
-        "release": "patch"
-      },
-      {
-        "type": "fix",
-        "release": "patch"
-      },
-      {
-        "type": "perf",
-        "release": "patch"
-      },
-      {
-        "type": "refactor",
-        "release": "patch"
-      },
-      {
-        "type": "docs",
-        "release": "patch"
-      },
-      {
-        "type": "revert",
-        "release": "patch"
-      },
-      {
-        "type": "build",
-        "release": "patch"
-      },
-      {
-        "type": "ci",
-        "release": "patch"
-      },
-      {
-        "breaking": true,
-        "release": "major"
-      }
-    ]
   }
 }
