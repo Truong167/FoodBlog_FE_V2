@@ -329,7 +329,7 @@ jobs:
       pull-requests: write
       issues: write
 
-    if: github.actor != 'github-actions[bot]'
+    if: "!contains(github.event.head_commit.message, 'chore(release): prepare for v')"
 
     steps:
       - name: Checkout code
@@ -522,7 +522,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release) prepare for v${{ steps.get_release_info.outputs.new_version }} release PR "
+          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR "
           title: "Release v${{ steps.get_release_info.outputs.new_version }}"
           body: |
             ## Release v${{ steps.get_release_info.outputs.new_version }}
