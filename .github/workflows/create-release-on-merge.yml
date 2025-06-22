@@ -13,7 +13,7 @@ jobs:
       pull-requests: write # Có thể không cần nếu chỉ tạo release, nhưng an toàn để có
       # id-token: write # Thêm nếu bạn dùng OIDC, không thì không cần
 
-    if: contains(github.event.head_commit.message, 'chore(release)')
+    if: contains(github.event.head_commit.message, 'chore(release) prepare for v')
     # Hoặc nếu bạn có các loại commit message khác cho PR release, bạn có thể điều chỉnh chuỗi tìm kiếm.
     # Tuy nhiên, "chore(release): prepare for v" là một phần của commit message mặc định bạn đang dùng.
 

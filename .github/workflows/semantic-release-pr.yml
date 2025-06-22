@@ -522,7 +522,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR [skip ci]"
+          commit-message: "chore(release) prepare for v${{ steps.get_release_info.outputs.new_version }} release PR [skip ci]"
           title: "Release v${{ steps.get_release_info.outputs.new_version }}"
           body: |
             ## Release v${{ steps.get_release_info.outputs.new_version }}
