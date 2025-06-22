@@ -1,5 +1,4 @@
-# .github/workflows/semantic-release-pr.yml
-name: Semantic Release PR (Dev)
+name: Semantic Release PR
 
 on:
   push:
@@ -7,12 +6,12 @@ on:
       - dev
 
 jobs:
-  release-pr:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-      issues: write
+      contents: write # Cần quyền ghi để tạo nhánh, commit, push, và tạo release
+      pull-requests: write # Cần quyền tạo Pull Request
+      issues: write # Cần quyền tạo Pull Request (có thể không cần thiết nếu PR không liên quan đến issues)
 
     if: github.actor != 'github-actions[bot]'
 
@@ -20,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Cần toàn bộ lịch sử commit để semantic-release phân tích
 
       - name: Setup Node & Bun
         uses: oven-sh/setup-bun@v1
@@ -30,62 +29,142 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Configure Git
+      - name: Configure Git for Actions
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Git user configured for automated actions."
 
-      - name: Run semantic-release dry run
-        id: semantic_release
+      - name: Run semantic-release (get release info)
+        # Chạy semantic-release để nó tạo ra nextRelease object và cập nhật CHANGELOG.md
+        # Nó sẽ không push hoặc tạo GitHub Release nữa
+        id: semantic_release_run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Cần cho các hoạt động của semantic-release (ví dụ: lấy commit history)
+        # Sử dụng jq để parse output. semantic-release in ra JSON object nếu thành công.
         run: |
-          OUTPUT=$(npx semantic-release --dry-run --branches dev || true)
-          echo "$OUTPUT"
-          VERSION=$(echo "$OUTPUT" | grep -oP 'The next release version is \K[^\s]+')
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          RELEASE_OUTPUT=$(npx semantic-release --debug || true)
+          echo "$RELEASE_OUTPUT"
+          # Ghi toàn bộ output vào một file tạm để parse sau
+          echo "$RELEASE_OUTPUT" > semantic_release_output.json
+        continue-on-error: true # Tiếp tục ngay cả khi semantic-release không tạo release
 
-      - name: Stop if no version bump
-        if: steps.semantic_release.outputs.version == ''
-        run: echo "No release needed" && exit 0
-
-      - name: Create release branch
+      - name: Parse semantic-release output for new version and release notes
+        id: get_release_info
         run: |
-          VERSION=${{ steps.semantic_release.outputs.version }}
-          BRANCH="release/v$VERSION"
-          git checkout -b "$BRANCH"
+          NEW_VERSION=""
+          RELEASE_NOTES=""
 
-      - name: Generate changelog
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npx semantic-release --no-ci --branches dev || true
+          # Kiểm tra nếu semantic_release_output.json tồn tại và chứa JSON hợp lệ
+          if [ -f semantic_release_output.json ] && jq -e '.' semantic_release_output.json &>/dev/null; then
+            # Lấy nextRelease.version
+            if jq -e '.nextRelease.version' semantic_release_output.json &>/dev/null; then
+              NEW_VERSION=$(jq -r '.nextRelease.version' semantic_release_output.json)
+            fi
+            
+            # Lấy release notes (nếu có)
+            if jq -e '.nextRelease.notes' semantic_release_output.json &>/dev/null; then
+              RELEASE_NOTES=$(jq -r '.nextRelease.notes' semantic_release_output.json)
+            fi
+          fi
 
-      - name: Commit version bump
+          if [ -z "$NEW_VERSION" ]; then
+            echo "No new version determined by semantic-release. Skipping PR creation."
+            echo "new_version=none" >> "$GITHUB_OUTPUT"
+          else
+            echo "New version determined: $NEW_VERSION"
+            echo "New release notes captured."
+            echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            # Lưu release notes vào file để sử dụng trong PR body
+            echo "$RELEASE_NOTES" > release_notes.md
+            echo "release_notes_file=release_notes.md" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if no version bump
+        if: steps.get_release_info.outputs.new_version == 'none'
         run: |
-          VERSION=${{ steps.semantic_release.outputs.version }}
+          echo "No version bump detected by semantic-release. Workflow will stop here."
+          exit 0
+
+      - name: Read Release Notes for PR Body
+        id: read_release_notes
+        # Đọc nội dung release notes từ file đã tạo
+        # Kiểm tra xem file có tồn tại không trước khi đọc
+        run: |
+          if [ -f "${{ steps.get_release_info.outputs.release_notes_file }}" ]; then
+            RELEASE_NOTES_CONTENT=$(cat "${{ steps.get_release_info.outputs.release_notes_file }}")
+            # Tạo một biến output để sử dụng trong PR body
+            echo "release_notes_pr_body<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$RELEASE_NOTES_CONTENT" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "No release notes file found, setting empty notes."
+            echo "release_notes_pr_body=No detailed release notes available." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Release Branch
+        id: create_branch
+        run: |
+          NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+          BRANCH_NAME="release/v$NEW_VERSION"
+          echo "Creating new branch: $BRANCH_NAME"
+          git checkout -b "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version and changelog changes to new branch
+        run: |
+          NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+          # semantic-release đã cập nhật CHANGELOG.md và package.json
           git add CHANGELOG.md package.json
-          git commit -m "chore(release): prepare for v$VERSION release PR [skip ci]"
+          git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]" # Thêm [skip ci]
+          echo "Committed version and changelog changes to branch."
 
-      - name: Push branch
+      - name: Push Release Branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION=${{ steps.semantic_release.outputs.version }}
-          git push origin "release/v$VERSION"
+          BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
+          echo "Pushing branch: $BRANCH_NAME to remote."
+          git push origin "$BRANCH_NAME"
 
-      - name: Create PR
+      - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Release v${{ steps.semantic_release.outputs.version }}"
-          branch: "release/v${{ steps.semantic_release.outputs.version }}"
-          base: dev
-          commit-message: "chore(release): prepare for v${{ steps.semantic_release.outputs.version }} release PR"
+          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR"
+          title: "Release v${{ steps.get_release_info.outputs.new_version }}"
           body: |
-            ### 🚀 Release PR v${{ steps.semantic_release.outputs.version }}
+            ## Release v${{ steps.get_release_info.outputs.new_version }}
 
-            - Version bump
-            - Updated changelog
-          draft: false
+            This Pull Request includes the following automated updates for the upcoming release:
+
+            - **Version Bump**: Updated `package.json` to `v${{ steps.get_release_info.outputs.new_version }}`.
+            - **Changelog Update**: Added a new entry to `CHANGELOG.md` with release notes generated from recent commits.
+
+            ---
+            ### Release Notes:
+            ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
+
+            ---
+            Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
+          branch: ${{ steps.create_branch.outputs.branch_name }}
+          base: feat/dev # Nhánh đích của PR (nhánh được bảo vệ)
           labels: |
             release
             automated
+          draft: false
+
+      - name: Create GitHub Release
+        if: success() # Chỉ tạo GitHub Release nếu mọi bước trước đó thành công
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.get_release_info.outputs.new_version }} # Tạo tag GitHub
+          release_name: Release v${{ steps.get_release_info.outputs.new_version }}
+          body: |
+            ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
+
+            Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/v${{ steps.get_release_info.outputs.new_version }}/CHANGELOG.md) for full details on this release.
+          draft: false
+          prerelease: contains(github.ref, 'dev') # Nếu đang ở nhánh dev, đánh dấu là prerelease
