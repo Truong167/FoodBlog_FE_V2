@@ -248,12 +248,54 @@ jobs:
           echo "--- Git Diff (unstaged) after commit attempt ---"
           git diff --name-only
 
+      - name: Commit version and changelog changes to new branch
+        run: |
+          NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+          echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
+
+          git add CHANGELOG.md package.json
+
+          # Không cần git reset ở đây nữa vì chúng ta sẽ xóa hẳn chúng
+          # git reset semantic_release_raw_output.txt || true
+          # git reset ./.github/release-assets/release_notes.md || true 
+
+          echo "--- Git Status before commit attempt ---"
+          git status --short
+          echo "--- Git Diff (staged) before commit attempt ---"
+          git diff --cached --name-only
+
+          if ! git diff --cached --exit-code; then
+            echo "DEBUG: Changes detected, committing."
+            git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]"
+            echo "Committed version and changelog changes to branch."
+          else
+            echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
+            echo "Warning: No changes in CHANGELOG.md or package.json to commit. This might be expected if semantic-release did not detect a new release, or an issue with the workflow's git state."
+          fi
+
+          echo "--- Git Status after commit attempt ---"
+          git status --short
+          echo "--- Git Diff (staged) after commit attempt ---"
+          git diff --cached --name-only
+          echo "--- Git Diff (unstaged) after commit attempt ---"
+          git diff --name-only
+
+      - name: Cleanup temporary files # Thêm bước này
+        run: |
+          echo "--- Cleaning up temporary files ---"
+          rm -f semantic_release_raw_output.txt
+          rm -rf ./.github/release-assets/
+          echo "Temporary files cleaned up."
+          echo "--- Git Status after cleanup ---"
+          git status --short # Kiểm tra lại trạng thái sau khi xóa
+
       - name: Push Release Branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
           echo "DEBUG: Pushing branch: $BRANCH_NAME"
+          # Đảm bảo push chỉ bao gồm các commit đã tạo
           git push origin "$BRANCH_NAME"
           echo "Pushed branch: $BRANCH_NAME to remote."
 
