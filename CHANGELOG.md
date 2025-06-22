@@ -1,3 +1,7 @@
+## 0.7.0-canary.10 (2025-06-22)
+
+* feat/tacman: update body for release 55 ([6d5bd28](https://github.com/Truong167/FoodBlog_FE_V2/commit/6d5bd28))
+
 ## 0.7.0-canary.7 (2025-06-22)
 
 * feat/tacman: update body for release 52 ([4a88069](https://github.com/Truong167/FoodBlog_FE_V2/commit/4a88069))
