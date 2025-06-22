@@ -91,6 +91,7 @@ All notable changes to this project will be documented in this file. See [standa
 * feat/tacman: update body for release 68 ([d639e6e84723a92284ae9372f7fe3854372d2dcc](https://github.com/Truong167/FoodBlog_FE_V2/commit/d639e6e84723a92284ae9372f7fe3854372d2dcc))
 * feat/tacman: update body for release 69 ([0ad25f456b34557403ee090028cb202844396856](https://github.com/Truong167/FoodBlog_FE_V2/commit/0ad25f456b34557403ee090028cb202844396856))
 * feat/tacman: update body for release 70 ([43e10ab23285cd1e053f8f0ffa961463795aafa5](https://github.com/Truong167/FoodBlog_FE_V2/commit/43e10ab23285cd1e053f8f0ffa961463795aafa5))
+* feat/tacman: update body for release 71 ([70bd96690ce86d07b435669238b4fb9539424d9e](https://github.com/Truong167/FoodBlog_FE_V2/commit/70bd96690ce86d07b435669238b4fb9539424d9e))
 * feat/test: change to use release-please ([39a2f12b8f3fefba3e4ba8bee8d36affb67f4696](https://github.com/Truong167/FoodBlog_FE_V2/commit/39a2f12b8f3fefba3e4ba8bee8d36affb67f4696))
 * feat/test: remove env file ([0e2eb471ac48c7ac5931195c83533b339bf8d2f9](https://github.com/Truong167/FoodBlog_FE_V2/commit/0e2eb471ac48c7ac5931195c83533b339bf8d2f9))
 * feat/test: update workflow ([ab2de0dce588808fe2093358226958d00f8adad8](https://github.com/Truong167/FoodBlog_FE_V2/commit/ab2de0dce588808fe2093358226958d00f8adad8))
