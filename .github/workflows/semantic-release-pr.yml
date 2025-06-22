@@ -558,17 +558,17 @@ jobs:
           echo "--- Git Status after cleanup ---"
           git status --short
 
-      - name: Create GitHub Release
-        if: success()
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.get_release_info.outputs.new_version }}
-          release_name: Release v${{ steps.get_release_info.outputs.new_version }}
-          body: |
-            ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
+      # - name: Create GitHub Release
+      #   if: success()
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.get_release_info.outputs.new_version }}
+      #     release_name: Release v${{ steps.get_release_info.outputs.new_version }}
+      #     body: |
+      #       ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
 
-            Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/v${{ steps.get_release_info.outputs.new_version }}/CHANGELOG.md) for full details on this release.
-          draft: false
-          prerelease: ${{ contains(github.ref, 'dev') || contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+      #       Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/v${{ steps.get_release_info.outputs.new_version }}/CHANGELOG.md) for full details on this release.
+      #     draft: false
+      #     prerelease: ${{ contains(github.ref, 'dev') || contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
