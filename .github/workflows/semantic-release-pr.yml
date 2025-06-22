@@ -1,3 +1,319 @@
+# name: Semantic Release PR
+
+# on:
+#   push:
+#     branches:
+#       - dev # Hoặc nhánh bạn muốn chạy release PR
+
+# jobs:
+#   release:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       pull-requests: write
+#       issues: write
+
+#     if: github.actor != 'github-actions[bot]'
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+
+#       - name: Setup Node & Bun
+#         uses: oven-sh/setup-bun@v1
+#         with:
+#           bun-version: 1.1.4
+
+#       - name: Install dependencies
+#         run: bun install
+
+#       - name: Install JQ
+#         run: sudo apt-get update && sudo apt-get install -y jq
+
+#       - name: Configure Git for Actions
+#         run: |
+#           git config user.name "github-actions[bot]"
+#           git config user.email "github-actions[bot]@users.noreply.github.com"
+#           echo "Git user configured for automated actions."
+
+#       - name: Run semantic-release and capture outputs
+#         id: semantic_release_run
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           echo "--- START: semantic-release execution ---"
+#           set -o pipefail
+#           npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
+#             echo "semantic-release command failed with exit code $?."
+#             cat semantic_release_raw_output.txt
+#             exit 1
+#           }
+#           echo "--- END: semantic-release execution ---"
+
+#           echo "--- Content of semantic_release_raw_output.txt (full logs) ---"
+#           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
+#           echo "--- END: Content of semantic_release_raw_output.txt ---"
+
+#           echo "--- Content of CHANGELOG.md after semantic-release ---"
+#           cat CHANGELOG.md || echo "CHANGELOG.md not found or empty."
+#           echo "--- Content of package.json after semantic-release ---"
+#           cat package.json || echo "package.json not found or empty."
+
+#           echo "--- Git Status after semantic-release (before custom parsing) ---"
+#           git status --short
+#           echo "--- Git Diff (staged) after semantic-release ---"
+#           git diff --cached --name-only
+#           echo "--- Git Diff (unstaged) after semantic-release ---"
+#           git diff --name-only
+
+#           NEW_VERSION_FROM_CHANGELOG=""
+#           NEW_VERSION_FROM_CHANGELOG=$(
+#             grep -E '^##\s(v)?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\)' CHANGELOG.md |
+#             head -n 1 |
+#             sed -E 's/^##\s(v)?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?)\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\).*$/\2/'
+#           )
+
+#           echo "--- DEBUG: New version extracted from CHANGELOG.md: ${NEW_VERSION_FROM_CHANGELOG} ---"
+
+#           RELEASE_NOTES_BODY=$(
+#               sed -n '/^## '"$NEW_VERSION_FROM_CHANGELOG"'\s/,/^##/P' CHANGELOG.md |
+#               grep -v '^## ' |
+#               sed 's/^\s*//;s/\s*$//' |
+#               awk 'NF {found=1} {if ($0 !~ /^\s*$/) print}'
+#           )
+
+#           if [ -z "$RELEASE_NOTES_BODY" ]; then
+#               RELEASE_NOTES_BODY="No detailed release notes available."
+#           fi
+
+#           ESCAPED_RELEASE_NOTES_BODY=$(echo "$RELEASE_NOTES_BODY" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | tr -d '\n')
+
+#           RELEASE_OUTPUT_JSON="{ \"nextRelease\": { \"version\": \"$NEW_VERSION_FROM_CHANGELOG\", \"notes\": \"$ESCAPED_RELEASE_NOTES_BODY\" } }"
+
+#           echo "--- DEBUG: Synthesized RELEASE_OUTPUT_JSON: ${RELEASE_OUTPUT_JSON} ---"
+
+#           if [ -n "$NEW_VERSION_FROM_CHANGELOG" ]; then
+#             echo "DEBUG: New version found from CHANGELOG.md. Setting to step output."
+#             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
+#             echo "$RELEASE_OUTPUT_JSON" >> "$GITHUB_OUTPUT"
+#             echo "EOF" >> "$GITHUB_OUTPUT"
+#           else
+#             echo "DEBUG: No new version found from CHANGELOG.md. Setting empty JSON."
+#             echo "release_output_json={}" >> "$GITHUB_OUTPUT"
+#           fi
+
+#       - name: Upload semantic-release raw output as artifact
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: semantic-release-raw-output
+#           path: semantic_release_raw_output.txt
+
+#       - name: Parse semantic-release output for new version and release notes
+#         id: get_release_info
+#         env:
+#           RELEASE_JSON_CONTENT: ${{ steps.semantic_release_run.outputs.release_output_json }}
+#         run: |
+#           NEW_VERSION=""
+#           RELEASE_NOTES=""
+
+#           echo "DEBUG: RELEASE_JSON_CONTENT from env: $RELEASE_JSON_CONTENT"
+
+#           if [ -n "$RELEASE_JSON_CONTENT" ] && [ "$RELEASE_JSON_CONTENT" != "{}" ]; then
+#             echo "DEBUG: Attempting to parse JSON for nextRelease.version and notes."
+#             PARSED_VERSION=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.version // empty')
+#             PARSED_NOTES=$(echo "$RELEASE_JSON_CONTENT" | jq -r '.nextRelease.notes // empty')
+
+#             if [ -n "$PARSED_VERSION" ]; then
+#               NEW_VERSION="$PARSED_VERSION"
+#               echo "DEBUG: Successfully parsed NEW_VERSION: $NEW_VERSION"
+#             else
+#               echo "DEBUG: nextRelease.version not found in JSON or is empty."
+#             fi
+
+#             if [ -n "$PARSED_NOTES" ]; then
+#               RELEASE_NOTES="$PARSED_NOTES"
+#               echo "DEBUG: Successfully parsed RELEASE_NOTES (first 50 chars): ${RELEASE_NOTES:0:50}..."
+#             else
+#               echo "DEBUG: nextRelease.notes not found in JSON or is empty."
+#             fi
+#           else
+#             echo "DEBUG: RELEASE_JSON_CONTENT is empty or is a blank JSON object."
+#           fi
+
+#           if [ -z "$NEW_VERSION" ]; then
+#             echo "No new version determined by semantic-release. Skipping PR creation."
+#             echo "new_version=none" >> "$GITHUB_OUTPUT"
+#           else
+#             echo "New version determined: $NEW_VERSION"
+#             echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+#             mkdir -p ./.github/release-assets
+#             echo "$RELEASE_NOTES" > ./.github/release-assets/release_notes.md
+#             echo "release_notes_file=./.github/release-assets/release_notes.md" >> "$GITHUB_OUTPUT"
+#           fi
+
+#       - name: Skip if no version bump
+#         if: steps.get_release_info.outputs.new_version == 'none'
+#         run: |
+#           echo "No version bump detected by semantic-release. Workflow will stop here."
+#           exit 0
+
+#       - name: Read Release Notes for PR Body
+#         id: read_release_notes
+#         run: |
+#           RELEASE_NOTES_FILE="${{ steps.get_release_info.outputs.release_notes_file }}"
+#           echo "DEBUG: Reading release notes from $RELEASE_NOTES_FILE"
+#           if [ -f "$RELEASE_NOTES_FILE" ]; then
+#             RELEASE_NOTES_CONTENT=$(cat "$RELEASE_NOTES_FILE")
+#             echo "DEBUG: Release notes content (first 50 chars): ${RELEASE_NOTES_CONTENT:0:50}..."
+#             echo "release_notes_pr_body<<EOF" >> "$GITHUB_OUTPUT"
+#             echo "$RELEASE_NOTES_CONTENT" >> "$GITHUB_OUTPUT"
+#             echo "EOF" >> "$GITHUB_OUTPUT"
+#           else
+#             echo "DEBUG: No release notes file found at $RELEASE_NOTES_FILE."
+#             echo "release_notes_pr_body=No detailed release notes available." >> "$GITHUB_OUTPUT"
+#           fi
+
+#       - name: Update package.json version
+#         run: |
+#           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+#           echo "DEBUG: Attempting to update package.json with version: $NEW_VERSION"
+#           if [ "$NEW_VERSION" == "none" ]; then
+#             echo "Error: Cannot update package.json with 'none' version. Something went wrong upstream."
+#             exit 1
+#           fi
+#           jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
+#           echo "package.json updated."
+#           echo "--- Content of package.json after update ---"
+#           cat package.json
+#           echo "--- Git Status after package.json update ---"
+#           git status --short
+#           echo "--- Git Diff (unstaged) after package.json update ---"
+#           git diff --name-only
+
+#       - name: Create Release Branch
+#         id: create_branch
+#         run: |
+#           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+#           BRANCH_NAME="release/v$NEW_VERSION"
+#           echo "DEBUG: Creating new branch: $BRANCH_NAME"
+#           git checkout -b "$BRANCH_NAME"
+#           echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+#       # === THAY ĐỔI ĐẦY ĐỦ Ở ĐÂY ===
+#       # Bước commit phải xảy ra trước khi đẩy nhánh
+#       - name: Commit version and changelog changes to new branch
+#         run: |
+#           NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
+#           echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
+
+#           git add CHANGELOG.md package.json
+
+#           echo "--- Git Status before commit attempt ---"
+#           git status --short
+#           echo "--- Git Diff (staged) before commit attempt ---"
+#           git diff --cached --name-only
+
+#           if ! git diff --cached --exit-code; then
+#             echo "DEBUG: Changes detected, committing."
+#             git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]"
+#             echo "Committed version and changelog changes to branch."
+#           else
+#             echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
+#             echo "Warning: No changes in CHANGELOG.md or package.json to commit. This might be expected if semantic-release did not detect a new release, or an issue with the workflow's git state."
+#           fi
+
+#           echo "--- Git Status after commit attempt ---"
+#           git status --short
+#           echo "--- Git Diff (staged) after commit attempt ---"
+#           git diff --cached --name-only
+#           echo "--- Git Diff (unstaged) after commit attempt ---"
+#           git diff --name-only
+
+#       # Bước Cleanup phải xảy ra sau khi commit, nhưng trước khi đẩy nhánh
+#       - name: Cleanup temporary files
+#         run: |
+#           echo "--- Cleaning up temporary files ---"
+#           rm -f semantic_release_raw_output.txt
+#           rm -rf ./.github/release-assets/
+#           echo "Temporary files cleaned up."
+#           echo "--- Git Status after cleanup ---"
+#           git status --short
+#       - name: Verify Local Branch State Before Push # <-- BƯỚC MỚI ĐỂ CHẨN ĐOÁN
+#         run: |
+#           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
+#           echo "--- DEBUG: Current HEAD and branch info before push ---"
+#           git branch --show-current # Hiển thị nhánh hiện tại
+#           git log -1 --pretty=format:"%h %s" # Hiển thị commit cuối cùng trên nhánh hiện tại
+#           echo "--- DEBUG: Diff of current branch against origin/dev before push ---"
+#           git diff origin/dev --name-only # Hiển thị các file khác biệt so với origin/dev
+#           echo "--- DEBUG: Contents of CHANGELOG.md before push ---"
+#           cat CHANGELOG.md # In nội dung CHANGELOG.md
+#           echo "--- DEBUG: Contents of package.json before push ---"
+#           cat package.json # In nội dung package.json
+#           echo "--- END DEBUG ---"
+#       # Bước đẩy nhánh lên remote phải là bước cuối cùng trước khi tạo PR
+#       - name: Push Release Branch
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
+#           echo "DEBUG: Pushing branch: $BRANCH_NAME"
+#           git push --set-upstream origin "$BRANCH_NAME"
+#           echo "Pushed branch: $BRANCH_NAME to remote."
+#           # Thêm các lệnh kiểm tra sau push
+#           echo "--- DEBUG: Verify remote branch state after push ---"
+#           git fetch origin "$BRANCH_NAME" # Kéo về trạng thái mới nhất của nhánh vừa push từ remote
+#           git checkout "$BRANCH_NAME"    # Chuyển sang nhánh đó (trên local, đã được fetch về)
+#           echo "Current branch after fetch/checkout: $(git branch --show-current)"
+#           echo "Last commit on this branch after fetch/checkout: $(git log -1 --pretty=format:"%h %s")"
+#           echo "Diff of remote branch against origin/dev after push:"
+#           git diff origin/dev --name-only # So sánh nhánh vừa push (mà local đã fetch về) với origin/dev
+#           echo "--- END DEBUG after push ---"
+
+#       - name: Create Pull Request
+#         uses: peter-evans/create-pull-request@v6
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR"
+#           title: "Release v${{ steps.get_release_info.outputs.new_version }}"
+#           body: |
+#             ## Release v${{ steps.get_release_info.outputs.new_version }}
+
+#             This Pull Request includes the following automated updates for the upcoming release:
+
+#             - **Version Bump**: Updated `package.json` to `v${{ steps.get_release_info.outputs.new_version }}`.
+#             - **Changelog Update**: Added a new entry to `CHANGELOG.md` with release notes generated from recent commits.
+
+#             ---
+#             ### Release Notes:
+#             ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
+
+#             ---
+#             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
+#           branch: ${{ steps.create_branch.outputs.branch_name }}
+#           base: dev # Hoặc branch mà PR sẽ được merge vào (ví dụ: main nếu bạn muốn PR từ release branch vào main)
+#           labels: |
+#             release
+#             automated
+#           draft: false
+
+#       - name: Create GitHub Release
+#         if: success()
+#         uses: actions/create-release@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           tag_name: v${{ steps.get_release_info.outputs.new_version }}
+#           release_name: Release v${{ steps.get_release_info.outputs.new_version }}
+#           body: |
+#             ${{ steps.read_release_notes.outputs.release_notes_pr_body }}
+
+#             Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/v${{ steps.get_release_info.outputs.new_version }}/CHANGELOG.md) for full details on this release.
+#           draft: false
+#           prerelease: ${{ contains(github.ref, 'dev') || contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+
 name: Semantic Release PR
 
 on:
@@ -192,91 +508,21 @@ jobs:
           echo "--- Git Diff (unstaged) after package.json update ---"
           git diff --name-only
 
-      - name: Create Release Branch
-        id: create_branch
-        run: |
-          NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
-          BRANCH_NAME="release/v$NEW_VERSION"
-          echo "DEBUG: Creating new branch: $BRANCH_NAME"
-          git checkout -b "$BRANCH_NAME"
-          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          # Đảm bảo CHANGELOG.md cũng được sửa đổi (nếu semantic-release không tự làm)
+          # Semantic-release thường đã cập nhật CHANGELOG.md, nhưng nếu không, bạn có thể cần một bước khác ở đây.
+          # Hiện tại, chúng ta tin tưởng semantic-release đã làm điều đó.
 
-      # === THAY ĐỔI ĐẦY ĐỦ Ở ĐÂY ===
-      # Bước commit phải xảy ra trước khi đẩy nhánh
-      - name: Commit version and changelog changes to new branch
-        run: |
-          NEW_VERSION="${{ steps.get_release_info.outputs.new_version }}"
-          echo "DEBUG: Adding CHANGELOG.md and package.json to commit."
-
-          git add CHANGELOG.md package.json
-
-          echo "--- Git Status before commit attempt ---"
-          git status --short
-          echo "--- Git Diff (staged) before commit attempt ---"
-          git diff --cached --name-only
-
-          if ! git diff --cached --exit-code; then
-            echo "DEBUG: Changes detected, committing."
-            git commit -m "chore(release): prepare for v$NEW_VERSION release PR [skip ci]"
-            echo "Committed version and changelog changes to branch."
-          else
-            echo "DEBUG: No changes in CHANGELOG.md or package.json to commit."
-            echo "Warning: No changes in CHANGELOG.md or package.json to commit. This might be expected if semantic-release did not detect a new release, or an issue with the workflow's git state."
-          fi
-
-          echo "--- Git Status after commit attempt ---"
-          git status --short
-          echo "--- Git Diff (staged) after commit attempt ---"
-          git diff --cached --name-only
-          echo "--- Git Diff (unstaged) after commit attempt ---"
-          git diff --name-only
-
-      # Bước Cleanup phải xảy ra sau khi commit, nhưng trước khi đẩy nhánh
-      - name: Cleanup temporary files
-        run: |
-          echo "--- Cleaning up temporary files ---"
-          rm -f semantic_release_raw_output.txt
-          rm -rf ./.github/release-assets/
-          echo "Temporary files cleaned up."
-          echo "--- Git Status after cleanup ---"
-          git status --short
-      - name: Verify Local Branch State Before Push # <-- BƯỚC MỚI ĐỂ CHẨN ĐOÁN
-        run: |
-          BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
-          echo "--- DEBUG: Current HEAD and branch info before push ---"
-          git branch --show-current # Hiển thị nhánh hiện tại
-          git log -1 --pretty=format:"%h %s" # Hiển thị commit cuối cùng trên nhánh hiện tại
-          echo "--- DEBUG: Diff of current branch against origin/dev before push ---"
-          git diff origin/dev --name-only # Hiển thị các file khác biệt so với origin/dev
-          echo "--- DEBUG: Contents of CHANGELOG.md before push ---"
-          cat CHANGELOG.md # In nội dung CHANGELOG.md
-          echo "--- DEBUG: Contents of package.json before push ---"
-          cat package.json # In nội dung package.json
-          echo "--- END DEBUG ---"
-      # Bước đẩy nhánh lên remote phải là bước cuối cùng trước khi tạo PR
-      - name: Push Release Branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
-          echo "DEBUG: Pushing branch: $BRANCH_NAME"
-          git push --set-upstream origin "$BRANCH_NAME"
-          echo "Pushed branch: $BRANCH_NAME to remote."
-          # Thêm các lệnh kiểm tra sau push
-          echo "--- DEBUG: Verify remote branch state after push ---"
-          git fetch origin "$BRANCH_NAME" # Kéo về trạng thái mới nhất của nhánh vừa push từ remote
-          git checkout "$BRANCH_NAME"    # Chuyển sang nhánh đó (trên local, đã được fetch về)
-          echo "Current branch after fetch/checkout: $(git branch --show-current)"
-          echo "Last commit on this branch after fetch/checkout: $(git log -1 --pretty=format:"%h %s")"
-          echo "Diff of remote branch against origin/dev after push:"
-          git diff origin/dev --name-only # So sánh nhánh vừa push (mà local đã fetch về) với origin/dev
-          echo "--- END DEBUG after push ---"
+      # === LOẠI BỎ CÁC BƯỚC NÀY, ĐỂ create-pull-request TỰ LÀM ===
+      # - name: Create Release Branch (Bỏ qua hoặc xóa - để create-pull-request tạo nếu cần)
+      # - name: Commit version and changelog changes to new branch (Xóa)
+      # - name: Cleanup temporary files (Xóa hoặc di chuyển sau Create Pull Request)
+      # - name: Push Release Branch (Xóa)
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR"
+          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR [skip ci]" # Thêm [skip ci] để tránh vòng lặp
           title: "Release v${{ steps.get_release_info.outputs.new_version }}"
           body: |
             ## Release v${{ steps.get_release_info.outputs.new_version }}
@@ -292,12 +538,29 @@ jobs:
 
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
-          branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: dev # Hoặc branch mà PR sẽ được merge vào (ví dụ: main nếu bạn muốn PR từ release branch vào main)
+          branch: release/v${{ steps.get_release_info.outputs.new_version }} # create-pull-request sẽ tạo nhánh này
+          base: dev # Hoặc branch mà PR sẽ được merge vào (ví dụ: main)
           labels: |
             release
             automated
           draft: false
+          # Các files này sẽ được action tự động add và commit
+          add-paths: |
+            CHANGELOG.md
+            package.json
+            semantic_release_raw_output.txt # Để nó được thêm vào PR, hoặc bạn có thể xóa nó thủ công sau đó nếu không muốn
+            .github/release-assets/ # Nếu bạn muốn thư mục này cũng xuất hiện trong PR
+          # Nếu bạn muốn force push trong trường hợp nhánh đã tồn tại và có khác biệt không mong muốn
+          # force: true # Thường không cần thiết nếu add-paths hoạt động đúng
+
+      - name: Cleanup temporary files after PR creation # Di chuyển bước cleanup xuống đây
+        run: |
+          echo "--- Cleaning up temporary files ---"
+          rm -f semantic_release_raw_output.txt
+          rm -rf ./.github/release-assets/
+          echo "Temporary files cleaned up."
+          echo "--- Git Status after cleanup ---"
+          git status --short
 
       - name: Create GitHub Release
         if: success()
