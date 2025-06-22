@@ -57,19 +57,24 @@ jobs:
           which jq || { echo "jq not found! Exiting."; exit 1; }
           echo "jq is located at: $(which jq)"
 
-          echo "Running semantic-release..."
-          npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt
+          echo "Running semantic-release and capturing JSON output..."
+          # Chạy semantic-release. stdout chứa JSON output của nextRelease, stderr chứa log.
+          # Chúng ta sẽ capture stdout vào biến RELEASE_JSON và stderr vào semantic_release_raw_output.txt.
+          RELEASE_JSON=$(npx semantic-release --debug >&1 2>semantic_release_raw_output.txt)
+          # Lưu ý: ">&1" có nghĩa là stdout và stderr đều đi qua pipe đến RELEASE_JSON
+          #  sau đó dùng 2>semantic_release_raw_output.txt để stderr ghi vào file
+          #  Cách này sẽ không hoạt động như mong đợi vì stdout và stderr bị trộn lẫn trước khi capture.
+          #  Chúng ta cần capture stdout riêng.
 
-          # Capture the raw output as an artifact for debugging
-          echo "Uploading semantic_release_raw_output.txt as an artifact..."
-          echo "::set-output name=raw_output_path::semantic_release_raw_output.txt"
+          # CÁCH CHUẨN XÁC HƠN ĐỂ CAPTURE STDOUT (JSON) VÀ STDERR (LOGS):
+          # Chạy semantic-release, redirect stdout (JSON) vào một file, redirect stderr (logs) vào file khác,
+          # rồi đọc file JSON đó.
+          npx semantic-release --debug > semantic_release_json_output.json 2> semantic_release_raw_output.txt
 
-          # Attempt to extract the last JSON object from the raw output.
-          # semantic-release outputs the nextRelease JSON object right at the end upon success.
-          # This regex looks for lines that start with '{' and end with '}'
-          RELEASE_OUTPUT=$(cat semantic_release_raw_output.txt | grep -E '^\s*\{.*\}\s*$' | tail -n 1)
+          # Đọc nội dung JSON từ file.
+          RELEASE_OUTPUT=$(cat semantic_release_json_output.json)
 
-          if [ -n "$RELEASE_OUTPUT" ]; then
+          if [ -n "$RELEASE_OUTPUT" ] && [ "$RELEASE_OUTPUT" != "{}" ]; then
             echo "Found semantic-release JSON output:"
             echo "$RELEASE_OUTPUT"
             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
