@@ -29,26 +29,39 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Configure Git for Actions
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          echo "Git user configured for automated actions."
-
       - name: Run semantic-release (get release info)
         id: semantic_release_run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Chạy semantic-release và chỉ lấy phần JSON object cuối cùng từ output của nó
-          # Lưu ý: semantic-release có thể output nhiều thứ, cần lọc đúng phần JSON.
-          # Nếu không có release mới, phần này có thể trống.
-          RELEASE_OUTPUT=$(npx semantic-release --debug 2>&1 | grep -A 100 "Release success" | tail -n +2 | jq .)
+          # Chạy semantic-release. Redirect stderr sang stdout (2>&1) để bắt toàn bộ log.
+          # Chuyển output vào một file tạm thời.
+          # Sau đó tìm kiếm object JSON trong file đó.
+          # Nếu semantic-release không tạo release, file này sẽ không có JSON object.
+          npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt
 
-          # Lưu output đã được xử lý vào một biến output của step
-          echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
-          echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
-          echo "EOF" >> "$GITHUB_OUTPUT"
+          # Cố gắng trích xuất JSON object từ output.
+          # semantic-release thường in JSON object ở cuối khi có release thành công.
+          # Sử dụng awk hoặc sed để tìm dòng JSON cuối cùng.
+          # regex_match="^\{.*\"nextRelease\".*\}$" # Cố gắng khớp với object JSON chứa "nextRelease"
+
+          # Một cách khác an toàn hơn là tìm dòng bắt đầu bằng "{" và kết thúc bằng "}"
+          # và giả định đó là JSON object của nextRelease.
+          # Lưu ý: Điều này có thể không hoàn hảo nếu có các JSON object khác trong log.
+          RELEASE_OUTPUT=$(awk '/^{/,/}$/{p=1;print;next}/^}/&&p{p=0;print;next}' semantic_release_raw_output.txt | tail -n 1) # Lấy object JSON cuối cùng
+
+          # Nếu không tìm thấy JSON, RELEASE_OUTPUT sẽ trống.
+          # Nếu tìm thấy, xuất nó ra dưới dạng output của step.
+          if [ -n "$RELEASE_OUTPUT" ]; then
+            echo "Found semantic-release JSON output:"
+            echo "$RELEASE_OUTPUT"
+            echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "No semantic-release JSON output found (no new release determined or parsing failed)."
+            echo "release_output_json={}" >> "$GITHUB_OUTPUT" # Đảm bảo biến output không trống
+          fi
 
           # Để debug: kiểm tra nội dung CHANGELOG.md và package.json sau semantic-release
           echo "--- Content of CHANGELOG.md after semantic-release ---"
@@ -56,33 +69,33 @@ jobs:
           echo "--- Content of package.json after semantic-release ---"
           cat package.json || echo "package.json not found or empty."
 
-      - name: Parse semantic-release output for new version and release notes
-        id: get_release_info
-        run: |
-          NEW_VERSION=""
-          RELEASE_NOTES=""
+            - name: Parse semantic-release output for new version and release notes
+              id: get_release_info
+              run: |
+                NEW_VERSION=""
+                RELEASE_NOTES=""
 
-          RELEASE_JSON="${{ steps.semantic_release_run.outputs.release_output_json }}"
+                RELEASE_JSON="${{ steps.semantic_release_run.outputs.release_output_json }}"
 
-          if [ -n "$RELEASE_JSON" ] && echo "$RELEASE_JSON" | jq -e '.' &>/dev/null; then
-            if echo "$RELEASE_JSON" | jq -e '.nextRelease.version' &>/dev/null; then
-              NEW_VERSION=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.version')
-            fi
-            if echo "$RELEASE_JSON" | jq -e '.nextRelease.notes' &>/dev/null; then
-              RELEASE_NOTES=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.notes')
-            fi
-          fi
+                if [ -n "$RELEASE_JSON" ] && echo "$RELEASE_JSON" | jq -e '.' &>/dev/null; then
+                  if echo "$RELEASE_JSON" | jq -e '.nextRelease.version' &>/dev/null; then
+                    NEW_VERSION=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.version')
+                  fi
+                  if echo "$RELEASE_JSON" | jq -e '.nextRelease.notes' &>/dev/null; then
+                    RELEASE_NOTES=$(echo "$RELEASE_JSON" | jq -r '.nextRelease.notes')
+                  fi
+                fi
 
-          if [ -z "$NEW_VERSION" ]; then
-            echo "No new version determined by semantic-release. Skipping PR creation."
-            echo "new_version=none" >> "$GITHUB_OUTPUT"
-          else
-            echo "New version determined: $NEW_VERSION"
-            echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-            mkdir -p ./.github/release-assets
-            echo "$RELEASE_NOTES" > ./.github/release-assets/release_notes.md
-            echo "release_notes_file=./.github/release-assets/release_notes.md" >> "$GITHUB_OUTPUT"
-          fi
+                if [ -z "$NEW_VERSION" ]; then
+                  echo "No new version determined by semantic-release. Skipping PR creation."
+                  echo "new_version=none" >> "$GITHUB_OUTPUT"
+                else
+                  echo "New version determined: $NEW_VERSION"
+                  echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+                  mkdir -p ./.github/release-assets
+                  echo "$RELEASE_NOTES" > ./.github/release-assets/release_notes.md
+                  echo "release_notes_file=./.github/release-assets/release_notes.md" >> "$GITHUB_OUTPUT"
+                fi
 
       - name: Skip if no version bump
         if: steps.get_release_info.outputs.new_version == 'none'
