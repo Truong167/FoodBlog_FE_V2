@@ -16,15 +16,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node & Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: 1.1.4
+          node-version: "18"
 
       - name: Install dependencies
-        run: bun install
+        run: npm ci
 
-      - name: Determine release type
+      - name: Determine release script
         id: env
         run: |
           if [[ "${GITHUB_REF_NAME}" == "dev" ]]; then
@@ -38,10 +38,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Run standard-version (auto bump + changelog + tag)
+      - name: Create release commit and tag
         run: npm run ${{ steps.env.outputs.release_script }}
 
-      - name: Push commit and tag
-        run: |
-          git push origin HEAD
-          git push origin --tags
+      - name: Create pull request for changelog + tag
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore(version): bump version & changelog"
+          branch: "chore/autotag-${{ github.run_id }}"
+          title: "chore: auto bump version and changelog"
+          body: "This PR bumps the version and updates the changelog. Triggered by push to `${{ github.ref_name }}`."
+          base: ${{ github.ref_name }}
+          delete-branch: true
