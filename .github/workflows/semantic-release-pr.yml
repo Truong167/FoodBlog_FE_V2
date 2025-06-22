@@ -522,7 +522,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR [skip ci]" # Thêm [skip ci] để tránh vòng lặp
+          commit-message: "chore(release): prepare for v${{ steps.get_release_info.outputs.new_version }} release PR [skip ci]"
           title: "Release v${{ steps.get_release_info.outputs.new_version }}"
           body: |
             ## Release v${{ steps.get_release_info.outputs.new_version }}
@@ -538,20 +538,16 @@ jobs:
 
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
-          branch: release/v${{ steps.get_release_info.outputs.new_version }} # create-pull-request sẽ tạo nhánh này
-          base: dev # Hoặc branch mà PR sẽ được merge vào (ví dụ: main)
+          branch: release/v${{ steps.get_release_info.outputs.new_version }}
+          base: dev
           labels: |
             release
             automated
           draft: false
-          # Các files này sẽ được action tự động add và commit
           add-paths: |
             CHANGELOG.md
             package.json
-            semantic_release_raw_output.txt # Để nó được thêm vào PR, hoặc bạn có thể xóa nó thủ công sau đó nếu không muốn
-            .github/release-assets/ # Nếu bạn muốn thư mục này cũng xuất hiện trong PR
-          # Nếu bạn muốn force push trong trường hợp nhánh đã tồn tại và có khác biệt không mong muốn
-          # force: true # Thường không cần thiết nếu add-paths hoạt động đúng
+          # force: true # Vẫn nên giữ dòng này là comment trừ khi cần thiết
 
       - name: Cleanup temporary files after PR creation # Di chuyển bước cleanup xuống đây
         run: |
