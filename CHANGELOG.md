@@ -1,3 +1,8 @@
+## 0.7.0-canary.4 (2025-06-22)
+
+* feat/tacman: update body for release 49 ([cfcd006](https://github.com/Truong167/FoodBlog_FE_V2/commit/cfcd006))
+* chore(release): prepare for v0.7.0-canary.3 release PR [skip ci] ([a9656df](https://github.com/Truong167/FoodBlog_FE_V2/commit/a9656df))
+
 ## 0.7.0-canary.3 (2025-06-22)
 
 * feat/tacman: update body for release 19 ([9c02926](https://github.com/Truong167/FoodBlog_FE_V2/commit/9c02926))
