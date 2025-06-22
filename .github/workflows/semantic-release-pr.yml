@@ -605,14 +605,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           echo "Git user configured for automated actions."
 
-      - name: Run semantic-release and extract info
+      - name: Run semantic-release and capture raw output
         id: semantic_release_run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "--- START: semantic-release execution ---"
           # Chạy semantic-release và lưu toàn bộ output vào file
-          # Dùng pipefail để đảm bảo nếu semantic-release thất bại thì script cũng thất bại
           set -o pipefail
           npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
             echo "semantic-release command failed with exit code $?."
@@ -625,50 +624,70 @@ jobs:
           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
           echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          echo "--- Git Status after semantic-release (before custom parsing) ---"
+          echo "--- Git Status after semantic-release ---"
           git status --short
           echo "--- Git Diff (staged) after semantic-release ---"
           git diff --cached --name-only
           echo "--- Git Diff (unstaged) after semantic-release ---"
           git diff --name-only
 
-          # Bắt đầu logic trích xuất thông tin mà không dùng jq
-          echo "--- Trích xuất thông tin Release từ Output ---"
-          RELEASE_JSON_STRING=$(grep -Eo '\[semantic-release] › \w+ \(\S+\) Next release: \{.*\}' semantic_release_raw_output.txt | sed -E 's/^\[semantic-release] › \w+ \(\S+\) Next release: //')
+          # --- TRÍCH XUẤT PHIÊN BẢN MỚI TỪ DÒNG "Published release" HOẶC CHANGELOG ---
+          NEW_VERSION="none"
 
-          if [ -n "$RELEASE_JSON_STRING" ]; then
-            echo "DEBUG: Chuỗi JSON tìm thấy: $RELEASE_JSON_STRING"
+          # Ưu tiên lấy từ dòng "Published release" nếu có
+          PUBLISHED_LINE=$(grep -Eo '\[semantic-release] › ✔  Published release ([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?)( on [^ ]+ channel)?' semantic_release_raw_output.txt | head -n 1)
 
-            # Trích xuất phiên bản
-            NEW_VERSION=$(echo "$RELEASE_JSON_STRING" | sed -n 's/.*"version":"\([^"]*\)".*/\1/p')
-
-            # Trích xuất ghi chú, xử lý các ký tự đặc biệt (cẩn thận với dấu nháy kép, xuống dòng)
-            # Đây là phần phức tạp nhất khi không dùng jq
-            # Cách này sẽ lấy tất cả nội dung giữa "notes":" và " (dấu nháy kép tiếp theo)
-            # Có thể không hoàn hảo nếu notes có nhiều dấu nháy kép hoặc xuống dòng
-            RELEASE_NOTES_BODY=$(echo "$RELEASE_JSON_STRING" | sed -n 's/.*"notes":"\([^"]*\)".*/\1/p')
-            
-            # Giải mã các ký tự thoát cơ bản mà semantic-release có thể thêm vào JSON
-            # Ví dụ: \\n thành \n, \\" thành "
-            RELEASE_NOTES_BODY=$(echo -e "$RELEASE_NOTES_BODY" | sed 's/\\n/\n/g; s/\\r//g; s/\\t/\t/g; s/\\"/\"/g; s/\\\\/\\/g')
-
-            echo "DEBUG: Phiên bản mới trích xuất: $NEW_VERSION"
-            echo "DEBUG: Ghi chú phát hành trích xuất (100 ký tự đầu): ${RELEASE_NOTES_BODY:0:100}..."
-          else
-            echo "DEBUG: Không tìm thấy chuỗi JSON Next Release trong output."
-            NEW_VERSION="none"
-            RELEASE_NOTES_BODY="Không có ghi chú phát hành chi tiết."
+          if [ -n "$PUBLISHED_LINE" ]; then
+            NEW_VERSION=$(echo "$PUBLISHED_LINE" | sed -E 's/^.*Published release ([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?).*$/\1/')
+            echo "DEBUG: Phiên bản mới được trích xuất từ dòng 'Published release': $NEW_VERSION"
           fi
 
+          # Nếu không lấy được từ "Published release", thử lấy từ CHANGELOG.md (như cách bạn đã làm ban đầu)
           if [ "$NEW_VERSION" == "none" ]; then
-            echo "No new version determined by semantic-release. Skipping PR creation."
-            echo "new_version=none" >> "$GITHUB_OUTPUT"
-          else
-            echo "New version determined: $NEW_VERSION"
+            NEW_VERSION=$(
+              grep -E '^##\s(v)?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\)' CHANGELOG.md |
+              head -n 1 |
+              sed -E 's/^##\s(v)?([0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\.]+)?)\s+\([0-9]{4}-[0-9]{2}-[0-9]{2}\).*$/\2/'
+            )
+            echo "DEBUG: Phiên bản mới được trích xuất từ CHANGELOG.md: ${NEW_VERSION}"
+          fi
+
+          if [ "$NEW_VERSION" == "" ]; then # Đảm bảo NEW_VERSION không rỗng sau khi thử cả 2 cách
+            NEW_VERSION="none"
+            echo "DEBUG: Không tìm thấy phiên bản mới. Đặt NEW_VERSION thành 'none'."
+          fi
+
+          # --- TRÍCH XUẤT GHI CHÚ PHÁT HÀNH TỪ CHANGELOG.md ---
+          RELEASE_NOTES_BODY=""
+          if [ "$NEW_VERSION" != "none" ] && [ -f "CHANGELOG.md" ]; then
+            # Lấy ghi chú cho phiên bản mới nhất từ CHANGELOG.md
+            # regex này sẽ tìm dòng ## vX.Y.Z (YYYY-MM-DD) và lấy nội dung đến dòng ## tiếp theo
+            # Hoặc đến hết file nếu không có dòng ## tiếp theo
+            RELEASE_NOTES_BODY=$(
+              sed -n '/^##\s\(v\)\?'"$NEW_VERSION"'\s/,/^##\s\(v\)\?[0-9]*\.[0-9]*\.[0-9]*\s/p' CHANGELOG.md |
+              grep -v '^## ' | # Loại bỏ dòng tiêu đề ##
+              sed '$d' | # Loại bỏ dòng cuối cùng nếu nó là tiêu đề của phiên bản tiếp theo
+              awk 'NF {found=1} {if ($0 !~ /^\s*$/) print}' # Loại bỏ dòng trống và khoảng trắng đầu/cuối
+            )
+          fi
+
+          if [ -z "$RELEASE_NOTES_BODY" ]; then
+            RELEASE_NOTES_BODY="No detailed release notes available."
+          fi
+
+          echo "--- Kết quả Trích xuất ---"
+          echo "Phiên bản mới: $NEW_VERSION"
+          echo "Ghi chú phát hành (đầu): ${RELEASE_NOTES_BODY:0:150}..."
+
+          # --- SET OUTPUTS ---
+          if [ "$NEW_VERSION" != "none" ]; then
             echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
             mkdir -p ./.github/release-assets
             echo "$RELEASE_NOTES_BODY" > ./.github/release-assets/release_notes.md
             echo "release_notes_file=./.github/release-assets/release_notes.md" >> "$GITHUB_OUTPUT"
+          else
+            echo "new_version=none" >> "$GITHUB_OUTPUT"
+            echo "release_notes_file=" >> "$GITHUB_OUTPUT" # Đảm bảo output này cũng trống nếu không có release
           fi
 
       - name: Upload semantic-release raw output as artifact
@@ -679,8 +698,9 @@ jobs:
 
       - name: Read Release Notes for PR Body
         id: read_release_notes
+        if: steps.semantic_release_run.outputs.new_version != 'none' # Chỉ chạy nếu có phiên bản mới
         run: |
-          RELEASE_NOTES_FILE="${{ steps.semantic_release_run.outputs.release_notes_file }}" # Đã thay đổi từ get_release_info
+          RELEASE_NOTES_FILE="${{ steps.semantic_release_run.outputs.release_notes_file }}"
           echo "DEBUG: Reading release notes from $RELEASE_NOTES_FILE"
           if [ -f "$RELEASE_NOTES_FILE" ]; then
             RELEASE_NOTES_CONTENT=$(cat "$RELEASE_NOTES_FILE")
@@ -689,16 +709,18 @@ jobs:
             echo "$RELEASE_NOTES_CONTENT" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
           else
-            echo "DEBUG: No release notes file found at $RELEASE_NOTES_FILE."
+            echo "DEBUG: No release notes file found at $RELEASE_NOTES_FILE. Setting default message."
             echo "release_notes_pr_body=No detailed release notes available." >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
+        # Chỉ chạy nếu có phiên bản mới được xác định
+        if: steps.semantic_release_run.outputs.new_version != 'none'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore(release): prepare for v${{ steps.semantic_release_run.outputs.new_version }} release PR " # Đã thay đổi từ get_release_info
-          title: "Release v${{ steps.semantic_release_run.outputs.new_version }}" # Đã thay đổi từ get_release_info
+          commit-message: "chore(release): prepare for v${{ steps.semantic_release_run.outputs.new_version }} release PR "
+          title: "Release v${{ steps.semantic_release_run.outputs.new_version }}"
           body: |
             ## Release v${{ steps.semantic_release_run.outputs.new_version }}
 
@@ -713,7 +735,7 @@ jobs:
 
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
-          branch: release/v${{ steps.semantic_release_run.outputs.new_version }} # Đã thay đổi từ get_release_info
+          branch: release/v${{ steps.semantic_release_run.outputs.new_version }}
           base: dev
           labels: |
             release
