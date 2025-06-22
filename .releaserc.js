@@ -50,17 +50,16 @@ module.exports = {
         changelogFile: "CHANGELOG.md",
       },
     ],
-    [
-      "@semantic-release/github",
-      {
-        releaseBodyTemplate: `
+    //   [
+    //     "@semantic-release/github",
+    //     {
+    //       releaseBodyTemplate: `
 
-  Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
+    // Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
 
-
-          `,
-      },
-    ],
+    //         `,
+    //     },
+    //   ],
     // [
     //   "@semantic-release/git",
     //   {
