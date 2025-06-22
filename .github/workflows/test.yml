@@ -1,95 +1,32 @@
-# name: Release Please
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   release:
-#     permissions:
-#       contents: write
-#       pull-requests: write
-#       issues: write
-
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Release Please GitHub Action
-#         uses: googleapis/release-please-action@v4
-#         with:
-#           release-type: node
-#           config-file: .release-please-config.json
 # name: Release
 
 # on:
 #   push:
 #     branches:
-#       - main
+#       - dev
 
 # jobs:
 #   release:
 #     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       issues: write
+#       pull-requests: write
 
 #     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v3
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 #         with:
 #           fetch-depth: 0
 
-#       - name: Setup Node & bun
+#       - name: Setup Node & Bun
 #         uses: oven-sh/setup-bun@v1
 #         with:
 #           bun-version: 1.1.4
 
-#       - name: Install deps
+#       - name: Install dependencies
 #         run: bun install
 
-#       - name: Setup Git config
-#         run: |
-#           git config user.name "github-actions[bot]"
-#           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-#       - name: Generate release (tag + changelog)
-#         run: bunx standard-version
-
-#       - name: Push changes and tags
-#         run: |
-#           git push --follow-tags origin main
+#       - name: Run semantic-release
 #         env:
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-name: Semantic Release
-
-on:
-  push:
-    branches:
-      - main
-      - dev
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node & bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.4
-
-      - name: Install deps
-        run: bun install
-
-      - name: Run semantic release
-        run: bunx semantic-release --debug
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
