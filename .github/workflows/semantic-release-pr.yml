@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Install JQ
+      - name: Install JQ # Vẫn cần JQ cho bước Update package.json
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Configure Git for Actions
@@ -77,7 +77,7 @@ jobs:
               sed -n '/^## '"$NEW_VERSION_FROM_CHANGELOG"'\s/,/^##/P' CHANGELOG.md |
               grep -v '^## ' | # Bỏ qua dòng tiêu đề phiên bản
               sed 's/^\s*//;s/\s*$//' | # Cắt khoảng trắng ở đầu/cuối dòng
-              awk 'NF {found=1} found' # Bỏ qua các dòng trống ở đầu block
+              awk 'NF {found=1} {if ($0 !~ /^\s*$/) print}' # Bỏ qua các dòng trống hoàn toàn
           )
 
           # Nếu không tìm thấy release notes, đặt giá trị mặc định
@@ -85,8 +85,12 @@ jobs:
               RELEASE_NOTES_BODY="No detailed release notes available."
           fi
 
+          # Escape backslashes and double quotes in RELEASE_NOTES_BODY for JSON string.
+          # We need to escape these carefully for the JSON format.
+          ESCAPED_RELEASE_NOTES_BODY=$(echo "$RELEASE_NOTES_BODY" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | tr -d '\n')
+
           # Tạo JSON output giả
-          RELEASE_OUTPUT_JSON="{ \"nextRelease\": { \"version\": \"$NEW_VERSION_FROM_CHANGELOG\", \"notes\": \"$(echo "$RELEASE_NOTES_BODY" | tr -d '\n' | sed 's/"/\\"/g')\" } }"
+          RELEASE_OUTPUT_JSON="{ \"nextRelease\": { \"version\": \"$NEW_VERSION_FROM_CHANGELOG\", \"notes\": \"$ESCAPED_RELEASE_NOTES_BODY\" } }"
 
           echo "--- DEBUG: Synthesized RELEASE_OUTPUT_JSON: ${RELEASE_OUTPUT_JSON} ---"
 
@@ -111,11 +115,8 @@ jobs:
           name: semantic-release-raw-output
           path: semantic_release_raw_output.txt
 
-      - name: Upload semantic-release JSON output as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: semantic-release-json-output
-          path: semantic_release_json_output.json
+      # Bỏ qua artifact semantic_release_json_output.json vì chúng ta không tạo ra nó trực tiếp nữa.
+      # Nếu bạn vẫn muốn có một file JSON với output tổng hợp, bạn có thể thêm một bước riêng để tạo nó.
 
       - name: Parse semantic-release output for new version and release notes
         id: get_release_info
@@ -141,6 +142,7 @@ jobs:
 
             if [ -n "$PARSED_NOTES" ]; then
               RELEASE_NOTES="$PARSED_NOTES"
+              # Chỉ in ra vài ký tự đầu để tránh log quá dài
               echo "DEBUG: Successfully parsed RELEASE_NOTES (first 50 chars): ${RELEASE_NOTES:0:50}..."
             else
               echo "DEBUG: nextRelease.notes not found in JSON or is empty."
@@ -247,14 +249,14 @@ jobs:
             ---
             Please review these changes, especially the changelog content, before merging this PR. Merging this PR will finalize the version update and integrate the changelog into the `main` branch.
           branch: ${{ steps.create_branch.outputs.branch_name }}
-          base: dev
+          base: dev # Hoặc branch mà PR sẽ được merge vào (ví dụ: main nếu bạn muốn PR từ release branch vào main)
           labels: |
             release
             automated
           draft: false
 
       - name: Create GitHub Release
-        if: success()
+        if: success() # Chỉ tạo GitHub Release nếu các bước trước đó thành công
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -266,4 +268,5 @@ jobs:
 
             Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/v${{ steps.get_release_info.outputs.new_version }}/CHANGELOG.md) for full details on this release.
           draft: false
-          prerelease: contains(github.ref, 'dev')
+          # Đặt prerelease thành true nếu nhánh hiện tại là 'dev' hoặc là một pre-release branch
+          prerelease: ${{ contains(github.ref, 'dev') || contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
