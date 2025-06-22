@@ -599,11 +599,11 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Configure Git for Actions
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          echo "Git user configured for automated actions."
+      # - name: Configure Git for Actions
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     echo "Git user configured for automated actions."
 
       - name: Run semantic-release and capture raw output
         id: semantic_release_run
@@ -690,11 +690,11 @@ jobs:
             echo "release_notes_file=" >> "$GITHUB_OUTPUT" # Đảm bảo output này cũng trống nếu không có release
           fi
 
-      - name: Upload semantic-release raw output as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: semantic-release-raw-output
-          path: semantic_release_raw_output.txt
+      # - name: Upload semantic-release raw output as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: semantic-release-raw-output
+      #     path: semantic_release_raw_output.txt
 
       - name: Read Release Notes for PR Body
         id: read_release_notes
