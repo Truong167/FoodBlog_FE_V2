@@ -1,9 +1,10 @@
 name: Create GitHub Release on Merge
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - dev
+      - dev # Nhánh mà PR Release sẽ được merge vào
 
 jobs:
   create_release:
@@ -13,15 +14,15 @@ jobs:
       pull-requests: write # Có thể không cần nếu chỉ tạo release, nhưng an toàn để có
       # id-token: write # Thêm nếu bạn dùng OIDC, không thì không cần
 
-    if: contains(github.event.head_commit.message, 'chore(release) prepare for v')
-    # Hoặc nếu bạn có các loại commit message khác cho PR release, bạn có thể điều chỉnh chuỗi tìm kiếm.
-    # Tuy nhiên, "chore(release): prepare for v" là một phần của commit message mặc định bạn đang dùng.
+    if: github.event.pull_request.merged && contains(github.event.pull_request.title, 'Release v')
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Đảm bảo lấy toàn bộ lịch sử để semantic-release hoặc các công cụ khác hoạt động đúng
+          # Khi chạy trên sự kiện pull_request, HEAD commit sẽ là merge commit của PR.
+          # fetch-depth: 0 vẫn cần thiết nếu semantic-release cần toàn bộ lịch sử commit.
+          fetch-depth: 0
 
       - name: Setup Node & Bun
         uses: oven-sh/setup-bun@v1
@@ -41,10 +42,18 @@ jobs:
         run: |
           echo "--- START: semantic-release execution for release creation ---"
           set -o pipefail
-          # Chạy semantic-release. Nếu bạn có @semantic-release/git plugin trong config,
-          # nó sẽ tạo tag và release trên GitHub tự động.
-          # Nếu bạn chỉ muốn nó xác định version và notes để truyền cho actions/create-release,
-          # thì đảm bảo config của bạn không tạo tag hai lần.
+          # Quan trọng: Khi chạy trên pull_request.closed, HEAD của branch vẫn là trước khi merge.
+          # semantic-release cần chạy trên commit sau khi merge.
+          # Chúng ta cần đảm bảo code đã được merge.
+          # Để làm điều này, chúng ta có thể checkout branch đích (dev) sau khi PR đã merge.
+          # Tuy nhiên, nếu semantic-release dựa vào git history để xác định version,
+          # nó sẽ cần branch đã được merge. github.event.pull_request.head.ref
+          # Hoặc tốt hơn, hãy checkout commit của pull_request.merge_commit_sha.
+          # NHƯNG, nếu semantic-release TẠO ra release, nó cần chạy trên branch đã merge.
+          # Để an toàn, chúng ta có thể chuyển sang git checkout origin/${{ github.base_ref }}
+          # hoặc dựa vào hành vi mặc định của checkout action khi chạy trên pull_request.closed.
+          # Với pull_request.types: [closed], github.sha sẽ là HEAD của branch đích SAU KHI merge.
+          # Vì vậy, actions/checkout@v4 nên tự động xử lý đúng.
           npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
             echo "semantic-release command failed with exit code $?."
             cat semantic_release_raw_output.txt
@@ -69,10 +78,6 @@ jobs:
           if [ -z "$RELEASE_NOTES_BODY" ]; then
               RELEASE_NOTES_BODY="No detailed release notes available."
           fi
-          # Không cần escape cho output này nếu nó chỉ dùng cho biến môi trường hoặc output,
-          # nhưng nếu dùng cho JSON hoặc truyền trực tiếp vào tham số, vẫn cần cẩn thận.
-          # Với actions/create-release, nó có thể xử lý tốt markdown thô.
-          # ESCAPED_RELEASE_NOTES_BODY=$(echo "$RELEASE_NOTES_BODY" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | tr -d '\n')
 
           echo "new_version=$NEW_VERSION_FROM_CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "release_notes_pr_body<<EOF" >> "$GITHUB_OUTPUT"
