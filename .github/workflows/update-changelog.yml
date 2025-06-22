@@ -17,7 +17,7 @@ jobs:
 
       - name: Run Changelog Generation Script
         run: |
-          chmod +x ./scripts/generate_changelog.sh # Cấp quyền thực thi cho script
-          ./scripts/generate_changelog.sh
+          chmod +x ./scripts/generate-changelog.sh # Cấp quyền thực thi cho script
+          ./scripts/generate-changelog.sh
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }} # Truyền tên nhánh vào script
