@@ -1,0 +1,47 @@
+name: Auto Bump Version and Create Tag
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine release type
+        id: env
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "dev" ]]; then
+            echo "release_script=release:staging" >> $GITHUB_OUTPUT
+          else
+            echo "release_script=release:prod" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run standard-version (auto bump + changelog + tag)
+        run: npm run ${{ steps.env.outputs.release_script }}
+
+      - name: Push commit and tag
+        run: |
+          git push origin HEAD
+          git push origin --tags

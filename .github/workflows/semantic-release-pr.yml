@@ -573,8 +573,7 @@ name: Semantic Release PR
 on:
   push:
     branches:
-      - dev # Hoặc nhánh bạn muốn chạy release PR
-      - main
+      - feat
 
 jobs:
   release:
