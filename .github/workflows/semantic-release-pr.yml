@@ -260,11 +260,17 @@ jobs:
         run: |
           BRANCH_NAME="${{ steps.create_branch.outputs.branch_name }}"
           echo "DEBUG: Pushing branch: $BRANCH_NAME"
-          # Sử dụng --force-with-lease nếu bạn muốn đảm bảo push ghi đè nhánh remote
-          # trong trường hợp có gì đó không đồng bộ, nhưng thường không cần thiết
-          # nếu đây là nhánh mới và chỉ workflow này tác động.
-          git push --set-upstream origin "$BRANCH_NAME" # Thêm --set-upstream
+          git push --set-upstream origin "$BRANCH_NAME"
           echo "Pushed branch: $BRANCH_NAME to remote."
+          # Thêm các lệnh kiểm tra sau push
+          echo "--- DEBUG: Verify remote branch state after push ---"
+          git fetch origin "$BRANCH_NAME" # Kéo về trạng thái mới nhất của nhánh vừa push từ remote
+          git checkout "$BRANCH_NAME"    # Chuyển sang nhánh đó (trên local, đã được fetch về)
+          echo "Current branch after fetch/checkout: $(git branch --show-current)"
+          echo "Last commit on this branch after fetch/checkout: $(git log -1 --pretty=format:"%h %s")"
+          echo "Diff of remote branch against origin/dev after push:"
+          git diff origin/dev --name-only # So sánh nhánh vừa push (mà local đã fetch về) với origin/dev
+          echo "--- END DEBUG after push ---"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
