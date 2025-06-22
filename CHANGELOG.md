@@ -1,3 +1,12 @@
+## 0.7.0-canary.20 (2025-06-22)
+
+* chore(release): 0.6.10-canary.1 [skip ci] ([76c9cd5](https://github.com/Truong167/FoodBlog_FE_V2/commit/76c9cd5))
+* chore(release): 0.7.0-canary.1 [skip ci] ([529b300](https://github.com/Truong167/FoodBlog_FE_V2/commit/529b300))
+* chore(release): prepare for v0.7.0-canary.19 release PR ([fc39018](https://github.com/Truong167/FoodBlog_FE_V2/commit/fc39018))
+* Merge branch 'main' into dev ([3d39c9a](https://github.com/Truong167/FoodBlog_FE_V2/commit/3d39c9a))
+* feat/tacman: update body for release 12 ([8fa9259](https://github.com/Truong167/FoodBlog_FE_V2/commit/8fa9259))
+* fix/tacman: update body for release 11 ([7234829](https://github.com/Truong167/FoodBlog_FE_V2/commit/7234829))
+* fix/tacman: update body for release 12 ([acf7965](https://github.com/Truong167/FoodBlog_FE_V2/commit/acf7965))
 
 ## 0.7.0-canary.19 (2025-06-22)
 
