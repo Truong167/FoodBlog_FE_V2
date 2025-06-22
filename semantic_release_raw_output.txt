@@ -1,0 +1,89 @@
+[5:03:05 AM] [semantic-release] › ℹ  Running semantic-release version 24.2.5
+2025-06-22T05:03:06.209Z semantic-release:config load config from: /home/runner/work/FoodBlog_FE_V2/FoodBlog_FE_V2/.releaserc.js
+2025-06-22T05:03:06.217Z semantic-release:config options values: {
+  branches: [ 'main', { name: 'dev', prerelease: 'canary' } ],
+  repositoryUrl: 'https://github.com/Truong167/FoodBlog_FE_V2',
+  tagFormat: 'v${version}',
+  plugins: [
+    [ '@semantic-release/commit-analyzer', [Object] ],
+    [ '@semantic-release/release-notes-generator', [Object] ],
+    [ '@semantic-release/changelog', [Object] ]
+  ],
+  debug: true,
+  _: [],
+  '$0': 'node_modules/.bin/semantic-release'
+}
+2025-06-22T05:03:06.280Z semantic-release:plugins options for @semantic-release/changelog/verifyConditions: { changelogFile: 'CHANGELOG.md' }
+[5:03:06 AM] [semantic-release] › ✔  Loaded plugin "verifyConditions" from "@semantic-release/changelog"
+2025-06-22T05:03:06.282Z semantic-release:plugins options for @semantic-release/commit-analyzer/analyzeCommits: {
+  parserOpts: {
+    headerPattern: /^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)\/([\w-]+):\s(.+)$/,
+    headerCorrespondence: [ 'type', 'scope', 'subject' ],
+    noteKeywords: [ 'BREAKING CHANGE', 'BREAKING CHANGES', 'BREAKING-CHANGE' ],
+    issuePrefixes: [ '#' ]
+  },
+  releaseRules: [
+    { type: 'feat', scope: '*', release: 'minor' },
+    { type: 'feat', release: 'minor' },
+    { type: 'fix', scope: '*', release: 'patch' },
+    { type: 'fix', release: 'patch' },
+    { type: 'perf', release: 'patch' },
+    { type: 'refactor', release: 'patch' },
+    { type: 'docs', release: 'patch' },
+    { type: 'revert', release: 'patch' },
+    { type: 'build', release: 'patch' },
+    { type: 'ci', release: 'patch' },
+    { breaking: true, release: 'major' }
+  ]
+}
+[5:03:06 AM] [semantic-release] › ✔  Loaded plugin "analyzeCommits" from "@semantic-release/commit-analyzer"
+2025-06-22T05:03:06.283Z semantic-release:plugins options for @semantic-release/release-notes-generator/generateNotes: {
+  parserOpts: {
+    headerPattern: /^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)\/([\w-]+):\s(.+)$/,
+    headerCorrespondence: [ 'type', 'scope', 'subject' ],
+    noteKeywords: [ 'BREAKING CHANGE', 'BREAKING CHANGES', 'BREAKING-CHANGE' ],
+    issuePrefixes: [ '#' ]
+  },
+  preset: 'conventionalcommits'
+}
+[5:03:06 AM] [semantic-release] › ✔  Loaded plugin "generateNotes" from "@semantic-release/release-notes-generator"
+2025-06-22T05:03:06.283Z semantic-release:plugins options for @semantic-release/changelog/prepare: { changelogFile: 'CHANGELOG.md' }
+[5:03:06 AM] [semantic-release] › ✔  Loaded plugin "prepare" from "@semantic-release/changelog"
+2025-06-22T05:03:06.301Z semantic-release:get-git-auth-url Verifying ssh auth by attempting to push to  https://github.com/Truong167/FoodBlog_FE_V2
+2025-06-22T05:03:06.465Z semantic-release:get-git-auth-url SSH key auth successful.
+2025-06-22T05:03:07.728Z semantic-release:get-tags found tags for branch main: [ { gitTag: 'v0.1.3', version: '0.1.3', channels: [ null ] }, { gitTag: 'v0.1.4', version: '0.1.4', channels: [ null ] }, { gitTag: 'v0.1.5', version: '0.1.5', channels: [ null ] }, { gitTag: 'v0.1.6', version: '0.1.6', channels: [ null ] }, { gitTag: 'v0.1.7', version: '0.1.7', channels: [ null ] }, { gitTag: 'v0.1.8', version: '0.1.8', channels: [ null ] }, { gitTag: 'v0.2.0', version: '0.2.0', channels: [ null ] }, { gitTag: 'v0.3.0', version: '0.3.0', channels: [ null ] }, { gitTag: 'v0.4.0', version: '0.4.0', channels: [ null ] }, { gitTag: 'v0.5.0', version: '0.5.0', channels: [ null ] }, { gitTag: 'v0.6.0', version: '0.6.0', channels: [ null ] }, { gitTag: 'v0.6.1', version: '0.6.1', channels: [ null ] }, { gitTag: 'v0.6.2', version: '0.6.2', channels: [ null ] }, { gitTag: 'v0.6.3', version: '0.6.3', channels: [ null ] }, { gitTag: 'v0.6.4', version: '0.6.4', channels: [ null ] }, { gitTag: 'v0.6.5', version: '0.6.5', channels: [ null ] }, { gitTag: 'v0.6.6', version: '0.6.6', channels: [ null ] }, { gitTag: 'v0.6.7', version: '0.6.7', channels: [ null ] }, { gitTag: 'v0.6.8', version: '0.6.8', channels: [ null ] }, { gitTag: 'v0.6.9', version: '0.6.9', channels: [ null ] } ]
+2025-06-22T05:03:08.016Z semantic-release:get-tags found tags for branch dev: [ { gitTag: 'v0.1.3', version: '0.1.3', channels: [ null ] }, { gitTag: 'v0.1.4', version: '0.1.4', channels: [ null ] }, { gitTag: 'v0.1.5', version: '0.1.5', channels: [ null ] }, { gitTag: 'v0.1.6', version: '0.1.6', channels: [ null ] }, { gitTag: 'v0.1.7', version: '0.1.7', channels: [ null ] }, { gitTag: 'v0.1.8', version: '0.1.8', channels: [ null ] }, { gitTag: 'v0.2.0', version: '0.2.0', channels: [ null ] }, { gitTag: 'v0.3.0', version: '0.3.0', channels: [ null ] }, { gitTag: 'v0.4.0', version: '0.4.0', channels: [ null ] }, { gitTag: 'v0.5.0', version: '0.5.0', channels: [ null ] }, { gitTag: 'v0.6.0', version: '0.6.0', channels: [ null ] }, { gitTag: 'v0.6.1', version: '0.6.1', channels: [ null ] }, { gitTag: 'v0.6.10-canary.1', version: '0.6.10-canary.1', channels: [ 'dev' ] }, { gitTag: 'v0.6.2', version: '0.6.2', channels: [ null ] }, { gitTag: 'v0.6.3', version: '0.6.3', channels: [ null ] }, { gitTag: 'v0.6.4', version: '0.6.4', channels: [ null ] }, { gitTag: 'v0.6.5', version: '0.6.5', channels: [ null ] }, { gitTag: 'v0.6.6', version: '0.6.6', channels: [ null ] }, { gitTag: 'v0.6.7', version: '0.6.7', channels: [ null ] }, { gitTag: 'v0.6.8', version: '0.6.8', channels: [ null ] }, { gitTag: 'v0.6.9', version: '0.6.9', channels: [ null ] }, { gitTag: 'v0.7.0-canary.1', version: '0.7.0-canary.1', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.10', version: '0.7.0-canary.10', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.2', version: '0.7.0-canary.2', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.3', version: '0.7.0-canary.3', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.4', version: '0.7.0-canary.4', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.5', version: '0.7.0-canary.5', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.6', version: '0.7.0-canary.6', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.7', version: '0.7.0-canary.7', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.8', version: '0.7.0-canary.8', channels: [ 'dev' ] }, { gitTag: 'v0.7.0-canary.9', version: '0.7.0-canary.9', channels: [ 'dev' ] } ]
+[5:03:08 AM] [semantic-release] › ✔  Run automated release from branch dev on repository https://github.com/Truong167/FoodBlog_FE_V2
+[5:03:08 AM] [semantic-release] › ✔  Allowed to push to the Git repository
+[5:03:08 AM] [semantic-release] › ℹ  Start step "verifyConditions" of plugin "@semantic-release/changelog"
+[5:03:08 AM] [semantic-release] › ✔  Completed step "verifyConditions" of plugin "@semantic-release/changelog"
+[5:03:08 AM] [semantic-release] › ℹ  Found git tag v0.7.0-canary.10 associated with version 0.7.0-canary.10 on branch dev
+2025-06-22T05:03:08.203Z semantic-release:get-commits Use from: fb98643f21de5c41a4bedc57d0a976aa5e691acd
+[5:03:08 AM] [semantic-release] › ℹ  Found 1 commits since last release
+2025-06-22T05:03:08.212Z semantic-release:get-commits Parsed commits: [ { commit: { long: 'a9273d0635f7f0b1236008c39fe76a3d1cf17829', short: 'a9273d0' }, tree: { long: 'edbabec467cdbf1b95992e2a07a155b28f5a593a', short: 'edbabec' }, author: { name: 'Truong711', email: 'vietruong7111@gmail.com', date: 2025-06-22T05:02:28.000Z }, committer: { name: 'Truong711', email: 'vietruong7111@gmail.com', date: 2025-06-22T05:02:28.000Z }, subject: 'feat/tacman: update body for release 41', body: '', hash: 'a9273d0635f7f0b1236008c39fe76a3d1cf17829', committerDate: 2025-06-22T05:02:28.000Z, message: 'feat/tacman: update body for release 41', gitTags: '(HEAD -> dev, origin/dev, origin/HEAD)' } ]
+[5:03:08 AM] [semantic-release] › ℹ  Start step "analyzeCommits" of plugin "@semantic-release/commit-analyzer"
+[5:03:08 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  Analyzing commit: feat/tacman: update body for release 41
+2025-06-22T05:03:08.216Z semantic-release:commit-analyzer Analyzing with custom rules
+2025-06-22T05:03:08.217Z semantic-release:commit-analyzer The rule { type: 'feat', scope: '*', release: 'minor' } match commit with release type 'minor'
+2025-06-22T05:03:08.217Z semantic-release:commit-analyzer The rule { type: 'feat', release: 'minor' } match commit with release type 'minor' but the higher release type 'minor' has already been found for this commit
+[5:03:08 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  The release type for the commit is minor
+[5:03:08 AM] [semantic-release] [@semantic-release/commit-analyzer] › ℹ  Analysis of 1 commits complete: minor release
+[5:03:08 AM] [semantic-release] › ✔  Completed step "analyzeCommits" of plugin "@semantic-release/commit-analyzer"
+[5:03:08 AM] [semantic-release] › ℹ  The next release version is 0.7.0-canary.11
+[5:03:08 AM] [semantic-release] › ℹ  Start step "generateNotes" of plugin "@semantic-release/release-notes-generator"
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator version: '0.7.0-canary.11'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator host: undefined
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator owner: 'Truong167'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator repository: 'FoodBlog_FE_V2'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator previousTag: 'v0.7.0-canary.10'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator currentTag: 'v0.7.0-canary.11'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator host: 'https://github.com'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator linkReferences: undefined
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator issue: 'issues'
+2025-06-22T05:03:08.234Z semantic-release:release-notes-generator commit: 'commit'
+[5:03:08 AM] [semantic-release] › ✔  Completed step "generateNotes" of plugin "@semantic-release/release-notes-generator"
+[5:03:08 AM] [semantic-release] › ℹ  Start step "prepare" of plugin "@semantic-release/changelog"
+[5:03:08 AM] [semantic-release] [@semantic-release/changelog] › ℹ  Update /home/runner/work/FoodBlog_FE_V2/FoodBlog_FE_V2/CHANGELOG.md
+[5:03:08 AM] [semantic-release] › ✔  Completed step "prepare" of plugin "@semantic-release/changelog"
+[5:03:09 AM] [semantic-release] › ✔  Created tag v0.7.0-canary.11
+[5:03:09 AM] [semantic-release] › ✔  Published release 0.7.0-canary.11 on dev channel
