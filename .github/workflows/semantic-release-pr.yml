@@ -44,13 +44,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "--- START: semantic-release execution ---"
-          # Chạy semantic-release, redirect stdout (JSON) vào một file, redirect stderr (logs) vào file khác.
-          # Chúng ta dùng "set -o pipefail" để đảm bảo nếu npx semantic-release thất bại, lệnh sẽ trả về lỗi.
-          set -o pipefail
-          npx semantic-release --debug > semantic_release_json_output.json 2> semantic_release_raw_output.txt || {
+          # Chạy semantic-release. Redirect CẢ stdout và stderr vào một file duy nhất.
+          # Sau đó, chúng ta sẽ parse file này để tìm JSON output.
+          set -o pipefail # Đảm bảo nếu npx semantic-release thất bại, lệnh sẽ trả về lỗi.
+          npx semantic-release --debug 2>&1 | tee semantic_release_raw_output.txt || {
             echo "semantic-release command failed with exit code $?."
-            # In ra toàn bộ log để debug nếu có lỗi
-            cat semantic_release_raw_output.txt
             exit 1
           }
           echo "--- END: semantic-release execution ---"
@@ -59,29 +57,40 @@ jobs:
           cat semantic_release_raw_output.txt || echo "semantic_release_raw_output.txt not found or empty."
           echo "--- END: Content of semantic_release_raw_output.txt ---"
 
-          echo "--- START: Content of semantic_release_json_output.json (expected JSON) ---"
-          cat semantic_release_json_output.json || echo "semantic_release_json_output.json not found or empty."
-          echo "--- END: Content of semantic_release_json_output.json ---"
+          # Bây giờ, chúng ta sẽ tìm JSON object trong file log tổng hợp.
+          # semantic-release in ra JSON object nextRelease ở cuối output khi thành công.
+          # Chúng ta tìm dòng cuối cùng bắt đầu bằng '{' và kết thúc bằng '}' và là JSON hợp lệ.
+          RELEASE_OUTPUT=$(cat semantic_release_raw_output.txt | grep -E '^\s*\{.*\}\s*$' | tail -n 1)
 
-          # Đọc nội dung JSON từ file.
-          RELEASE_OUTPUT=$(cat semantic_release_json_output.json)
+          echo "--- DEBUG: Value of RELEASE_OUTPUT variable after initial grep/tail ---"
+          echo "${RELEASE_OUTPUT}"
 
-          echo "--- DEBUG: Value of RELEASE_OUTPUT variable ---"
-          echo "${{ env.RELEASE_OUTPUT }}" # Sử dụng env để in ra biến shell ngay lập tức
+          # Xác thực rằng RELEASE_OUTPUT là JSON hợp lệ
+          if [ -n "$RELEASE_OUTPUT" ] && echo "$RELEASE_OUTPUT" | jq -e '.' > /dev/null; then
+            echo "DEBUG: RELEASE_OUTPUT is valid JSON. Extracting nextRelease."
+            # Trích xuất chỉ phần nextRelease.
+            # Đôi khi semantic-release in ra JSON của toàn bộ object release, không chỉ nextRelease.
+            # Cần đảm bảo rằng chỉ lấy phần nextRelease.
+            # Nếu JSON trực tiếp là nextRelease, không cần .nextRelease
+            # Nếu JSON là { "nextRelease": {...}, "lastRelease": {...} }, thì cần .nextRelease
+            
+            # Kiểm tra xem có chứa .nextRelease không
+            if echo "$RELEASE_OUTPUT" | jq -e '.nextRelease' > /dev/null; then
+                RELEASE_OUTPUT=$(echo "$RELEASE_OUTPUT" | jq -c '.nextRelease') # Trích xuất nextRelease object
+                echo "DEBUG: Extracted nextRelease object: $RELEASE_OUTPUT"
+            else
+                echo "DEBUG: RELEASE_OUTPUT is a JSON object but does not contain .nextRelease. Using as is."
+                # Giữ nguyên RELEASE_OUTPUT nếu nó đã là nextRelease object
+            fi
 
-          # Kiểm tra nếu RELEASE_OUTPUT trống hoặc không phải JSON hợp lệ
-          if [ -z "$RELEASE_OUTPUT" ]; then
-            echo "DEBUG: RELEASE_OUTPUT is empty."
-            echo "release_output_json={}" >> "$GITHUB_OUTPUT"
-          elif ! echo "$RELEASE_OUTPUT" | jq -e '.' > /dev/null; then
-            echo "DEBUG: RELEASE_OUTPUT is not valid JSON."
-            echo "RELEASE_OUTPUT content: $RELEASE_OUTPUT"
-            echo "release_output_json={}" >> "$GITHUB_OUTPUT"
-          else
-            echo "DEBUG: RELEASE_OUTPUT is valid JSON."
             echo "release_output_json<<EOF" >> "$GITHUB_OUTPUT"
             echo "$RELEASE_OUTPUT" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "Found semantic-release JSON output and set it to step output."
+          else
+            echo "DEBUG: No valid semantic-release JSON output found or parsing failed. Setting empty JSON."
+            echo "RELEASE_OUTPUT content was: ${RELEASE_OUTPUT}" # Log content for debug
+            echo "release_output_json={}" >> "$GITHUB_OUTPUT"
           fi
 
           echo "--- Content of CHANGELOG.md after semantic-release ---"
