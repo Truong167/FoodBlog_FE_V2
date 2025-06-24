@@ -39,7 +39,6 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
-        preset: "conventionalcommits",
       },
     ],
     [
