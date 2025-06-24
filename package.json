@@ -1,6 +1,6 @@
 {
   "name": "foodblog_fe_v2",
-  "version": "1.0.0-canary.2",
+  "version": "1.0.0-canary.3",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
