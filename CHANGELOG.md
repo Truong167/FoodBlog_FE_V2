@@ -1,3 +1,5 @@
+# [1.0.0-canary.2](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.1...v1.0.0-canary.2) (2025-06-24)
+
 # 1.0.0-canary.1 (2025-06-24)
 
 
