@@ -1,4 +1,4 @@
-name: Semantic ReleaseAdd commentMore actions
+name: Semantic Release
 
 on:
   push:
