@@ -25,12 +25,14 @@ module.exports = {
           { type: "feat", release: "minor" },
           { type: "fix", scope: "*", release: "patch" },
           { type: "fix", release: "patch" },
+          { type: "perf", scope: "*", release: "patch" },
           { type: "perf", release: "patch" },
+          { type: "refactor", scope: "*", release: "patch" },
           { type: "refactor", release: "patch" },
-          { type: "docs", release: "patch" },
-          { type: "revert", release: "patch" },
-          { type: "build", release: "patch" },
-          { type: "ci", release: "patch" },
+          { type: "docs", scope: "*", release: "patch" },
+          { type: "revert", scope: "*", release: "patch" },
+          { type: "build", scope: "*", release: "patch" },
+          { type: "ci", scope: "*", release: "patch" },
           { breaking: true, release: "major" },
         ],
       },
@@ -56,11 +58,8 @@ module.exports = {
     [
       "@semantic-release/github",
       {
-        releaseBodyTemplate: `
-
-    Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/\${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.
-
-            `,
+        releaseBodyTemplate:
+          "Please refer to the [CHANGELOG.md](https://github.com/Truong167/FoodBlog_FE_V2/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
       },
     ],
     [

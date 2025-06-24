@@ -1,3 +1,21 @@
+
+# [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-24)
+
+# [1.0.0-canary.6](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.5...v1.0.0-canary.6) (2025-06-24)
+
+# [1.0.0-canary.5](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.4...v1.0.0-canary.5) (2025-06-24)
+
+
+### Features
+
+* **test:** update configure ([8ba47db](https://github.com/Truong167/FoodBlog_FE_V2/commit/8ba47dbcb368ae912cf85f2232347d71342b712e))
+
+# [1.0.0-canary.4](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.3...v1.0.0-canary.4) (2025-06-24)
+
+# [1.0.0-canary.3](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.2...v1.0.0-canary.3) (2025-06-24)
+
+# [1.0.0-canary.2](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.1...v1.0.0-canary.2) (2025-06-24)
+
 # 1.0.0 (2025-06-24)
 
 
@@ -73,6 +91,7 @@
 * **vitest:** configure git user ([3c5a54e](https://github.com/Truong167/FoodBlog_FE_V2/commit/3c5a54edb1a87ed77b3df0d4003014d351662db3))
 * **vitest:** correct variable ([1e6e833](https://github.com/Truong167/FoodBlog_FE_V2/commit/1e6e833e76d06bc1f4d27e4b95cfa9108ceaee8f))
 * **vitest:** reorder workflow ([65e172d](https://github.com/Truong167/FoodBlog_FE_V2/commit/65e172d83886f6b7db4c3ac8500397c7e28e5abe))
+
 
 # 1.0.0-canary.1 (2025-06-24)
 
