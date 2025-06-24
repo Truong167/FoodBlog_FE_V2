@@ -1,3 +1,10 @@
+# [1.0.0-canary.5](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.4...v1.0.0-canary.5) (2025-06-24)
+
+
+### Features
+
+* **test:** update configure ([8ba47db](https://github.com/Truong167/FoodBlog_FE_V2/commit/8ba47dbcb368ae912cf85f2232347d71342b712e))
+
 # [1.0.0-canary.4](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.3...v1.0.0-canary.4) (2025-06-24)
 
 # [1.0.0-canary.3](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.2...v1.0.0-canary.3) (2025-06-24)
