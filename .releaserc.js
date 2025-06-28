@@ -100,18 +100,6 @@ const writerOpts = {
 
     // Tạo tiêu đề cho Changelog dựa trên type (feat/fix)
     // Bạn có thể tùy chỉnh các tiêu đề này
-    let category = "Other Changes";
-    if (commit.type === "feat") {
-      category = "🚀 Features";
-    } else if (commit.type === "fix") {
-      category = "🐛 Bug Fixes";
-    } else if (commit.type === "chore") {
-      category = "🧹 Chores";
-    }
-    // ... thêm các category khác nếu cần
-
-    // Gắn category vào commit object để release-notes-generator nhóm lại
-    commit.type = category;
 
     // Sử dụng message ban đầu của merge commit hoặc phần subject đã được parse
     // commit.subject ban đầu là "Merge pull request #115 from Truong167/fix/test"
