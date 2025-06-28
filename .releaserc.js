@@ -37,7 +37,6 @@ const writerOpts = {
       console.log("📋 No commit references found");
     }
 
-    // Format the commit entry
     let entry = `* ${commit.subject}`;
 
     // Add commit hash link
