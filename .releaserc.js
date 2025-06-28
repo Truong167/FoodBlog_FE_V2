@@ -29,7 +29,7 @@ const parserOpts = {
 const writerOpts = {
   transform: (commit, context) => {
     console.log("🔍 Processing commit:", commit);
-    console.log("🔗 Repository context:", context.repository);
+    console.log("🔗 Repository context:", context);
 
     // const issues = [];
 
@@ -92,9 +92,12 @@ const writerOpts = {
     // Lấy 7 ký tự đầu của hash commit để làm short hash
     const commitHashShort = commit.hash.substring(0, 7);
 
+    const commitLink1 = `[${commitHashShort}](${context.repositoryUrl}/commit/${commit.hash})`;
     // Xây dựng link commit và link PR
-    const commitLink = `([${commitHashShort}](/commit/${commit.hash}))`;
-    const prLink = prNumber ? `([#${prNumber}](/pull/${prNumber}))` : "";
+    const commitLink = `([${commitHashShort}](${context.repositoryUrl}/commit/${commit.hash}))`;
+    const prLink = prNumber
+      ? `([#${prNumber}](${context.repositoryUrl}/pull/${prNumber}))`
+      : "";
 
     // Tạo tiêu đề cho Changelog dựa trên type (feat/fix)
     // Bạn có thể tùy chỉnh các tiêu đề này
@@ -106,8 +109,10 @@ const writerOpts = {
 
     // Format dòng changelog mong muốn
     // Ví dụ: * Merge pull request #115 from Truong167/fix/test ([b5cfa4e](commit-link)) ([#115](pr-link))
-    console.log(`log ne * ${displayMessage} ${commitLink} ${prLink}`);
-    return `* ${displayMessage} ${commitLink} ${prLink}`;
+    console.log(
+      `* ${displayMessage}, ${commitLink}, ${commitLink1}, ${prLink}`
+    );
+    return `* ${displayMessage} ${commitLink1} ${prLink}`;
   },
   groupBy: "type",
   commitGroupsSort: "title",
