@@ -15,7 +15,6 @@ const writerOpts = {
 
     if (commit.merge) {
       console.log("📝 Found merge commit:", commit.merge);
-      // Extract PR number from merge commit message
       const prMatch = commit.merge.match(/Merge pull request #(\d+)/);
       if (prMatch) {
         console.log("✅ Extracted PR from merge:", prMatch[1]);
