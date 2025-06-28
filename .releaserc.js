@@ -93,10 +93,8 @@ const writerOpts = {
     const commitHashShort = commit.hash.substring(0, 7);
 
     // Xây dựng link commit và link PR
-    const commitLink = `([${commitHashShort}](${context.repositoryUrl}/commit/${commit.hash}))`;
-    const prLink = prNumber
-      ? `([#${prNumber}](${context.repositoryUrl}/pull/${prNumber}))`
-      : "";
+    const commitLink = `([${commitHashShort}](/commit/${commit.hash}))`;
+    const prLink = prNumber ? `([#${prNumber}](/pull/${prNumber}))` : "";
 
     // Tạo tiêu đề cho Changelog dựa trên type (feat/fix)
     // Bạn có thể tùy chỉnh các tiêu đề này
@@ -108,7 +106,7 @@ const writerOpts = {
 
     // Format dòng changelog mong muốn
     // Ví dụ: * Merge pull request #115 from Truong167/fix/test ([b5cfa4e](commit-link)) ([#115](pr-link))
-    console.log(`* ${displayMessage} ${commitLink} ${prLink}`);
+    console.log(`log ne * ${displayMessage} ${commitLink} ${prLink}`);
     return `* ${displayMessage} ${commitLink} ${prLink}`;
   },
   groupBy: "type",
