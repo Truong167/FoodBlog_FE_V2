@@ -1,3 +1,10 @@
+# [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-28)
+
+
+### feat
+
+* **tacman:** update body for release 78 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/f5091bbed61c07227c6572a3418444d655f7f242))
+
 # [1.0.0-canary.6](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.5...v1.0.0-canary.6) (2025-06-24)
 
 # [1.0.0-canary.5](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.4...v1.0.0-canary.5) (2025-06-24)
