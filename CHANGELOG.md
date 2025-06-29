@@ -1,3 +1,10 @@
+# [1.0.0-canary.8](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.7...v1.0.0-canary.8) (2025-06-29)
+
+
+### fix
+
+* **test:** Merge pull request #118 from Truong167/fix/test ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b0b076b6ea3130c4a86ca4f8f18b547b17935c19)), closes [#118](https://github.com/Truong167/FoodBlog_FE_V2/issues/118)
+
 # [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-29)
 
 
