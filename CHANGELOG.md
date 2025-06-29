@@ -1,3 +1,23 @@
+# [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-29)
+
+
+* chore(release): 1.0.0-canary.7 [skip ci] ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/985f7d8e556ca11361c1ee460c2ca9850d1f0657))
+* chore(release): 1.0.0-canary.7 [skip ci] ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b587856304189cf8dc2fbe18c8ef597e94f30af9))
+* Merge pull request #114 from Truong167/feat/cus ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/59a5e7e911b77bce40411106456bcd6f3dcc1a50)), closes [#114](https://github.com/Truong167/FoodBlog_FE_V2/issues/114)
+* Merge pull request #115 from Truong167/fix/test ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b5cfa4e0da2c51720ec23f64858afbf0918ef74c)), closes [#115](https://github.com/Truong167/FoodBlog_FE_V2/issues/115)
+
+
+### feat
+
+* **tacman:** update body for release 78 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/6393fe55d3b1a182e8b492524d9b7c1eaf2972b8))
+* **tacman:** update body for release 78 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/f5091bbed61c07227c6572a3418444d655f7f242))
+* **test:** remove another comment ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/2964ec796a2df7368b4ebb7e1d4a0c657019f196))
+
+
+### fix
+
+* **test:** remove comment ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/4aedf1942a283fc8fd781dbe58a7163c58149861))
+
 # [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-28)
 
 
