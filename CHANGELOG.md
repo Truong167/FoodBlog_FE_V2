@@ -1,6 +1,20 @@
 # [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-29)
 
 
+### feat
+
+* **cus:** Merge pull request #114 from Truong167/feat/cus ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/59a5e7e911b77bce40411106456bcd6f3dcc1a50)), closes [#114](https://github.com/Truong167/FoodBlog_FE_V2/issues/114)
+
+
+### fix
+
+* **test:** Merge pull request #117 from Truong167/fix/test ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/d82f4d028e678241af74bbeb0b0ddc29f51c225d)), closes [#117](https://github.com/Truong167/FoodBlog_FE_V2/issues/117)
+* **test:** Merge pull request #116 from Truong167/fix/test ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b90961831dd8120e11b9bc5eaeaa722c734af17a)), closes [#116](https://github.com/Truong167/FoodBlog_FE_V2/issues/116)
+* **test:** Merge pull request #115 from Truong167/fix/test ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b5cfa4e0da2c51720ec23f64858afbf0918ef74c)), closes [#115](https://github.com/Truong167/FoodBlog_FE_V2/issues/115)
+
+# [1.0.0-canary.7](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.6...v1.0.0-canary.7) (2025-06-29)
+
+
 * chore(release): 1.0.0-canary.7 [skip ci] ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/985f7d8e556ca11361c1ee460c2ca9850d1f0657))
 * chore(release): 1.0.0-canary.7 [skip ci] ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b587856304189cf8dc2fbe18c8ef597e94f30af9))
 * Merge pull request #114 from Truong167/feat/cus ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/59a5e7e911b77bce40411106456bcd6f3dcc1a50)), closes [#114](https://github.com/Truong167/FoodBlog_FE_V2/issues/114)
