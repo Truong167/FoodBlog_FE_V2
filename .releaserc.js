@@ -24,7 +24,6 @@ const writerOpts = {
       }
     }
 
-    // Also check for PR references in commit body or footer
     if (commit.references && commit.references.length > 0) {
       console.log("📋 Found commit references:", commit.references);
       commit.references.forEach((reference) => {
@@ -37,7 +36,6 @@ const writerOpts = {
       console.log("📋 No commit references found");
     }
 
-    // Format the commit entry
     let entry = `* ${commit.subject}`;
 
     // Add commit hash link
