@@ -24,14 +24,6 @@ const writerOpts = {
       return null;
     }
 
-    const transformedCommit = { ...commit };
-
-    // const typeMatch = commit.subject.match(/^(\w+)/);
-
-    // const type = typeMatch ? typeMatch[1] : "Other";
-
-    // console.log({ type, typeMatch });
-
     let finalType = "Other";
     let finalSubject = commit.body;
     let scope = "";
