@@ -78,35 +78,41 @@ const writerOpts = {
   transform: (commit, context) => {
     const mutableCommit = Object.assign({}, commit);
 
-    // Check if subject exists before calling match()
-    if (mutableCommit.subject) {
-      const prMatch = mutableCommit.subject.match(
-        /Merge pull request #(\d+) from/
-      );
-      if (prMatch) {
-        mutableCommit.type = "pr";
-        mutableCommit.prNumber = prMatch[1];
-        mutableCommit.subject = mutableCommit.subject.replace(
-          /Merge pull request #\d+ from .*/,
-          ""
-        );
-      }
+    // Ignore commits that are not part of a PR or are not merge commits
+    if (!mutableCommit.references || mutableCommit.references.length === 0) {
+      return null;
     }
 
-    if (mutableCommit.type === "pr") {
-      mutableCommit.scope = `PR-${mutableCommit.prNumber}`;
-      return `* **PR #${mutableCommit.prNumber}:** ${
-        mutableCommit.subject
-      } ([${mutableCommit.hash.substring(0, 7)}](${context.repository}/commit/${
-        mutableCommit.hash
-      }))\n`;
+    // Extract PR number from references
+    const prReference = mutableCommit.references.find(
+      (ref) => ref.prefix === "#"
+    );
+    if (!prReference) {
+      return null;
     }
+    const prNumber = prReference.issue;
+
+    // Extract the commit type from the subject (e.g., 'feat', 'fix')
+    const typeMatch = mutableCommit.subject.match(/^(\w+)/);
+    mutableCommit.type = typeMatch ? typeMatch[1] : "Other";
+
+    // Use the PR title as the changelog message
+    // You can get this from the subject of the merge commit
+    const prTitleMatch = mutableCommit.subject.match(
+      /Merge pull request #\d+ from .*\/.*?:(.*)/
+    );
+    mutableCommit.subject = prTitleMatch
+      ? prTitleMatch[1].trim()
+      : mutableCommit.subject;
+
+    // Add the PR link to the end of the subject
+    mutableCommit.subject += ` ([#${prNumber}](${context.repository}/pull/${prNumber}))`;
 
     return mutableCommit;
   },
-  groupBy: "prNumber",
+  groupBy: "type",
   commitGroupsSort: "title",
-  commitsSort: ["prNumber"],
+  commitsSort: ["subject"],
 };
 
 module.exports = {
