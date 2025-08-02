@@ -108,7 +108,6 @@ const writerOpts = {
     }
     context.processedPRs.add(prKey);
 
-    // Extract type with null checks
     let type = commit.type;
     if (!type && commit.subject) {
       const typeMatch = commit.subject.match(
