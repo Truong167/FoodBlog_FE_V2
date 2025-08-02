@@ -76,48 +76,56 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
-    // Return null for any commits that are not merge commits to collapse them
-    if (!commit.subject.startsWith("Merge pull request")) {
+    // Add a null check for the commit subject to prevent the error
+    if (!commit.subject) {
       return null;
     }
 
-    // Create a mutable copy of the commit object
-    const mutableCommit = Object.assign({}, commit);
-
-    // Check if the commit has a subject to prevent errors
-    if (!mutableCommit.subject) {
+    // We only want to process merge commits from a PR, so we return null
+    // for all other commits to prevent them from being added to the changelog.
+    if (!commit.subject.startsWith("Merge pull request #")) {
       return null;
     }
 
-    // Extract the PR title and type from the merge commit's body or subject
-    const bodyMatch =
-      mutableCommit.body && mutableCommit.body.match(/^(\w+)(\/.*)?:(.*)/);
-    const subjectMatch = mutableCommit.subject.match(
-      /from .*?\/(feat|fix|perf)\/.*?:(.*)/
-    );
+    // Create a new, mutable object with the required properties.
+    const transformedCommit = {
+      ...commit,
+    };
 
-    // Prioritize the body for a clean message, fall back to subject
+    // Use the body of the merge commit to find the original commit message.
+    const bodyMatch = transformedCommit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
+
     if (bodyMatch) {
-      mutableCommit.type = bodyMatch[1].trim();
-      mutableCommit.subject = bodyMatch[2].trim();
-    } else if (subjectMatch) {
-      mutableCommit.type = subjectMatch[1].trim();
-      mutableCommit.subject = subjectMatch[2].trim();
+      transformedCommit.type = bodyMatch[1].trim();
+      transformedCommit.subject = bodyMatch[2].trim();
+    } else {
+      // Fallback if the body isn't in the expected format.
+      const subjectMatch = transformedCommit.subject.match(
+        /from .*?\/(feat|fix|perf)\/.*?:(.*)/
+      );
+      if (subjectMatch) {
+        transformedCommit.type = subjectMatch[1].trim();
+        transformedCommit.subject = subjectMatch[2].trim();
+      }
     }
 
-    // Add the PR reference to the end of the subject
-    if (mutableCommit.references && mutableCommit.references.length > 0) {
-      const prLink = mutableCommit.references
-        .map(
-          (ref) => `[#${ref.issue}](${context.repository}/pull/${ref.issue})`
-        )
-        .join(", ");
-      mutableCommit.subject += ` ${prLink}`;
+    // Find and add a link to the referenced PR from the commit's references.
+    if (
+      transformedCommit.references &&
+      transformedCommit.references.length > 0
+    ) {
+      const prReference = transformedCommit.references.find(
+        (ref) => ref.prefix === "#"
+      );
+      if (prReference) {
+        const prLink = ` ([#${prReference.issue}](${context.repository}/pull/${prReference.issue}))`;
+        transformedCommit.subject += prLink;
+      }
     }
 
-    return mutableCommit;
+    return transformedCommit;
   },
-  // This will group the PR entries under headings like "Features" and "Bug Fixes"
+  // This will group the formatted PR entries under headings like "Features" and "Bug Fixes"
   groupBy: "type",
   commitGroupsSort: "title",
   commitsSort: ["subject"],
