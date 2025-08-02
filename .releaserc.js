@@ -76,43 +76,41 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
+    // Create a mutable copy of the commit object
     const mutableCommit = Object.assign({}, commit);
 
-    // Ignore commits that are not part of a PR or are not merge commits
-    if (!mutableCommit.references || mutableCommit.references.length === 0) {
+    // Skip commits that don't have a subject
+    if (!mutableCommit.subject) {
       return null;
     }
 
-    // Extract PR number from references
-    const prReference = mutableCommit.references.find(
-      (ref) => ref.prefix === "#"
+    // Identify merge commits and extract PR info
+    const mergeMatch = mutableCommit.subject.match(
+      /Merge pull request #(\d+) from .*?\/(.*)/
     );
-    if (!prReference) {
+
+    // If it's not a merge commit, it should be ignored for PR grouping
+    if (!mergeMatch) {
       return null;
     }
-    const prNumber = prReference.issue;
 
-    // Extract the commit type from the subject (e.g., 'feat', 'fix')
-    const typeMatch = mutableCommit.subject.match(/^(\w+)/);
+    const prNumber = mergeMatch[1];
+    const prTitle = mergeMatch[2].replace(/-/g, " "); // Clean up the PR title from the branch name
+
+    // Set the commit type and subject for the changelog entry
+    const typeMatch = prTitle.match(/^(\w+)/i);
     mutableCommit.type = typeMatch ? typeMatch[1] : "Other";
-
-    // Use the PR title as the changelog message
-    // You can get this from the subject of the merge commit
-    const prTitleMatch = mutableCommit.subject.match(
-      /Merge pull request #\d+ from .*\/.*?:(.*)/
-    );
-    mutableCommit.subject = prTitleMatch
-      ? prTitleMatch[1].trim()
-      : mutableCommit.subject;
-
-    // Add the PR link to the end of the subject
-    mutableCommit.subject += ` ([#${prNumber}](${context.repository}/pull/${prNumber}))`;
+    mutableCommit.subject = `${prTitle.replace(
+      /^(\w+)\s/,
+      ""
+    )} ([#${prNumber}](${context.repository}/pull/${prNumber}))`;
+    mutableCommit.prNumber = prNumber;
 
     return mutableCommit;
   },
   groupBy: "type",
   commitGroupsSort: "title",
-  commitsSort: ["subject"],
+  commitsSort: ["prNumber"],
 };
 
 module.exports = {
