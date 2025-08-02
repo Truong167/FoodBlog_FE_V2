@@ -30,6 +30,7 @@ jobs:
         run: bun install
 
       - name: Run semantic release
-        run: bunx semantic-release --debug
+        run: bunx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          DEBUG: semantic-release:*
