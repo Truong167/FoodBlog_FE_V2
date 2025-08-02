@@ -64,6 +64,7 @@ const writerOpts = {
     }
 
     log("📄 Final entry:", entry);
+    log("---");
 
     return entry;
   },
@@ -104,7 +105,12 @@ module.exports = {
         ],
       },
     ],
-    ["@semantic-release/release-notes-generator"],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        parserOpts,
+      },
+    ],
     [
       "@semantic-release/changelog",
       {
