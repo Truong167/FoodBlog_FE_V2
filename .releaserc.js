@@ -24,14 +24,6 @@ const writerOpts = {
       return null;
     }
 
-    const transformedCommit = { ...commit };
-
-    // const typeMatch = commit.subject.match(/^(\w+)/);
-
-    // const type = typeMatch ? typeMatch[1] : "Other";
-
-    // console.log({ type, typeMatch });
-
     let finalType = "Other";
     let finalSubject = commit.body;
     let scope = "";
@@ -44,6 +36,22 @@ const writerOpts = {
       finalType = bodyMatch[1].trim();
       scope = bodyMatch[2] ? bodyMatch[2] : null;
       finalSubject = bodyMatch[3] ? bodyMatch[3].trim() : "";
+    }
+
+    if (finalType === "feat") {
+      finalType = "Features";
+    } else if (finalType === "fix") {
+      finalType = "Bug Fixes";
+    } else if (finalType === "perf") {
+      finalType = "Performance Improvements";
+    } else if (finalType === "revert" || commit.revert) {
+      finalType = "Reverts";
+    } else if (discard) {
+      return undefined;
+    } else if (finalType === "docs") {
+      finalType = "Documentation";
+    } else if (finalType === "refactor") {
+      finalType = "Code Refactoring";
     }
 
     console.log("🔍 Final type and subject:", {
