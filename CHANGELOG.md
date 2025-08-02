@@ -1,3 +1,10 @@
+# [1.0.0-canary.30](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.29...v1.0.0-canary.30) (2025-08-02)
+
+
+### Features
+
+* **REC-2:** Update new configuration ([1446cff](https://github.com/Truong167/FoodBlog_FE_V2/commit/1446cff3ced0f408d91b030161ab5a1ac1480c10)), closes [#147](https://github.com/Truong167/FoodBlog_FE_V2/issues/147)
+
 # [1.0.0-canary.29](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.28...v1.0.0-canary.29) (2025-08-02)
 
 
