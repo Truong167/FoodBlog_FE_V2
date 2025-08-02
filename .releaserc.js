@@ -95,18 +95,32 @@ const writerOpts = {
       return null;
     }
 
-    const typeMatch = commit.subject.match(/^(\w+)/);
+    // const typeMatch = commit.subject.match(/^(\w+)/);
 
-    const type = typeMatch ? typeMatch[1] : "Other";
+    // const type = typeMatch ? typeMatch[1] : "Other";
 
-    console.log({ type, typeMatch });
+    // console.log({ type, typeMatch });
+
+    let finalType = "Other";
+    let finalSubject = commit.body;
+
+    // The body contains the commit message from the original PR
+    // (e.g., 'feat/DEL-4: testing something')
+    const bodyMatch = commit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
+    if (bodyMatch) {
+      finalType = bodyMatch[1].trim();
+      finalSubject = bodyMatch[2].trim();
+    }
+
+    console.log("🔍 Final type and subject:", { finalType, finalSubject });
 
     return {
       ...commit,
-      type: type,
-      subject: commit.body,
+      type: finalType,
+      subject: finalSubject,
       prNumber: prReference.issue,
       prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
+      hash: commit.hash,
     };
   },
   groupBy: "type",
