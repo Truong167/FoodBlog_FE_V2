@@ -1,3 +1,10 @@
+# [1.0.0-canary.31](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.30...v1.0.0-canary.31) (2025-08-02)
+
+
+### 🐛 Bug Fixes
+
+* **REC-3:** refactor code ([cc36b3d](https://github.com/Truong167/FoodBlog_FE_V2/commit/cc36b3d6c696ea4ce08fef22b0f73829420cac8d)), closes [#148](https://github.com/Truong167/FoodBlog_FE_V2/issues/148)
+
 # [1.0.0-canary.30](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.29...v1.0.0-canary.30) (2025-08-02)
 
 
