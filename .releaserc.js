@@ -76,21 +76,21 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
-    // Create a mutable copy of the commit object
     const mutableCommit = Object.assign({}, commit);
 
-    // Check for merge commits to group by PR
-    const prMatch = mutableCommit.subject.match(
-      /Merge pull request #(\d+) from/
-    );
-
-    if (prMatch) {
-      mutableCommit.type = "pr";
-      mutableCommit.prNumber = prMatch[1];
-      mutableCommit.subject = mutableCommit.subject.replace(
-        /Merge pull request #\d+ from .*/,
-        ""
+    // Check if subject exists before calling match()
+    if (mutableCommit.subject) {
+      const prMatch = mutableCommit.subject.match(
+        /Merge pull request #(\d+) from/
       );
+      if (prMatch) {
+        mutableCommit.type = "pr";
+        mutableCommit.prNumber = prMatch[1];
+        mutableCommit.subject = mutableCommit.subject.replace(
+          /Merge pull request #\d+ from .*/,
+          ""
+        );
+      }
     }
 
     if (mutableCommit.type === "pr") {
@@ -102,7 +102,6 @@ const writerOpts = {
       }))\n`;
     }
 
-    // Return the modified commit or null if it shouldn't be in the changelog
     return mutableCommit;
   },
   groupBy: "prNumber",
