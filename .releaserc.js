@@ -1,6 +1,5 @@
 const parserOpts = {
-  headerPattern:
-    /^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test)\/([\w-]+):\s(.+)$/,
+  headerPattern: /^(\w+)(?:\/([\w-]+))?:\s(.+)$/,
   headerCorrespondence: ["type", "scope", "subject"],
   noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING-CHANGE"],
   issuePrefixes: ["#"],
