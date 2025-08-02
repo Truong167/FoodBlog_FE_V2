@@ -106,7 +106,7 @@ const a = {
     const scope = commit.scope === "*" ? "" : commit.scope;
     const shortHash =
       typeof commit.hash === "string"
-        ? commit.hash.substring(0, COMMIT_HASH_LENGTH)
+        ? commit.hash.substring(0, 7)
         : commit.shortHash;
     const issues = [];
     let { subject } = commit;
