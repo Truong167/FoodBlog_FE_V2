@@ -1,3 +1,10 @@
+# [1.0.0-canary.10](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.9...v1.0.0-canary.10) (2025-08-02)
+
+
+### Features
+
+* **test:** remove another comment 3 ([1c1930e](https://github.com/Truong167/FoodBlog_FE_V2/commit/1c1930ecb445397decdf1e29e8124ae256995f1b))
+
 # [1.0.0-canary.9](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.8...v1.0.0-canary.9) (2025-06-29)
 
 
