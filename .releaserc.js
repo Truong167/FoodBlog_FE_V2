@@ -100,10 +100,9 @@ const writerOpts = {
       }))\n`;
     }
 
-    // Default return for other commits
     return null;
   },
-  groupBy: "prNumber", // Group all commits from the same PR number
+  groupBy: "prNumber",
   commitGroupsSort: "title",
   commitsSort: ["prNumber"],
 };
