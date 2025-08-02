@@ -76,31 +76,34 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
-    // Check for merge commits that contain the PR number
-    const prMatch = commit.subject.match(/Merge pull request #(\d+) from/);
+    // Create a mutable copy of the commit object
+    const mutableCommit = Object.assign({}, commit);
+
+    // Check for merge commits to group by PR
+    const prMatch = mutableCommit.subject.match(
+      /Merge pull request #(\d+) from/
+    );
+
     if (prMatch) {
-      commit.type = "pr"; // Use a custom type to group by PR
-      commit.prNumber = prMatch[1];
-      commit.subject = commit.subject.replace(
+      mutableCommit.type = "pr";
+      mutableCommit.prNumber = prMatch[1];
+      mutableCommit.subject = mutableCommit.subject.replace(
         /Merge pull request #\d+ from .*/,
         ""
       );
     }
-    // You can also add more logic here to handle different commit types
-    // and format the message to your liking.
 
-    if (commit.type === "pr") {
-      commit.scope = `PR-${commit.prNumber}`; // Group by PR number
-      // This will be the main entry for the PR
-      // You can add more detailed body here if needed
-      return `* **PR #${commit.prNumber}:** ${
-        commit.subject
-      } ([${commit.hash.substring(0, 7)}](${context.repository}/commit/${
-        commit.hash
+    if (mutableCommit.type === "pr") {
+      mutableCommit.scope = `PR-${mutableCommit.prNumber}`;
+      return `* **PR #${mutableCommit.prNumber}:** ${
+        mutableCommit.subject
+      } ([${mutableCommit.hash.substring(0, 7)}](${context.repository}/commit/${
+        mutableCommit.hash
       }))\n`;
     }
 
-    return null;
+    // Return the modified commit or null if it shouldn't be in the changelog
+    return mutableCommit;
   },
   groupBy: "prNumber",
   commitGroupsSort: "title",
