@@ -28,7 +28,6 @@ const writerOpts = {
       chore: "🔧 Chores",
       build: "🏗️ Build System",
       ci: "🔁 Continuous Integration",
-      style: "🎨 Styling",
     };
 
     let { body, hash } = commit;
