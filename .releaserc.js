@@ -108,7 +108,6 @@ const writerOpts = {
     }
     context.processedPRs.add(prKey);
 
-    // Extract type with null checks
     let type = commit.type;
     if (!type && commit.subject) {
       const typeMatch = commit.subject.match(
@@ -117,7 +116,6 @@ const writerOpts = {
       type = typeMatch ? typeMatch[1] : "other";
     }
 
-    // Clean the subject (remove conventional commit prefix)
     let cleanSubject = commit.subject || "";
     if (cleanSubject) {
       const subjectMatch = cleanSubject.match(
