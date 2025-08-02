@@ -83,12 +83,10 @@ const writerOpts = {
       return null;
     }
 
-    // Skip if no PR references
     if (!commit.references || commit.references.length === 0) {
       return null;
     }
 
-    // Find PR reference
     const prReference = commit.references.find(
       (ref) => ref && ref.prefix === "#" && ref.issue
     );
@@ -97,38 +95,13 @@ const writerOpts = {
       return null;
     }
 
-    // Track processed PRs to avoid duplicates
-    if (!context.processedPRs) {
-      context.processedPRs = new Set();
-    }
+    const typeMatch = commit.subject.match(/^(\w+)/);
 
-    const prKey = `pr-${prReference.issue}`;
-    if (context.processedPRs.has(prKey)) {
-      return null;
-    }
-    context.processedPRs.add(prKey);
-
-    let type = commit.type;
-    if (!type && commit.subject) {
-      const typeMatch = commit.subject.match(
-        /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?:/
-      );
-      type = typeMatch ? typeMatch[1] : "other";
-    }
-
-    let cleanSubject = commit.subject || "";
-    if (cleanSubject) {
-      const subjectMatch = cleanSubject.match(
-        /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?: (.+)/
-      );
-      if (subjectMatch && subjectMatch[3]) {
-        cleanSubject = subjectMatch[3];
-      }
-    }
+    const type = typeMatch ? typeMatch[1] : "Other";
 
     return {
       type: type,
-      subject: cleanSubject || "No description",
+      subject: commit.body,
       prNumber: prReference.issue,
       prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
       group: type === "feat" ? "✨ Features" : "🔧 Bug Fixes",
