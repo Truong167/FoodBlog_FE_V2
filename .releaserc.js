@@ -76,9 +76,6 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
-    // Skip if commit is invalid or no subject)
-    console.log("🔍 Processing commit:", commit);
-    console.log("🔗 Repository context:", context);
     if (
       !commit ||
       !commit.body ||
@@ -96,15 +93,7 @@ const writerOpts = {
       return null;
     }
 
-    const transformedCommit = {
-      ...commit,
-      // The header is the full commit message
-      header: commit.body,
-      // The commit hash is already available
-      hash: commit.hash.substring(0, 7),
-      // The references array is already available
-      references: commit.references,
-    };
+    const transformedCommit = { ...commit };
 
     // const typeMatch = commit.subject.match(/^(\w+)/);
 
@@ -114,17 +103,32 @@ const writerOpts = {
 
     let finalType = "Other";
     let finalSubject = commit.body;
+    let scope = "";
 
     // The body contains the commit message from the original PR
     // (e.g., 'feat/DEL-4: testing something')
-    const bodyMatch = commit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
+    const bodyMatch = commit.body.match(/^(\w+)(?:\/(.*))?:(.*)/);
     if (bodyMatch) {
       finalType = bodyMatch[1].trim();
+      scope = bodyMatch[2] ? bodyMatch[2].slice(1) : null;
+      finalSubject = bodyMatch[3] ? bodyMatch[3].trim() : "";
     }
 
-    console.log("🔍 Final type and subject:", { finalType, finalSubject });
+    console.log("🔍 Final type and subject:", {
+      ...commit,
+      hash: commit.hash,
+      type: finalType,
+      scope,
+      subject: finalSubject,
+    });
 
-    return transformedCommit;
+    return {
+      ...commit,
+      hash: commit.hash,
+      type: finalType,
+      scope,
+      subject: finalSubject,
+    };
   },
   groupBy: "type",
   commitGroupsSort: "title",
