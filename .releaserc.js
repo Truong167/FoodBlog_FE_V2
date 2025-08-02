@@ -79,11 +79,12 @@ const writerOpts = {
     // Skip if commit is invalid or no subject)
     console.log("🔍 Processing commit:", commit);
     console.log("🔗 Repository context:", context);
-    if (!commit || !commit.subject) {
-      return null;
-    }
-
-    if (!commit.references || commit.references.length === 0) {
+    if (
+      !commit ||
+      !commit.body ||
+      !commit.references ||
+      commit.references.length === 0
+    ) {
       return null;
     }
 
@@ -94,6 +95,8 @@ const writerOpts = {
     if (!prReference) {
       return null;
     }
+
+    const transformedCommit = { ...commit };
 
     // const typeMatch = commit.subject.match(/^(\w+)/);
 
@@ -106,22 +109,16 @@ const writerOpts = {
 
     // The body contains the commit message from the original PR
     // (e.g., 'feat/DEL-4: testing something')
-    const bodyMatch = commit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
+    const bodyMatch = transformedCommit.body.match(/^(\w+)(\/.*)?:(.*)/);
     if (bodyMatch) {
-      finalType = bodyMatch[1].trim();
-      finalSubject = bodyMatch[2].trim();
+      transformedCommit.type = bodyMatch[1].trim(); // `feat`
+      transformedCommit.scope = bodyMatch[2] ? bodyMatch[2].slice(1) : null; // `DEL-4`
+      transformedCommit.subject = transformedCommit.body; // `testing something`
     }
 
     console.log("🔍 Final type and subject:", { finalType, finalSubject });
 
-    return {
-      ...commit,
-      type: finalType,
-      subject: finalSubject,
-      prNumber: prReference.issue,
-      prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
-      hash: commit.hash,
-    };
+    return transformedCommit;
   },
   groupBy: "type",
   commitGroupsSort: "title",
