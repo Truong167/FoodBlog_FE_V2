@@ -99,12 +99,14 @@ const writerOpts = {
 
     const type = typeMatch ? typeMatch[1] : "Other";
 
+    console.log({ type, typeMatch });
+
     return {
+      ...commit,
       type: type,
       subject: commit.body,
       prNumber: prReference.issue,
       prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
-      group: type === "feat" ? "✨ Features" : "🔧 Bug Fixes",
     };
   },
   groupBy: "type",
