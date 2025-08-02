@@ -1,3 +1,11 @@
+# [1.0.0-canary.27](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.26...v1.0.0-canary.27) (2025-08-02)
+
+
+### Features
+
+* **testing something:** feat/DEL-9: testing something ([4b753c6](https://github.com/Truong167/FoodBlog_FE_V2/commit/4b753c6abff9b4f38eb885538984d1618e111b67))
+* **testing something:** feat/DEL-9: testing something ([d5d0f5b](https://github.com/Truong167/FoodBlog_FE_V2/commit/d5d0f5b50cc5278ed436683e1c30186e8484a946))
+
 # [1.0.0-canary.26](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.25...v1.0.0-canary.26) (2025-08-02)
 
 
