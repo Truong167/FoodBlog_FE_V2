@@ -76,41 +76,51 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
+    // Return null for any commits that are not merge commits to collapse them
+    if (!commit.subject.startsWith("Merge pull request")) {
+      return null;
+    }
+
     // Create a mutable copy of the commit object
     const mutableCommit = Object.assign({}, commit);
 
-    // Skip commits that don't have a subject
+    // Check if the commit has a subject to prevent errors
     if (!mutableCommit.subject) {
       return null;
     }
 
-    // Identify merge commits and extract PR info
-    const mergeMatch = mutableCommit.subject.match(
-      /Merge pull request #(\d+) from .*?\/(.*)/
+    // Extract the PR title and type from the merge commit's body or subject
+    const bodyMatch =
+      mutableCommit.body && mutableCommit.body.match(/^(\w+)(\/.*)?:(.*)/);
+    const subjectMatch = mutableCommit.subject.match(
+      /from .*?\/(feat|fix|perf)\/.*?:(.*)/
     );
 
-    // If it's not a merge commit, it should be ignored for PR grouping
-    if (!mergeMatch) {
-      return null;
+    // Prioritize the body for a clean message, fall back to subject
+    if (bodyMatch) {
+      mutableCommit.type = bodyMatch[1].trim();
+      mutableCommit.subject = bodyMatch[2].trim();
+    } else if (subjectMatch) {
+      mutableCommit.type = subjectMatch[1].trim();
+      mutableCommit.subject = subjectMatch[2].trim();
     }
 
-    const prNumber = mergeMatch[1];
-    const prTitle = mergeMatch[2].replace(/-/g, " "); // Clean up the PR title from the branch name
-
-    // Set the commit type and subject for the changelog entry
-    const typeMatch = prTitle.match(/^(\w+)/i);
-    mutableCommit.type = typeMatch ? typeMatch[1] : "Other";
-    mutableCommit.subject = `${prTitle.replace(
-      /^(\w+)\s/,
-      ""
-    )} ([#${prNumber}](${context.repository}/pull/${prNumber}))`;
-    mutableCommit.prNumber = prNumber;
+    // Add the PR reference to the end of the subject
+    if (mutableCommit.references && mutableCommit.references.length > 0) {
+      const prLink = mutableCommit.references
+        .map(
+          (ref) => `[#${ref.issue}](${context.repository}/pull/${ref.issue})`
+        )
+        .join(", ");
+      mutableCommit.subject += ` ${prLink}`;
+    }
 
     return mutableCommit;
   },
+  // This will group the PR entries under headings like "Features" and "Bug Fixes"
   groupBy: "type",
   commitGroupsSort: "title",
-  commitsSort: ["prNumber"],
+  commitsSort: ["subject"],
 };
 
 module.exports = {
@@ -164,14 +174,14 @@ module.exports = {
         message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
-    [
-      "@semantic-release/github",
-      {
-        releaseBodyTemplate:
-          "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
-        successComment: false,
-        failComment: false,
-      },
-    ],
+    // [
+    //   "@semantic-release/github",
+    //   {
+    //     releaseBodyTemplate:
+    //       "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
+    //     successComment: false,
+    //     failComment: false,
+    //   },
+    // ],
   ],
 };
