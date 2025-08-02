@@ -5,7 +5,7 @@ const parserOpts = {
   issuePrefixes: ["#"],
 };
 
-const writerOpts = {
+const writerOpts1 = {
   transform: (commit, context) => {
     const log = (...args) => {
       process.stderr.write(
@@ -74,6 +74,39 @@ const writerOpts = {
   noteGroupsSort: "title",
 };
 
+const writerOpts = {
+  transform: (commit, context) => {
+    // Check for merge commits that contain the PR number
+    const prMatch = commit.subject.match(/Merge pull request #(\d+) from/);
+    if (prMatch) {
+      commit.type = "pr"; // Use a custom type to group by PR
+      commit.prNumber = prMatch[1];
+      commit.subject = commit.subject.replace(
+        /Merge pull request #\d+ from .*/,
+        ""
+      );
+    }
+    // You can also add more logic here to handle different commit types
+    // and format the message to your liking.
+
+    if (commit.type === "pr") {
+      commit.scope = `PR-${commit.prNumber}`; // Group by PR number
+      // This will be the main entry for the PR
+      // You can add more detailed body here if needed
+      return `* **PR #${commit.prNumber}:** ${
+        commit.subject
+      } ([${commit.hash.substring(0, 7)}](${context.repository}/commit/${
+        commit.hash
+      }))\n`;
+    }
+
+    return null;
+  },
+  groupBy: "prNumber",
+  commitGroupsSort: "title",
+  commitsSort: ["prNumber"],
+};
+
 module.exports = {
   debug: true,
   branches: [
@@ -109,6 +142,7 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
+        writerOpts,
       },
     ],
     [
