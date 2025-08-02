@@ -1,3 +1,10 @@
+# [1.0.0-canary.22](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.21...v1.0.0-canary.22) (2025-08-02)
+
+
+### Merge
+
+* feat/DEL-4: testing something ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/a5194cc70e46729be038529726324e1ea913482a)), closes [#139](https://github.com/Truong167/FoodBlog_FE_V2/issues/139)
+
 # [1.0.0-canary.21](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.20...v1.0.0-canary.21) (2025-08-02)
 
 
