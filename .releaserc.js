@@ -64,7 +64,6 @@ const writerOpts = {
     }
 
     log("📄 Final entry:", entry);
-    log("---");
 
     return entry;
   },
