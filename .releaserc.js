@@ -110,7 +110,6 @@ module.exports = {
         message: "chore(release): ${nextRelease.version} [skip ci]",
       },
     ],
-    ["@semantic-release/npm"],
     [
       "@semantic-release/github",
       {
