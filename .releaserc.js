@@ -1,5 +1,5 @@
 const parserOpts = {
-  headerPattern: /^(\w+)(?:\/.*)?:\s(.*)/,
+  headerPattern: /^(\w+)\/([^:]*):\s(.*)/,
   headerCorrespondence: ["type", "scope", "subject"],
   noteKeywords: ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING-CHANGE"],
   issuePrefixes: ["#"],
@@ -93,19 +93,22 @@ const writerOpts = {
     };
 
     // Use the body of the merge commit to find the original commit message.
-    const bodyMatch = transformedCommit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
+    const bodyMatch = transformedCommit.body.match(/^(\w+)\/([^:]*):\s(.*)/);
 
     if (bodyMatch) {
       transformedCommit.type = bodyMatch[1].trim();
-      transformedCommit.subject = bodyMatch[2].trim();
+      transformedCommit.scope = bodyMatch[2].trim();
+      transformedCommit.subject = bodyMatch[3].trim();
     } else {
       // Fallback if the body isn't in the expected format.
+      // Look for the pattern feat/scope: subject in the PR title
       const subjectMatch = transformedCommit.subject.match(
-        /from .*?\/(feat|fix|perf)\/.*?:(.*)/
+        /from .*?\/(feat|fix|perf)\/([^:]*?):\s*(.*)/
       );
       if (subjectMatch) {
         transformedCommit.type = subjectMatch[1].trim();
-        transformedCommit.subject = subjectMatch[2].trim();
+        transformedCommit.scope = subjectMatch[2].trim();
+        transformedCommit.subject = subjectMatch[3].trim();
       }
     }
 
