@@ -1,3 +1,14 @@
+# [1.0.0-canary.16](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.15...v1.0.0-canary.16) (2025-08-02)
+
+
+* Merge pull request #130 from Truong167/feat/delivery-cms-issues#264 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/b0b46b93cc20f6aae426fab415cf4d16f4558862)), closes [#130](https://github.com/Truong167/FoodBlog_FE_V2/issues/130) [Truong167/feat/delivery-cms-issues#264](https://github.com/Truong167/feat/delivery-cms-issues/issues/264) [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+* **remove log:** feat/delivery-cms-issues#264: remove log ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/112a9651e89061249404179289e4ab8ba3ebe605)), closes [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+* Merge pull request #129 from Truong167/feat/delivery-cms-issues#264 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/e4e14ab19f99ae67f7673cd0271b021b2e29a2d0)), closes [#129](https://github.com/Truong167/FoodBlog_FE_V2/issues/129) [Truong167/feat/delivery-cms-issues#264](https://github.com/Truong167/feat/delivery-cms-issues/issues/264) [feat/delivery-cms-issues#265](https://github.com/feat/delivery-cms-issues/issues/265)
+* **remove log:** feat/delivery-cms-issues#264: remove log ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/d02a5b2950fcfd31ee3f66ff570486d0ab8678a1)), closes [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+* Merge pull request #128 from Truong167/feat/delivery-cms-issues#264 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/e80a6b8b868cee5093fb1ed107d9087f055a60c6)), closes [#128](https://github.com/Truong167/FoodBlog_FE_V2/issues/128) [Truong167/feat/delivery-cms-issues#264](https://github.com/Truong167/feat/delivery-cms-issues/issues/264) [issues#264](https://github.com/issues/issues/264)
+* **remove log:** feat/delivery-cms-issues#264: remove log ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/41b88e9cf3c11d6714b89b46f92be4723cf1d862)), closes [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+* **remove another comment 10:** feat/delivery-cms-issues#264: remove another comment 10 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/d6ec182312ab168d0d6e69221791ada5901d1646)), closes [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+
 # [1.0.0-canary.15](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.14...v1.0.0-canary.15) (2025-08-02)
 
 
