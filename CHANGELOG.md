@@ -1,3 +1,11 @@
+# [1.0.0-canary.17](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.16...v1.0.0-canary.17) (2025-08-02)
+
+
+### feat
+
+* feat/delivery cms issues#264 ([#131](FoodBlog_FE_V2/pull/131)) ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/e4bf1d59c15dfef59b9299f8e45178ef0ac340dc)), closes [#131](https://github.com/Truong167/FoodBlog_FE_V2/issues/131) [Truong167/feat/delivery-cms-issues#264](https://github.com/Truong167/feat/delivery-cms-issues/issues/264) [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+* feat/delivery cms issues#264 ([#132](FoodBlog_FE_V2/pull/132)) ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/3f526a33b37fc23ddfc207b1ed9c925c42b360fd)), closes [#132](https://github.com/Truong167/FoodBlog_FE_V2/issues/132) [Truong167/feat/delivery-cms-issues#264](https://github.com/Truong167/feat/delivery-cms-issues/issues/264) [feat/delivery-cms-issues#264](https://github.com/feat/delivery-cms-issues/issues/264)
+
 # [1.0.0-canary.16](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.15...v1.0.0-canary.16) (2025-08-02)
 
 
