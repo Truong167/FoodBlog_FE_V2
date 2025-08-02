@@ -49,15 +49,14 @@ const writerOpts = {
     console.log("🔍 Final type and subject:", {
       type: finalType,
       scope,
-      shortHash: commit.shortHash,
+      shortHash: commit.hash.substring(0, 7),
       subject: finalSubject,
     });
 
     return {
-      ...commit,
-      hash: commit.hash,
       type: finalType,
       scope,
+      shortHash: commit.hash.substring(0, 7),
       subject: finalSubject,
     };
   },
