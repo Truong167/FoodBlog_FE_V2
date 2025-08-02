@@ -1,3 +1,10 @@
+# [1.0.0-canary.12](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.11...v1.0.0-canary.12) (2025-08-02)
+
+
+### Features
+
+* **remove another comment 5:** feat/DEL-123: remove another comment 5 ([207af94](https://github.com/Truong167/FoodBlog_FE_V2/commit/207af9468f3c14386839ca92dee0c9383e130421))
+
 # [1.0.0-canary.11](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.10...v1.0.0-canary.11) (2025-08-02)
 
 
