@@ -125,7 +125,6 @@ const writerOpts = {
 
     return transformedCommit;
   },
-  // This will group the formatted PR entries under headings like "Features" and "Bug Fixes"
   groupBy: "type",
   commitGroupsSort: "title",
   commitsSort: ["subject"],
