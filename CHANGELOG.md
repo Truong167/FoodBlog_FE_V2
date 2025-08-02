@@ -1,3 +1,10 @@
+# [1.0.0-canary.29](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.28...v1.0.0-canary.29) (2025-08-02)
+
+
+### feat
+
+* **REC-3:** change type ([12b5be2](https://github.com/Truong167/FoodBlog_FE_V2/commit/12b5be2ad37b5367715109c0bc39d9500d0ac649)), closes [#146](https://github.com/Truong167/FoodBlog_FE_V2/issues/146)
+
 # [1.0.0-canary.28](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.27...v1.0.0-canary.28) (2025-08-02)
 
 
