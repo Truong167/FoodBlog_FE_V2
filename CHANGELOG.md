@@ -1,3 +1,10 @@
+# [1.0.0-canary.28](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.27...v1.0.0-canary.28) (2025-08-02)
+
+
+### feat
+
+* **REC-1:** testing something ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/8fbbc575aa8bf16df1528be0903e0f7c1eff4c23)), closes [#145](https://github.com/Truong167/FoodBlog_FE_V2/issues/145)
+
 # [1.0.0-canary.27](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.26...v1.0.0-canary.27) (2025-08-02)
 
 
