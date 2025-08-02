@@ -122,7 +122,16 @@ jobs:
             # Create new production tag
             git tag "$BASE_VERSION" "$TAG_SHA"
             git push origin "refs/tags/$BASE_VERSION"
-            echo "✅ Successfully created production tag: $BASE_VERSION"
+            
+            # Create release with custom release notes
+            RELEASE_NOTES="Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${BASE_VERSION}/CHANGELOG.md) for full details on this release."
+            
+            gh release create "$BASE_VERSION" \
+              --title "Release $BASE_VERSION" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+            
+            echo "✅ Successfully created production tag and release: $BASE_VERSION"
             echo "tag=$BASE_VERSION" >> $GITHUB_OUTPUT
           fi
 
@@ -160,9 +169,11 @@ jobs:
           git tag "$NEW_TAG" "${{ github.sha }}"
           git push origin "refs/tags/$NEW_TAG"
 
+          RELEASE_NOTES="Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${NEW_TAG}/CHANGELOG.md) for full details on this release."
+
           gh release create "$NEW_TAG" \
             --title "Release $NEW_TAG" \
-            --generate-notes \
+            --notes "$RELEASE_NOTES" \
             --latest
 
           echo "✅ Successfully created new release and tag: $NEW_TAG"
