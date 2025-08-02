@@ -1,3 +1,10 @@
+# [1.0.0-canary.23](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.22...v1.0.0-canary.23) (2025-08-02)
+
+
+### feat
+
+* testing something ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/503c54b25d97b2f6af5b70e0c169ce53da16184d)), closes [#140](https://github.com/Truong167/FoodBlog_FE_V2/issues/140)
+
 # [1.0.0-canary.22](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.21...v1.0.0-canary.22) (2025-08-02)
 
 
