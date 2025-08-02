@@ -46,6 +46,22 @@ const writerOpts = {
       finalSubject = bodyMatch[3] ? bodyMatch[3].trim() : "";
     }
 
+    if (finalType === "feat") {
+      finalType = "Features";
+    } else if (finalType === "fix") {
+      finalType = "Bug Fixes";
+    } else if (finalType === "perf") {
+      finalType = "Performance Improvements";
+    } else if (finalType === "revert" || commit.revert) {
+      finalType = "Reverts";
+    } else if (discard) {
+      return undefined;
+    } else if (finalType === "docs") {
+      finalType = "Documentation";
+    } else if (finalType === "refactor") {
+      finalType = "Code Refactoring";
+    }
+
     console.log("🔍 Final type and subject:", {
       type: finalType,
       scope,
