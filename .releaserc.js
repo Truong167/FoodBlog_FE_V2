@@ -96,7 +96,15 @@ const writerOpts = {
       return null;
     }
 
-    const transformedCommit = { ...commit };
+    const transformedCommit = {
+      ...commit,
+      // The header is the full commit message
+      header: commit.body,
+      // The commit hash is already available
+      hash: commit.hash.substring(0, 7),
+      // The references array is already available
+      references: commit.references,
+    };
 
     // const typeMatch = commit.subject.match(/^(\w+)/);
 
@@ -109,11 +117,9 @@ const writerOpts = {
 
     // The body contains the commit message from the original PR
     // (e.g., 'feat/DEL-4: testing something')
-    const bodyMatch = transformedCommit.body.match(/^(\w+)(\/.*)?:(.*)/);
+    const bodyMatch = commit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
     if (bodyMatch) {
-      transformedCommit.type = bodyMatch[1].trim(); // `feat`
-      transformedCommit.scope = bodyMatch[2] ? bodyMatch[2].slice(1) : null; // `DEL-4`
-      transformedCommit.subject = transformedCommit.body; // `testing something`
+      finalType = bodyMatch[1].trim();
     }
 
     console.log("🔍 Final type and subject:", { finalType, finalSubject });
