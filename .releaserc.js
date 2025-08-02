@@ -76,6 +76,13 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
+    // Skip if commit is invalid or no subject)
+    console.log("🔍 Processing commit:", commit);
+    console.log("🔗 Repository context:", context);
+    if (!commit || !commit.subject) {
+      return null;
+    }
+
     // Skip if no PR references
     if (!commit.references || commit.references.length === 0) {
       return null;
@@ -83,7 +90,7 @@ const writerOpts = {
 
     // Find PR reference
     const prReference = commit.references.find(
-      (ref) => ref.prefix === "#" && ref.issue
+      (ref) => ref && ref.prefix === "#" && ref.issue
     );
 
     if (!prReference) {
@@ -101,35 +108,32 @@ const writerOpts = {
     }
     context.processedPRs.add(prKey);
 
-    // Extract type
+    // Extract type with null checks
     let type = commit.type;
-    if (!type) {
+    if (!type && commit.subject) {
       const typeMatch = commit.subject.match(
         /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?:/
       );
       type = typeMatch ? typeMatch[1] : "other";
     }
 
-    // Only include feat and fix
-    if (!["feat", "fix"].includes(type)) {
-      return null;
-    }
-
     // Clean the subject (remove conventional commit prefix)
-    let cleanSubject = commit.subject;
-    const subjectMatch = cleanSubject.match(
-      /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?: (.+)/
-    );
-    if (subjectMatch) {
-      cleanSubject = subjectMatch[3];
+    let cleanSubject = commit.subject || "";
+    if (cleanSubject) {
+      const subjectMatch = cleanSubject.match(
+        /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?: (.+)/
+      );
+      if (subjectMatch && subjectMatch[3]) {
+        cleanSubject = subjectMatch[3];
+      }
     }
 
     return {
       type: type,
-      subject: cleanSubject,
+      subject: cleanSubject || "No description",
       prNumber: prReference.issue,
       prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
-      group: type,
+      group: type === "feat" ? "✨ Features" : "🔧 Bug Fixes",
     };
   },
   groupBy: "type",
