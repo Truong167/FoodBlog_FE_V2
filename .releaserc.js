@@ -117,7 +117,6 @@ const writerOpts = {
       type = typeMatch ? typeMatch[1] : "other";
     }
 
-    // Clean the subject (remove conventional commit prefix)
     let cleanSubject = commit.subject || "";
     if (cleanSubject) {
       const subjectMatch = cleanSubject.match(
