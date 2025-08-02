@@ -1,3 +1,10 @@
+# [1.0.0-canary.20](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.19...v1.0.0-canary.20) (2025-08-02)
+
+
+### other
+
+* Merge pull request #137 from Truong167/feat/DEL-2 ([](https://github.com/Truong167/FoodBlog_FE_V2/commit/fada609ab6719b1007d2ede848c5ffb02e9fd536)), closes [#137](https://github.com/Truong167/FoodBlog_FE_V2/issues/137)
+
 # [1.0.0-canary.19](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.18...v1.0.0-canary.19) (2025-08-02)
 
 
