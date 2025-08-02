@@ -76,54 +76,61 @@ const writerOpts1 = {
 
 const writerOpts = {
   transform: (commit, context) => {
-    // Add a null check for the commit subject to prevent the error
-    if (!commit.subject) {
+    // Skip if no PR references
+    if (!commit.references || commit.references.length === 0) {
       return null;
     }
 
-    // We only want to process merge commits from a PR, so we return null
-    // for all other commits to prevent them from being added to the changelog.
-    if (!commit.subject.startsWith("Merge pull request #")) {
+    // Find PR reference
+    const prReference = commit.references.find(
+      (ref) => ref.prefix === "#" && ref.issue
+    );
+
+    if (!prReference) {
       return null;
     }
 
-    // Create a new, mutable object with the required properties.
-    const transformedCommit = {
-      ...commit,
+    // Track processed PRs to avoid duplicates
+    if (!context.processedPRs) {
+      context.processedPRs = new Set();
+    }
+
+    const prKey = `pr-${prReference.issue}`;
+    if (context.processedPRs.has(prKey)) {
+      return null;
+    }
+    context.processedPRs.add(prKey);
+
+    // Extract type
+    let type = commit.type;
+    if (!type) {
+      const typeMatch = commit.subject.match(
+        /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?:/
+      );
+      type = typeMatch ? typeMatch[1] : "other";
+    }
+
+    // Only include feat and fix
+    if (!["feat", "fix"].includes(type)) {
+      return null;
+    }
+
+    // Clean the subject (remove conventional commit prefix)
+    let cleanSubject = commit.subject;
+    const subjectMatch = cleanSubject.match(
+      /^(feat|fix|docs|style|refactor|perf|test|chore)(\(.+\))?: (.+)/
+    );
+    if (subjectMatch) {
+      cleanSubject = subjectMatch[3];
+    }
+
+    return {
+      type: type,
+      subject: cleanSubject,
+      prNumber: prReference.issue,
+      prUrl: `https://github.com/${context.owner}/${context.repository}/pull/${prReference.issue}`,
+      group: type,
     };
-
-    // Use the body of the merge commit to find the original commit message.
-    const bodyMatch = transformedCommit.body.match(/^(\w+)(?:\/.*)?:(.*)/);
-
-    if (bodyMatch) {
-      transformedCommit.type = bodyMatch[1].trim();
-      transformedCommit.subject = bodyMatch[2].trim();
-    } else {
-      // Fallback if the body isn't in the expected format.
-      const subjectMatch = transformedCommit.subject.match(
-        /from .*?\/(feat|fix|perf)\/.*?:(.*)/
-      );
-      if (subjectMatch) {
-        transformedCommit.type = subjectMatch[1].trim();
-        transformedCommit.subject = subjectMatch[2].trim();
-      }
-    }
-
-    // Find and add a link to the referenced PR from the commit's references.
-    if (
-      transformedCommit.references &&
-      transformedCommit.references.length > 0
-    ) {
-      const prReference = transformedCommit.references.find(
-        (ref) => ref.prefix === "#"
-      );
-      if (prReference) {
-        const prLink = ` ([#${prReference.issue}](${context.repository}/pull/${prReference.issue}))`;
-        transformedCommit.subject += prLink;
-      }
-    }
-
-    return transformedCommit;
   },
   groupBy: "type",
   commitGroupsSort: "title",
