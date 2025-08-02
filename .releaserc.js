@@ -105,13 +105,7 @@ module.exports = {
         ],
       },
     ],
-    [
-      "@semantic-release/release-notes-generator",
-      {
-        parserOpts,
-        writerOpts,
-      },
-    ],
+    ["@semantic-release/release-notes-generator"],
     [
       "@semantic-release/changelog",
       {
