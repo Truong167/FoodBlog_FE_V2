@@ -46,16 +46,11 @@ const writerOpts = {
       finalSubject = bodyMatch[3] ? bodyMatch[3].trim() : "";
     }
 
-    const references = commit.references.filter(
-      (reference) => !issues.includes(reference.issue)
-    );
-
     console.log("🔍 Final type and subject:", {
       type: finalType,
       scope,
       shortHash: commit.shortHash,
       subject: finalSubject,
-      references,
     });
 
     return {
@@ -68,7 +63,8 @@ const writerOpts = {
   },
   groupBy: "type",
   commitGroupsSort: "title",
-  commitsSort: ["subject"],
+  commitsSort: ["scope", "subject"],
+  noteGroupsSort: "title",
 };
 
 const a = {
