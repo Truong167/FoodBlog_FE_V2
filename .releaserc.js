@@ -39,18 +39,23 @@ const writerOpts = {
     // The body contains the commit message from the original PR
     // (e.g., 'feat/DEL-4: testing something')
     const bodyMatch = commit.body.match(/^(\w+)(?:\/(.*))?:(.*)/);
+    console.log({ bodyMatch });
     if (bodyMatch) {
       finalType = bodyMatch[1].trim();
-      scope = bodyMatch[2] ? bodyMatch[2].slice(1) : null;
+      scope = bodyMatch[2] ? bodyMatch[2] : null;
       finalSubject = bodyMatch[3] ? bodyMatch[3].trim() : "";
     }
 
+    const references = commit.references.filter(
+      (reference) => !issues.includes(reference.issue)
+    );
+
     console.log("🔍 Final type and subject:", {
-      ...commit,
-      hash: commit.hash,
       type: finalType,
       scope,
+      shortHash: commit.shortHash,
       subject: finalSubject,
+      references,
     });
 
     return {
@@ -203,7 +208,7 @@ module.exports = {
       "@semantic-release/release-notes-generator",
       {
         parserOpts,
-        writerOpts: a,
+        writerOpts,
       },
     ],
     [
