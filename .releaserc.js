@@ -59,6 +59,75 @@ const writerOpts = {
   noteGroupsSort: "title",
 };
 
+const fullPlugins = [
+  [
+    "@semantic-release/commit-analyzer",
+    {
+      parserOpts,
+      releaseRules: [
+        { type: "feat", scope: "*", release: "minor" },
+        { type: "fix", scope: "*", release: "patch" },
+        { type: "perf", scope: "*", release: "patch" },
+        { type: "refactor", scope: "*", release: "patch" },
+        { type: "docs", scope: "*", release: "patch" },
+        { type: "revert", scope: "*", release: "patch" },
+        { type: "build", scope: "*", release: "patch" },
+        { type: "ci", scope: "*", release: "patch" },
+        { breaking: true, release: "major" },
+      ],
+    },
+  ],
+  [
+    "@semantic-release/release-notes-generator",
+    {
+      parserOpts,
+      writerOpts,
+    },
+  ],
+  [
+    "@semantic-release/changelog",
+    {
+      changelogFile: "CHANGELOG.md",
+    },
+  ],
+  [
+    "@semantic-release/git",
+    {
+      assets: ["CHANGELOG.md", "package.json"],
+      message: "chore(release): ${nextRelease.version} [skip ci]",
+    },
+  ],
+  [
+    "@semantic-release/github",
+    {
+      releaseBodyTemplate:
+        "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
+      successComment: false,
+      failComment: false,
+    },
+  ],
+];
+
+const publishPlugins = [
+  [
+    "@semantic-release/commit-analyzer",
+    {
+      parserOpts,
+      releaseRules: [
+        { type: "feat", scope: "*", release: "minor" },
+        { type: "fix", scope: "*", release: "patch" },
+        { type: "perf", scope: "*", release: "patch" },
+        { type: "refactor", scope: "*", release: "patch" },
+        { type: "docs", scope: "*", release: "patch" },
+        { type: "revert", scope: "*", release: "patch" },
+        { type: "build", scope: "*", release: "patch" },
+        { type: "ci", scope: "*", release: "patch" },
+        { breaking: true, release: "major" },
+      ],
+    },
+  ],
+];
+
 module.exports = {
   debug: true,
   branches: [
@@ -66,58 +135,12 @@ module.exports = {
     {
       name: "dev",
       prerelease: "canary",
+      plugins: publishPlugins,
     },
     {
-      name: "feat/dev",
-      prerelease: "beta",
+      name: "staging",
+      prerelease: "rc",
+      plugins: fullPlugins,
     },
-  ],
-  plugins: [
-    [
-      "@semantic-release/commit-analyzer",
-      {
-        parserOpts,
-        releaseRules: [
-          { type: "feat", scope: "*", release: "minor" },
-          { type: "fix", scope: "*", release: "patch" },
-          { type: "perf", scope: "*", release: "patch" },
-          { type: "refactor", scope: "*", release: "patch" },
-          { type: "docs", scope: "*", release: "patch" },
-          { type: "revert", scope: "*", release: "patch" },
-          { type: "build", scope: "*", release: "patch" },
-          { type: "ci", scope: "*", release: "patch" },
-          { breaking: true, release: "major" },
-        ],
-      },
-    ],
-    [
-      "@semantic-release/release-notes-generator",
-      {
-        parserOpts,
-        writerOpts,
-      },
-    ],
-    [
-      "@semantic-release/changelog",
-      {
-        changelogFile: "CHANGELOG.md",
-      },
-    ],
-    [
-      "@semantic-release/git",
-      {
-        assets: ["CHANGELOG.md", "package.json"],
-        message: "chore(release): ${nextRelease.version} [skip ci]",
-      },
-    ],
-    [
-      "@semantic-release/github",
-      {
-        releaseBodyTemplate:
-          "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
-        successComment: false,
-        failComment: false,
-      },
-    ],
   ],
 };
