@@ -134,12 +134,11 @@ module.exports = {
     {
       name: "dev",
       prerelease: "canary",
-      plugins: publishPlugins,
     },
     {
       name: "staging",
       prerelease: "rc",
-      plugins: fullPlugins,
     },
   ],
+  plugins: fullPlugins,
 };
