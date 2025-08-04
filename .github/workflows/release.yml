@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - main
+      - staging
 
 permissions:
   contents: write
