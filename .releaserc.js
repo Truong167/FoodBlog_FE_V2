@@ -100,7 +100,6 @@ const fullPlugins = [
 // Plugins for the main branch (just publish)
 const mainPlugins = [
   customCommitAnalyzerPlugin,
-  customReleaseNotesGeneratorPlugin,
   "@semantic-release/npm",
   "@semantic-release/github",
 ];
