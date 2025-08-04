@@ -58,37 +58,35 @@ const writerOpts = {
   noteGroupsSort: "title",
 };
 
+const customCommitAnalyzerPlugin = [
+  "@semantic-release/commit-analyzer",
+  {
+    parserOpts,
+    releaseRules: [
+      { type: "feat", scope: "*", release: "minor" },
+      { type: "fix", scope: "*", release: "patch" },
+      { type: "perf", scope: "*", release: "patch" },
+      { type: "refactor", scope: "*", release: "patch" },
+      { type: "docs", scope: "*", release: "patch" },
+      { type: "revert", scope: "*", release: "patch" },
+      { type: "build", scope: "*", release: "patch" },
+      { type: "ci", scope: "*", release: "patch" },
+      { breaking: true, release: "major" },
+    ],
+  },
+];
+
+const customReleaseNotesGeneratorPlugin = [
+  "@semantic-release/release-notes-generator",
+  { parserOpts, writerOpts },
+];
+
+// Plugins for the dev and staging branches (publish, generate changelog, and commit back)
 const fullPlugins = [
-  [
-    "@semantic-release/commit-analyzer",
-    {
-      parserOpts,
-      releaseRules: [
-        { type: "feat", scope: "*", release: "minor" },
-        { type: "fix", scope: "*", release: "patch" },
-        { type: "perf", scope: "*", release: "patch" },
-        { type: "refactor", scope: "*", release: "patch" },
-        { type: "docs", scope: "*", release: "patch" },
-        { type: "revert", scope: "*", release: "patch" },
-        { type: "build", scope: "*", release: "patch" },
-        { type: "ci", scope: "*", release: "patch" },
-        { breaking: true, release: "major" },
-      ],
-    },
-  ],
-  [
-    "@semantic-release/release-notes-generator",
-    {
-      parserOpts,
-      writerOpts,
-    },
-  ],
-  [
-    "@semantic-release/changelog",
-    {
-      changelogFile: "CHANGELOG.md",
-    },
-  ],
+  customCommitAnalyzerPlugin,
+  customReleaseNotesGeneratorPlugin,
+  "@semantic-release/npm",
+  ["@semantic-release/changelog", { changelogFile: "CHANGELOG.md" }],
   [
     "@semantic-release/git",
     {
@@ -96,49 +94,22 @@ const fullPlugins = [
       message: "chore(release): ${nextRelease.version} [skip ci]",
     },
   ],
-  [
-    "@semantic-release/github",
-    {
-      releaseBodyTemplate:
-        "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
-      successComment: false,
-      failComment: false,
-    },
-  ],
+  "@semantic-release/github",
 ];
 
-const publishPlugins = [
-  [
-    "@semantic-release/commit-analyzer",
-    {
-      parserOpts,
-      releaseRules: [
-        { type: "feat", scope: "*", release: "minor" },
-        { type: "fix", scope: "*", release: "patch" },
-        { type: "perf", scope: "*", release: "patch" },
-        { type: "refactor", scope: "*", release: "patch" },
-        { type: "docs", scope: "*", release: "patch" },
-        { type: "revert", scope: "*", release: "patch" },
-        { type: "build", scope: "*", release: "patch" },
-        { type: "ci", scope: "*", release: "patch" },
-        { breaking: true, release: "major" },
-      ],
-    },
-  ],
+// Plugins for the main branch (just publish)
+const mainPlugins = [
+  customCommitAnalyzerPlugin,
+  customReleaseNotesGeneratorPlugin,
+  "@semantic-release/npm",
+  "@semantic-release/github",
 ];
 
 module.exports = {
   debug: true,
   branches: [
-    "main",
-    {
-      name: "dev",
-      prerelease: "canary",
-    },
-    {
-      name: "staging",
-      prerelease: "rc",
-    },
+    { name: "main" },
+    { name: "dev", prerelease: "canary", plugins: fullPlugins },
+    { name: "staging", prerelease: "rc", plugins: mainPlugins },
   ],
-  plugins: fullPlugins,
 };
