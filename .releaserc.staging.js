@@ -62,6 +62,7 @@ const writerOpts = {
 module.exports = {
   debug: true,
   branches: [
+    "main",
     {
       name: "staging",
       prerelease: "rc",
