@@ -36,8 +36,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "vitest",
-    "eject": "react-scripts eject",
-    "release": "standard-version"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
