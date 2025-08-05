@@ -1,3 +1,26 @@
+# 1.0.0-dev.1 (2025-08-05)
+
+
+### Code Refactoring
+
+* **api:** update response format ([ca6675b](https://github.com/Truong167/FoodBlog_FE_V2/commit/ca6675b99297c431ca756cc987348f8d1450e90c))
+
+
+### Features
+
+* add simple test feature ([5b7424d](https://github.com/Truong167/FoodBlog_FE_V2/commit/5b7424dd93b0972000356a9ab4a7900d3b75cbb1))
+* **api:** add github token ([cbbdd97](https://github.com/Truong167/FoodBlog_FE_V2/commit/cbbdd97f884e405bff23a36f3308c5b8dc4b09de))
+* tesssss ([47d6571](https://github.com/Truong167/FoodBlog_FE_V2/commit/47d6571f6b367944247261b8365a30a087af1a98))
+* test commit message ([183cfc4](https://github.com/Truong167/FoodBlog_FE_V2/commit/183cfc4ed1b070bbb506187ab2aa289009c88146))
+* **test-ci:** remove log ([614503f](https://github.com/Truong167/FoodBlog_FE_V2/commit/614503f4f73d67f99df592d187203dcf3920aabe))
+* this is a new test feature ([74e67f3](https://github.com/Truong167/FoodBlog_FE_V2/commit/74e67f3ca7608d585bdc44f7256592008f791926))
+* this is a new test feature ([3abd028](https://github.com/Truong167/FoodBlog_FE_V2/commit/3abd028b62c127c016a17a5f9314f71d34f6aa59))
+
+
+### BREAKING CHANGES
+
+* **api:** The /users endpoint now returns data in a new format.
+
 # [1.1.0-canary.1](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0...v1.1.0-canary.1) (2025-08-03)
 
 # [1.0.0-canary.34](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.33...v1.0.0-canary.34) (2025-08-02)
