@@ -30,20 +30,7 @@ jobs:
       - name: Install deps
         run: bun install
 
-      - name: Run semantic release for Main branch
-        if: github.ref_name == 'main'
-        run: bunx semantic-release --config .releaserc.main.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Run semantic release for Staging branch
-        if: github.ref_name == 'staging'
-        run: bunx semantic-release --config .releaserc.staging.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Run semantic release for Dev branch
-        if: github.ref_name == 'dev'
-        run: bunx semantic-release --config .releaserc.dev.js
+      - name: Run semantic release
+        run: bunx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
