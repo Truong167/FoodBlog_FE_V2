@@ -61,7 +61,6 @@ const writerOpts = {
 };
 
 module.exports = {
-  // Không định nghĩa plugins ở đây để có thể tùy chỉnh cho từng nhánh
   debug: true,
   plugins: [],
   branches: [
