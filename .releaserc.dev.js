@@ -62,7 +62,7 @@ const writerOpts = {
 module.exports = {
   debug: true,
   branches: [
-    "main", // Bắt buộc phải có để semantic-release hiểu đâu là nhánh chính
+    "main",
     {
       name: "dev",
       prerelease: "canary",
@@ -104,6 +104,15 @@ module.exports = {
       {
         assets: ["CHANGELOG.md", "package.json"],
         message: "chore(release): ${nextRelease.version} [skip ci]",
+      },
+    ],
+    [
+      "@semantic-release/github",
+      {
+        releaseBodyTemplate:
+          "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
+        successComment: false,
+        failComment: false,
       },
     ],
   ],
