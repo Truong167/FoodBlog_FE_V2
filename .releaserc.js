@@ -96,27 +96,7 @@ module.exports = {
       prerelease: "beta",
       // Plugins dành riêng cho nhánh staging
       // Chỉ tạo ghi chú, changelog và github release, KHÔNG publish lên npm
-      plugins: [
-        ["@semantic-release/commit-analyzer", { parserOpts }],
-        [
-          "@semantic-release/release-notes-generator",
-          { parserOpts, writerOpts },
-        ],
-        [
-          "@semantic-release/changelog",
-          {
-            changelogFile: "CHANGELOG.md",
-          },
-        ],
-        ["@semantic-release/github", { assets: ["CHANGELOG.md"] }],
-        [
-          "@semantic-release/git",
-          {
-            assets: ["CHANGELOG.md", "package.json"],
-            message: "chore(release): ${nextRelease.version} [skip ci]",
-          },
-        ],
-      ],
+      plugins: [["@semantic-release/commit-analyzer", { parserOpts }]],
     },
     {
       name: "dev",
@@ -124,10 +104,29 @@ module.exports = {
       // Plugins dành riêng cho nhánh dev
       // Chỉ tạo ghi chú và changelog, không publish
       plugins: [
-        ["@semantic-release/commit-analyzer", { parserOpts }],
+        [
+          "@semantic-release/commit-analyzer",
+          {
+            parserOpts,
+            releaseRules: [
+              { type: "feat", scope: "*", release: "minor" },
+              { type: "fix", scope: "*", release: "patch" },
+              { type: "perf", scope: "*", release: "patch" },
+              { type: "refactor", scope: "*", release: "patch" },
+              { type: "docs", scope: "*", release: "patch" },
+              { type: "revert", scope: "*", release: "patch" },
+              { type: "build", scope: "*", release: "patch" },
+              { type: "ci", scope: "*", release: "patch" },
+              { breaking: true, release: "major" },
+            ],
+          },
+        ],
         [
           "@semantic-release/release-notes-generator",
-          { parserOpts, writerOpts },
+          {
+            parserOpts,
+            writerOpts,
+          },
         ],
         [
           "@semantic-release/changelog",
@@ -140,6 +139,15 @@ module.exports = {
           {
             assets: ["CHANGELOG.md", "package.json"],
             message: "chore(release): ${nextRelease.version} [skip ci]",
+          },
+        ],
+        [
+          "@semantic-release/github",
+          {
+            releaseBodyTemplate:
+              "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
+            successComment: false,
+            failComment: false,
           },
         ],
       ],
