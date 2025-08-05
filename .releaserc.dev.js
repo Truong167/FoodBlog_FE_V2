@@ -28,6 +28,7 @@ const writerOpts = {
       chore: "🔧 Chores",
       build: "🏗️ Build System",
       ci: "🔁 Continuous Integration",
+      style: "🎨 Styling",
     };
 
     let { body, hash } = commit;
@@ -61,6 +62,7 @@ const writerOpts = {
 module.exports = {
   debug: true,
   branches: [
+    "main", // Bắt buộc phải có để semantic-release hiểu đâu là nhánh chính
     {
       name: "dev",
       prerelease: "canary",
