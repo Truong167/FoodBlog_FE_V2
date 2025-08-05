@@ -59,6 +59,9 @@ const writerOpts = {
   noteGroupsSort: "title",
 };
 
+console.log("Current GITHUB_REF:", process.env.GITHUB_REF);
+console.log("Current GITHUB_REF_NAME:", process.env.GITHUB_REF_NAME);
+
 module.exports = async () => {
   const branch = process.env.GITHUB_REF_NAME || "";
 
