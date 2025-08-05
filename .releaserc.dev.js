@@ -62,7 +62,6 @@ const writerOpts = {
 module.exports = {
   debug: true,
   branches: [
-    "main",
     {
       name: "dev",
       prerelease: "canary",
