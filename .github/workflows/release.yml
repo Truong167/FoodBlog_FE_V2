@@ -40,3 +40,4 @@ jobs:
         run: bunx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          DEBUG: semantic-release:*
