@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0 # Fetch all history for tag operations
+          fetch-depth: 0
 
       - name: Check if user is the repo admin
         id: check-admin
@@ -43,174 +43,38 @@ jobs:
           fi
           echo "✅ Admin check passed for user ${{ github.actor }}"
 
-      # Staging Environment - Single Consolidated Step
-      - name: Handle Staging Tag
-        id: staging_tag
-        if: github.event.inputs.environment == 'STG'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if tag is not provided
         run: |
-          if [ -n "${{ github.event.inputs.tag_to_deploy }}" ]; then
-            # User specified tag
-            TAG="${{ github.event.inputs.tag_to_deploy }}"
-            echo "🔍 Checking if user-specified tag exists: $TAG"
-
-            if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
-              echo "✅ Tag $TAG exists"
-              echo "tag=$TAG" >> $GITHUB_OUTPUT
-            else
-              echo "❌ Tag $TAG not found in repository"
-              exit 1
-            fi
-          else
-            # Find latest pre-release
-            echo "🔍 Finding latest pre-release for STG"
-
-            LATEST_PRERELEASE=$(gh release list --limit 10 --json tagName,isPrerelease \
-              --jq '.[] | select(.isPrerelease == true) | .tagName' | head -n 1)
-
-            if [ -z "$LATEST_PRERELEASE" ]; then
-              echo "❌ No pre-release found for Staging environment"
-              exit 1
-            fi
-
-            echo "✅ Found latest pre-release tag: $LATEST_PRERELEASE"
-            echo "tag=$LATEST_PRERELEASE" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Handle Production Tag
-        id: production_tag
-        if: github.event.inputs.environment == 'PROD'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ -n "${{ github.event.inputs.tag_to_deploy }}" ] && ! [[ "${{ github.event.inputs.tag_to_deploy }}" == *"-canary"* ]]; then
-            # User specified regular (non-canary) tag
-            TAG="${{ github.event.inputs.tag_to_deploy }}"
-            echo "🔍 Checking if user-specified production tag exists: $TAG"
-
-            if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
-              echo "✅ Tag $TAG exists"
-              
-              # Check if release already exists for this tag
-              if gh release view "$TAG" >/dev/null 2>&1; then
-                echo "✅ Release already exists for tag $TAG"
-              else
-                echo "📦 Creating release for existing tag: $TAG"
-                RELEASE_NOTES="Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${TAG}/CHANGELOG.md) for full details on this release."
-                
-                gh release create "$TAG" \
-                  --title "Release $TAG" \
-                  --notes "$RELEASE_NOTES" \
-                  --latest
-                
-                echo "✅ Successfully created release for tag: $TAG"
-              fi
-              
-              echo "tag=$TAG" >> $GITHUB_OUTPUT
-            else
-              echo "❌ Tag $TAG not found in repository"
-              exit 1
-            fi
-          else
-            # Handle canary promotion or auto-create
-            if [[ "${{ github.event.inputs.tag_to_deploy }}" == *"-canary"* ]]; then
-              # Canary promotion logic
-              CANARY_TAG="${{ github.event.inputs.tag_to_deploy }}"
-              BASE_VERSION=$(echo "$CANARY_TAG" | sed 's/-.*$//')
-              
-              echo "🚀 Promoting canary tag $CANARY_TAG to production"
-              
-              # Check if canary tag exists
-              if ! git rev-parse "refs/tags/$CANARY_TAG" >/dev/null 2>&1; then
-                echo "❌ Canary tag $CANARY_TAG not found"
-                exit 1
-              fi
-              
-              # Get the SHA of the canary tag and create production tag with commit hash
-              TAG_SHA=$(git rev-list -n 1 "$CANARY_TAG")
-              SHORT_SHA=$(echo "$TAG_SHA" | cut -c1-7)
-              PROD_TAG="${BASE_VERSION}-${SHORT_SHA}"
-              
-              echo "📦 Creating production tag: $PROD_TAG"
-            else
-              # Auto-create logic - use latest version with current commit hash
-              echo "🔧 Creating production tag with latest version and current commit hash"
-              
-              # Get latest release version
-              LATEST_VERSION=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "")
-              
-              # Use latest version or default to v1.0.0
-              if [ -z "$LATEST_VERSION" ]; then
-                BASE_VERSION="v1.0.0"
-              else
-                # Extract base version (remove any suffix after '-')
-                BASE_VERSION=$(echo "$LATEST_VERSION" | sed 's/-.*$//')
-              fi
-              
-              # Use current commit
-              TAG_SHA="${{ github.sha }}"
-              SHORT_SHA=$(echo "$TAG_SHA" | cut -c1-7)
-              PROD_TAG="${BASE_VERSION}-${SHORT_SHA}"
-              
-              echo "📦 Creating production tag: $PROD_TAG from latest version: $BASE_VERSION"
-            fi
-            
-            # Check if production tag already exists
-            if git rev-parse "refs/tags/$PROD_TAG" >/dev/null 2>&1; then
-              echo "⚠️ Tag $PROD_TAG already exists. Using existing tag."
-              echo "tag=$PROD_TAG" >> $GITHUB_OUTPUT
-            else
-              # Create new production tag with commit hash
-              git tag "$PROD_TAG" "$TAG_SHA"
-              git push origin "refs/tags/$PROD_TAG"
-              
-              # Create release with custom release notes
-              RELEASE_NOTES="Please refer to the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${PROD_TAG}/CHANGELOG.md) for full details on this release."
-              
-              gh release create "$PROD_TAG" \
-                --title "Release $PROD_TAG" \
-                --notes "$RELEASE_NOTES" \
-                --latest
-              
-              echo "✅ Successfully created production tag and release: $PROD_TAG"
-              echo "tag=$PROD_TAG" >> $GITHUB_OUTPUT
-            fi
-          fi
-
-      - name: Set Final Tag
-        id: final_tag
-        run: |
-          TAG=""
-
-          # Check staging or production step output for the tag
-          if [ -n "${{ steps.staging_tag.outputs.tag }}" ]; then
-            TAG="${{ steps.staging_tag.outputs.tag }}"
-          elif [ -n "${{ steps.production_tag.outputs.tag }}" ]; then
-            TAG="${{ steps.production_tag.outputs.tag }}"
-          fi
-
-          if [ -z "$TAG" ]; then
-            echo "❌ No tag was determined"
+          if [ -z "${{ github.event.inputs.tag_to_deploy }}" ]; then
+            echo "❌ No tag specified. The 'tag_to_deploy' input is required."
             exit 1
           fi
 
-          echo "🎯 Final tag determined: $TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          TAG="${{ github.event.inputs.tag_to_deploy }}"
+          echo "🔍 Checking if tag '$TAG' exists in the repository."
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "✅ Tag '$TAG' exists."
+          else
+            echo "❌ Tag '$TAG' not found in the repository."
+            exit 1
+          fi
 
       - name: Trigger Build
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          TAG="${{ steps.final_tag.outputs.tag }}"
+          TAG="${{ github.event.inputs.tag_to_deploy }}"
           ENVIRONMENT="${{ github.event.inputs.environment }}"
 
           echo "🚀 Triggering build with tag: $TAG for environment: $ENVIRONMENT"
 
-          # curl -X POST \
-          #   -H "Accept: application/vnd.github.v3+json" \
-          #   -H "Authorization: token $GH_TOKEN" \
-          #   "https://api.github.com/repos/${{ github.repository }}/dispatches" \
-          #   -d "{\"event_type\":\"trigger-build\",\"client_payload\":{\"environment\":\"$ENVIRONMENT\",\"ref_name\":\"$TAG\"}}"
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+            -d "{\"event_type\":\"trigger-build\",\"client_payload\":{\"environment\":\"$ENVIRONMENT\",\"ref_name\":\"$TAG\"}}"
 
           # echo "✅ Build trigger sent successfully"
