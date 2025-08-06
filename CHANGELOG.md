@@ -1,3 +1,10 @@
+# [1.0.0-dev.2](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2025-08-06)
+
+
+### ✨ Features
+
+* **REC-5:** refactor code 7 ([f228be6](https://github.com/Truong167/FoodBlog_FE_V2/commit/f228be6aad2688e03e5821a239b2db95e3d9c3df)), closes [#154](https://github.com/Truong167/FoodBlog_FE_V2/issues/154)
+
 # 1.0.0-dev.1 (2025-08-05)
 
 
