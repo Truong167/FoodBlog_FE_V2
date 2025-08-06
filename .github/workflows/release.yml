@@ -30,6 +30,12 @@ jobs:
       - name: Install deps
         run: bun install
 
+      - name: Print branch for debug
+        run: echo "${GITHUB_REF##*/}"
+
+      - name: Set branch name
+        run: echo "GITHUB_REF_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Run semantic release
         run: bunx semantic-release
         env:

@@ -1,3 +1,9 @@
+const branch = process.env.GITHUB_REF_NAME || "";
+
+const isDev = branch === "dev";
+const isStaging = branch === "staging";
+const isMain = branch === "main";
+
 const parserOpts = {
   headerPattern: /^(\w+)(?:\/.*)?:\s(.*)/,
   headerCorrespondence: ["type", "scope", "subject"],
@@ -59,7 +65,7 @@ const writerOpts = {
   noteGroupsSort: "title",
 };
 
-const fullPlugins = [
+const plugins = [
   [
     "@semantic-release/commit-analyzer",
     {
@@ -84,63 +90,39 @@ const fullPlugins = [
       writerOpts,
     },
   ],
-  [
-    "@semantic-release/changelog",
-    {
-      changelogFile: "CHANGELOG.md",
-    },
-  ],
-  [
-    "@semantic-release/git",
-    {
-      assets: ["CHANGELOG.md", "package.json"],
-      message: "chore(release): ${nextRelease.version} [skip ci]",
-    },
-  ],
-  [
+];
+
+if (isDev) {
+  plugins.push(
+    ["@semantic-release/changelog", { changelogFile: "CHANGELOG.md" }],
+    [
+      "@semantic-release/git",
+      {
+        assets: ["CHANGELOG.md", "package.json"],
+        message: "chore(release): ${nextRelease.version} [skip ci]",
+      },
+    ]
+  );
+}
+
+if (isStaging || isMain) {
+  plugins.push([
     "@semantic-release/github",
     {
       releaseBodyTemplate:
-        "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md) for full details on this release.",
+        "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md)",
       successComment: false,
       failComment: false,
     },
-  ],
-];
-
-const publishPlugins = [
-  [
-    "@semantic-release/commit-analyzer",
-    {
-      parserOpts,
-      releaseRules: [
-        { type: "feat", scope: "*", release: "minor" },
-        { type: "fix", scope: "*", release: "patch" },
-        { type: "perf", scope: "*", release: "patch" },
-        { type: "refactor", scope: "*", release: "patch" },
-        { type: "docs", scope: "*", release: "patch" },
-        { type: "revert", scope: "*", release: "patch" },
-        { type: "build", scope: "*", release: "patch" },
-        { type: "ci", scope: "*", release: "patch" },
-        { breaking: true, release: "major" },
-      ],
-    },
-  ],
-];
+  ]);
+}
 
 module.exports = {
   debug: true,
   branches: [
+    { name: "dev", prerelease: "dev" },
+    { name: "staging", prerelease: "rc" },
     "main",
-    {
-      name: "dev",
-      prerelease: "canary",
-      plugins: publishPlugins,
-    },
-    {
-      name: "staging",
-      prerelease: "rc",
-      plugins: fullPlugins,
-    },
   ],
+  plugins,
 };
