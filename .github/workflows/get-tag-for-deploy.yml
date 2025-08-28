@@ -21,10 +21,10 @@ jobs:
       # to show "github-actions[bot]" as the trigger, as repository_dispatch itself will show
       # the bot as the actor. However, if this workflow were to make a commit, then these lines
       # would be crucial. I've left them here for completeness if you decide to add commit actions later.
-      - name: Set up Git bot user (Optional, for future commits)
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # - name: Set up Git bot user (Optional, for future commits)
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Check if tag is not provided
         run: |
