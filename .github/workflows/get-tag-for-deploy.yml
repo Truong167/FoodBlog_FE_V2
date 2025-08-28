@@ -17,7 +17,7 @@ on:
         default: ""
 
 jobs:
-  create_tag:
+  get_tag:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.final_tag.outputs.tag }}
@@ -27,6 +27,11 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+
+      - name: Set up Git bot user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Check if user is the repo admin
         id: check-admin
