@@ -1,0 +1,61 @@
+# .github/workflows/get-tag-for-deploy.yml
+name: Get Tag For Deploy
+
+on:
+  repository_dispatch:
+    types: [run-get-tag-for-deploy] # This matches the event-type from the trigger workflow
+
+jobs:
+  get_tag:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.final_tag.outputs.tag }}
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Note: The git config user.name/user.email is not strictly necessary for this workflow
+      # to show "github-actions[bot]" as the trigger, as repository_dispatch itself will show
+      # the bot as the actor. However, if this workflow were to make a commit, then these lines
+      # would be crucial. I've left them here for completeness if you decide to add commit actions later.
+      - name: Set up Git bot user (Optional, for future commits)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check if tag is not provided
+        run: |
+          # Inputs are now accessed via github.event.client_payload
+          if [ -z "${{ github.event.client_payload.tag_to_deploy }}" ]; then
+            echo "❌ No tag specified. The 'tag_to_deploy' input is required."
+            exit 1
+          fi
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          TAG="${{ github.event.client_payload.tag_to_deploy }}" # Access from client_payload
+          echo "🔍 Checking if tag '$TAG' exists in the repository."
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "✅ Tag '$TAG' exists."
+          else
+            echo "❌ Tag '$TAG' not found in the repository."
+            exit 1
+          fi
+
+      # Example of how to use the environment and set the output tag
+      - name: Determine final tag
+        id: final_tag
+        run: |
+          # For this example, we're just directly using the provided tag
+          # In a real scenario, you might have logic here to get the LATEST tag
+          # based on the environment if tag_to_deploy was empty.
+          echo "tag=${{ github.event.client_payload.tag_to_deploy }}" >> $GITHUB_OUTPUT
+
+      - name: Show selected environment and tag
+        run: |
+          echo "Environment selected: ${{ github.event.client_payload.environment }}"
+          echo "Tag to deploy: ${{ steps.final_tag.outputs.tag }}"
