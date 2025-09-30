@@ -1,8 +1,8 @@
 const branch = process.env.GITHUB_REF_NAME || "";
 
-const isDev = branch === "dev";
-const isStaging = branch === "staging";
-const isMain = branch === "main";
+const isDevEnvironment = branch === "dev";
+const isStagingEnvironment = branch === "staging";
+const isMainEnvironment = branch === "main";
 
 const parserOpts = {
   headerPattern: /^(\w+)(?:\/.*)?:\s(.*)/,
@@ -92,7 +92,7 @@ const plugins = [
   ],
 ];
 
-if (isDev) {
+if (isDevEnvironment) {
   plugins.push(
     ["@semantic-release/changelog", { changelogFile: "CHANGELOG.md" }],
     [
@@ -105,12 +105,11 @@ if (isDev) {
   );
 }
 
-if (isStaging || isMain) {
+if (isStagingEnvironment || isMainEnvironment) {
   plugins.push([
     "@semantic-release/github",
     {
-      releaseBodyTemplate:
-        "Please refer to the [CHANGELOG.md](https://github.com/oven-bz/liberty-be/blob/${nextRelease.gitTag}/CHANGELOG.md)",
+      releaseBodyTemplate: "Please refer to the",
       successComment: false,
       failComment: false,
     },
@@ -120,7 +119,7 @@ if (isStaging || isMain) {
 module.exports = {
   debug: true,
   branches: [
-    { name: "dev", prerelease: "dev" },
+    { name: "dev", prerelease: "canary" },
     { name: "staging", prerelease: "rc" },
     "main",
   ],
