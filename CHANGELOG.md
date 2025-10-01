@@ -1,3 +1,11 @@
+# [1.0.0-canary.37](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-canary.36...v1.0.0-canary.37) (2025-10-01)
+
+
+### ✨ Features
+
+* **REC-5:** refactor code 7 ([f114cd1](https://github.com/Truong167/FoodBlog_FE_V2/commit/f114cd1dbb9a1eff37ea5ebb44dd8b34e7f8821e)), closes [#158](https://github.com/Truong167/FoodBlog_FE_V2/issues/158)
+* **REC-5:** refactor code 7 ([f228be6](https://github.com/Truong167/FoodBlog_FE_V2/commit/f228be6aad2688e03e5821a239b2db95e3d9c3df)), closes [#154](https://github.com/Truong167/FoodBlog_FE_V2/issues/154)
+
 # [1.0.0-dev.3](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2025-10-01)
 
 # [1.0.0-dev.2](https://github.com/Truong167/FoodBlog_FE_V2/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2025-08-06)
