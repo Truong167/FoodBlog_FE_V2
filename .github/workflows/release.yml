@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Set bot identity
         run: |
@@ -38,4 +38,4 @@ jobs:
       - name: Run semantic release
         run: bunx semantic-release --debug
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
